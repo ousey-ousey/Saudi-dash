@@ -10,7 +10,7 @@ const StyledAppLayout = styled.div`
     props.isCollapsed ? "8rem 1fr" : "26rem 1fr"};
   grid-template-rows: auto 1fr;
   min-height: 100vh;
-  transition: grid-template-columns 0.3s ease;
+  transition: grid-template-columns 0.1s ease;
 `;
 
 const Main = styled.main`
@@ -24,7 +24,7 @@ function AppLayoutContent() {
 
   return (
     <StyledAppLayout isCollapsed={isCollapsed}>
-      <Sidebar />
+      <Sidebar style={{ zIndex: 40 }} />
       <Header />
       <Main style={{ zIndex: 30, width: "100%" }}>
         <Outlet />

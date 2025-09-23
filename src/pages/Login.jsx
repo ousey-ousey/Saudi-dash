@@ -8,231 +8,137 @@ import SpinnerMini from "../ui/SpinnerMini";
 const LoginLayout = styled.main`
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: var(--color-grey-100);
   position: relative;
   overflow: hidden;
-  padding: 2rem;
-
-  /* Animated bubbles */
-  .bubble {
-    position: absolute;
-    border-radius: 50%;
-    animation: bubbleRise linear infinite;
-    opacity: 0;
-    filter: blur(0.5px);
-  }
-
-  .bubble:nth-child(1) {
-    width: 8rem;
-    height: 8rem;
-    left: 5%;
-    animation-duration: 12s;
-    animation-delay: 0s;
-  }
-
-  .bubble:nth-child(2) {
-    width: 12rem;
-    height: 12rem;
-    left: 15%;
-    animation-duration: 15s;
-    animation-delay: 3s;
-  }
-
-  .bubble:nth-child(3) {
-    width: 6rem;
-    height: 6rem;
-    left: 30%;
-    animation-duration: 10s;
-    animation-delay: 6s;
-  }
-
-  .bubble:nth-child(4) {
-    width: 10rem;
-    height: 10rem;
-    right: 20%;
-    animation-duration: 13s;
-    animation-delay: 2s;
-  }
-
-  .bubble:nth-child(5) {
-    width: 7rem;
-    height: 7rem;
-    right: 8%;
-    animation-duration: 11s;
-    animation-delay: 5s;
-  }
-
-  .bubble:nth-child(6) {
-    width: 9rem;
-    height: 9rem;
-    left: 55%;
-    animation-duration: 14s;
-    animation-delay: 8s;
-  }
-
-  @keyframes bubbleRise {
-    0% {
-      bottom: -15rem;
-      opacity: 0;
-      background-color: #15803d;
-      transform: scale(0.5) translateX(0);
-    }
-    15% {
-      opacity: 0.7;
-      transform: scale(0.8) translateX(1rem);
-    }
-    35% {
-      background-color: #22c55e;
-      transform: scale(1) translateX(-0.5rem);
-    }
-    50% {
-      opacity: 0.8;
-      background-color: #4ade80;
-      transform: scale(1.1) translateX(1.5rem);
-    }
-    70% {
-      background-color: #86efac;
-      transform: scale(0.9) translateX(-1rem);
-    }
-    85% {
-      opacity: 0.4;
-      background-color: #bbf7d0;
-    }
-    100% {
-      bottom: 110vh;
-      opacity: 0;
-      background-color: #dcfce7;
-      transform: scale(0.3) translateX(0.5rem);
-    }
-  }
 
   @media (max-width: 768px) {
-    padding: 1rem;
-
-    .bubble:nth-child(1) {
-      width: 6rem;
-      height: 6rem;
-    }
-    .bubble:nth-child(2) {
-      width: 8rem;
-      height: 8rem;
-    }
-    .bubble:nth-child(3) {
-      width: 4rem;
-      height: 4rem;
-    }
-    .bubble:nth-child(4) {
-      width: 7rem;
-      height: 7rem;
-    }
-    .bubble:nth-child(5) {
-      width: 5rem;
-      height: 5rem;
-    }
-    .bubble:nth-child(6) {
-      width: 6rem;
-      height: 6rem;
-    }
+    flex-direction: column;
   }
 `;
 
 const LoginContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  max-width: 100rem;
-  width: 90%;
-  background: transparent;
-  border-radius: 2rem;
-  overflow: hidden;
-  box-shadow: 0 2.5rem 5rem rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(1rem);
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
   position: relative;
-  z-index: 10;
-  border: none;
-  outline: none;
+  z-index: 2;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    width: 95%;
-    max-width: 45rem;
+    flex-direction: column;
+  }
+`;
+
+const WelcomeSection = styled.div`
+  flex: 1;
+  background: var(--color-brand-600);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 40rem 0 30rem 0;
+
+  @media (max-width: 768px) {
+    flex: none;
+    min-height: 30rem;
+    border-radius: 0 0 4rem 4rem;
+    padding: 3rem 2rem;
+
+    &::before {
+      display: none;
+    }
+
+    &::after {
+      display: none;
+    }
   }
 `;
 
 const LoginFormSection = styled.div`
+  flex: 1;
   padding: 4rem;
-  background: #2a3441;
-  color: white;
+  background: var(--color-grey-100);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
 
   @media (max-width: 768px) {
+    flex: 1;
     padding: 3rem 2rem;
-    order: 2;
   }
-
-  @media (max-width: 480px) {
-    padding: 2rem 1.5rem;
-  }
-`;
-
-const LogoSection = styled.div`
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
 
   &::before {
     content: "";
     position: absolute;
-    width: 30rem;
-    height: 30rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    top: -15rem;
-    right: -15rem;
+    left: -10%;
+    top: -1%;
+    height: 10rem;
+    width: 22rem;
+    transform: rotate(-21deg);
+    background: var(--color-brand-600);
+    border-radius: 37rem 0 45rem 0;
   }
-
-  &::after {
-    content: "";
-    position: absolute;
-    width: 20rem;
-    height: 20rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 50%;
-    bottom: -10rem;
-    left: -10rem;
-  }
-
   @media (max-width: 768px) {
-    order: 1;
-    min-height: 20rem;
+    &::before {
+      display: none;
+    }
   }
 `;
 
-const Title = styled.h1`
-  font-size: 2.8rem;
+const Logo = styled.div`
+  position: relative;
+  z-index: 2;
+  margin-bottom: 2rem;
+
+  img {
+    height: 15rem;
+    width: auto;
+    animation: logoFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 0.5rem 1rem rgba(0, 0, 0, 0.2));
+
+    @media (max-width: 768px) {
+      height: 12rem;
+    }
+
+    @media (max-width: 480px) {
+      height: 10rem;
+    }
+  }
+
+  @keyframes logoFloat {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-1rem) scale(1.05);
+    }
+  }
+`;
+
+const FormTitle = styled.h2`
+  font-size: 2.4rem;
   font-weight: 600;
-  color: white;
-  margin-bottom: 0.8rem;
+  color: #2e8b57;
+  margin-bottom: 0.5rem;
   text-align: center;
 
   @media (max-width: 768px) {
-    font-size: 2.4rem;
+    font-size: 2rem;
   }
 
   @media (max-width: 480px) {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 `;
 
-const Subtitle = styled.p`
+const FormSubtitle = styled.p`
   font-size: 1.4rem;
-  color: #94a3b8;
+  color: #fff;
   margin-bottom: 3rem;
   text-align: center;
 
@@ -247,35 +153,6 @@ const Subtitle = styled.p`
   }
 `;
 
-const Logo = styled.div`
-  position: relative;
-  z-index: 2;
-
-  img {
-    animation: logoScale 4s ease-in-out infinite;
-    height: 12rem;
-    width: auto;
-
-    @media (max-width: 768px) {
-      height: 10rem;
-    }
-
-    @media (max-width: 480px) {
-      height: 8rem;
-    }
-  }
-
-  @keyframes logoScale {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-  }
-`;
-
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
@@ -286,70 +163,74 @@ const InputGroup = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  background: !important rgba(255, 255, 255, 0.1);
+  background: var(--color-grey-100);
   border-radius: 0.8rem;
-  padding: 0.8rem 1.2rem;
-  border: 0.1rem solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 1.2rem;
+  border: 2px solid var(--color-grey-300);
   transition: all 0.3s ease;
 
   &:focus-within {
-    border-color: #22c55e;
-    box-shadow: 0 0 0 0.3rem rgba(34, 197, 94, 0.1);
+    border-color: var(--color-brand-600);
+    box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.1);
   }
 
   @media (max-width: 480px) {
-    padding: 0.6rem 1rem;
+    padding: 0.8rem 1rem;
   }
 `;
 
 const StyledInput = styled.input`
-  background: transparent;
-
-  border: none;
-  color: white;
+  background: var(--color-grey-100) !important;
+  color: #fff;
   font-size: 1.4rem;
   flex: 1;
-  padding: 0.4rem 0;
+  padding: 1rem;
   margin-left: 1rem;
+  border-radius: 1rem;
+  outline: none;
+  border: none;
 
   &::placeholder {
-    color: #94a3b8;
+    color: var(--color-grey-300) !important;
   }
 
   &:focus {
     outline: none;
-    background: transparent !important;
+    background: var(--color-grey-100) !important;
   }
 
   &:active {
-    background: transparent !important;
+    background: var(--color-grey-100) !important;
   }
 
-  &:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
-    -webkit-text-fill-color: white !important;
-    background: transparent !important;
-    transition: background-color 5000s ease-in-out 0s !important;
+  &:hover {
+    background: var(--color-grey-100) !important;
   }
 
-  &:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
-    -webkit-text-fill-color: white !important;
-    background: transparent !important;
-    transition: background-color 5000s ease-in-out 0s !important;
+  &:visited {
+    background: var(--color-grey-100) !important;
   }
 
-  &:-webkit-autofill:hover {
-    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
-    -webkit-text-fill-color: white !important;
-    background: transparent !important;
-    transition: background-color 5000s ease-in-out 0s !important;
+  /* Prevent background change on text selection */
+  &::selection {
+    background: var(--color-brand-600) !important;
+    color: #fff !important;
   }
 
+  &::-moz-selection {
+    background: var(--color-brand-600) !important;
+    color: #fff !important;
+  }
+
+  /* Prevent autofill background changes */
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
   &:-webkit-autofill:active {
-    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--color-grey-100) inset !important;
+    -webkit-text-fill-color: #fff !important;
+    background: var(--color-grey-100) !important;
     transition: background-color 5000s ease-in-out 0s !important;
-    background: transparent !important;
   }
 
   @media (max-width: 480px) {
@@ -359,7 +240,7 @@ const StyledInput = styled.input`
 `;
 
 const IconWrapper = styled.div`
-  color: #94a3b8;
+  color: #2e8b57;
   font-size: 1.6rem;
   display: flex;
   align-items: center;
@@ -370,7 +251,7 @@ const IconWrapper = styled.div`
 `;
 
 const LoginButton = styled.button`
-  background: #22c55e;
+  background: #2e8b57;
   color: white;
   border: none;
   padding: 1.2rem 2rem;
@@ -382,9 +263,9 @@ const LoginButton = styled.button`
   margin-top: 1rem;
 
   &:hover {
-    background: #16a34a;
-    transform: translateY(-0.2rem);
-    box-shadow: 0 0.5rem 1.5rem rgba(34, 197, 94, 0.3);
+    background: #228b22;
+    transform: translateY(-0.1rem);
+    box-shadow: 0 0.3rem 1rem rgba(46, 139, 87, 0.3);
   }
 
   &:disabled {
@@ -399,23 +280,43 @@ const LoginButton = styled.button`
   }
 `;
 
-const RememberMe = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-top: 1rem;
+const ForgotPassword = styled.a`
+  color: #fff;
+  font-size: 1.3rem;
+  text-decoration: none;
+  text-align: right;
+  margin-top: 0.5rem;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #2e8b57;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
 `;
 
-const Checkbox = styled.input`
-  width: 1.6rem;
-  height: 1.6rem;
-  accent-color: #22c55e;
-`;
-
-const CheckboxLabel = styled.label`
-  color: #94a3b8;
+const SignUpLink = styled.div`
+  text-align: center;
+  margin-top: 2rem;
   font-size: 1.4rem;
-  cursor: pointer;
+  color: #666;
+
+  a {
+    color: #2e8b57;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #228b22;
+    }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.3rem;
+  }
 `;
 
 const ErrorMessage = styled.p`
@@ -459,18 +360,16 @@ function Login() {
 
   return (
     <LoginLayout>
-      {/* Animated bubbles */}
-      <div className="bubble"></div>
-      <div className="bubble"></div>
-      <div className="bubble"></div>
-      <div className="bubble"></div>
-      <div className="bubble"></div>
-      <div className="bubble"></div>
-
       <LoginContainer>
+        <WelcomeSection>
+          <Logo>
+            <img src="/logo.svg" alt="Saudi Reef Logo" />
+          </Logo>
+        </WelcomeSection>
+
         <LoginFormSection>
-          <Title>تسجيل الدخول</Title>
-          <Subtitle>أدخل بيانات الاعتماد الخاصة بك للوصول إلى حسابك</Subtitle>
+          <FormTitle>أهلاً وسهلاً</FormTitle>
+          <FormSubtitle>سجل دخولك إلى حسابك للمتابعة</FormSubtitle>
 
           <StyledForm onSubmit={handleSubmit}>
             {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -481,8 +380,7 @@ function Login() {
               </IconWrapper>
               <StyledInput
                 type="email"
-                dir="ltr"
-                placeholder="اسم المستخدم"
+                placeholder="البريد الإلكتروني"
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
                 autoComplete="username"
@@ -495,7 +393,6 @@ function Login() {
               </IconWrapper>
               <StyledInput
                 type="password"
-                dir="ltr"
                 placeholder="كلمة المرور"
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
@@ -503,22 +400,13 @@ function Login() {
               />
             </InputGroup>
 
-            <RememberMe>
-              <Checkbox type="checkbox" id="remember" />
-              <CheckboxLabel htmlFor="remember">تذكرني</CheckboxLabel>
-            </RememberMe>
+            <ForgotPassword href="#">نسيت كلمة المرور؟</ForgotPassword>
 
             <LoginButton type="submit" disabled={isLoading}>
-              {!isLoading ? "دخول" : <SpinnerMini />}
+              {!isLoading ? "تسجيل الدخول" : <SpinnerMini />}
             </LoginButton>
           </StyledForm>
         </LoginFormSection>
-
-        <LogoSection>
-          <Logo>
-            <img src="/logo.svg" alt="Saudi Reef Logo" />
-          </Logo>
-        </LogoSection>
       </LoginContainer>
     </LoginLayout>
   );

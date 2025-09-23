@@ -5,7 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import ButtonIcon from "./ButtonIcon";
 
 const StyledHeader = styled.header`
-  background-color: var(--color-grey-50);
+  background: var(--color-grey-50);
   padding: 1.2rem 4.8rem;
   border-bottom: 1px solid var(--color-grey-200);
   display: flex;
@@ -37,11 +37,6 @@ const AvatarFallback = styled.div`
   width: 3.6rem;
   height: 3.6rem;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    var(--color-brand-500),
-    var(--color-brand-600)
-  );
   color: white;
   font-size: 1.6rem;
   font-weight: 600;

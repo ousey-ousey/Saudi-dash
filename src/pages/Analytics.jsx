@@ -35,11 +35,54 @@ ChartJS.register(
 );
 
 const Container = styled.div`
-  max-width: 120rem;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 3.2rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 2rem;
+  overflow-x: auto;
+  box-sizing: border-box;
+  background: var(--color-grey-100);
+  min-height: 100vh;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at 20% 80%,
+        rgba(16, 185, 129, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(34, 197, 94, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        rgba(22, 163, 74, 0.1) 0%,
+        transparent 50%
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 1200px) {
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const StatsGrid = styled.div`
@@ -47,32 +90,60 @@ const StatsGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
   gap: 2.4rem;
   margin-bottom: 3.2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 `;
 
 const StatCard = styled.div`
-  background-color: var(--color-grey-0);
+  background: var(--color-grey-100);
   border: 1px solid var(--color-grey-200);
-  border-radius: var(--border-radius-md);
+  border-radius: 16px;
   padding: 2.4rem;
   display: flex;
   align-items: center;
   gap: 1.6rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    border-color: rgba(16, 185, 129, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
+  }
 `;
 
 const StatIcon = styled.div`
   width: 6rem;
   height: 6rem;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    var(--color-brand-500),
-    var(--color-brand-600)
-  );
+  background: linear-gradient(135deg, #10b981, #22c55e);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-size: 2.4rem;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 `;
 
 const StatContent = styled.div`
@@ -84,18 +155,17 @@ const StatContent = styled.div`
 const StatNumber = styled.div`
   font-size: 2.8rem;
   font-weight: 600;
-  color: var(--color-grey-800);
+  color: #ffffff;
 `;
 
 const StatLabel = styled.div`
   font-size: 1.4rem;
-  color: var(--color-grey-600);
+  color: #d1d5db;
 `;
 
 const StatChange = styled.div`
   font-size: 1.2rem;
-  color: ${(props) =>
-    props.positive ? "var(--color-green-700)" : "var(--color-red-700)"};
+  color: ${(props) => (props.positive ? "#10b981" : "#ef4444")};
   font-weight: 500;
 `;
 
@@ -104,19 +174,50 @@ const ChartsGrid = styled.div`
   grid-template-columns: 2fr 1fr;
   gap: 2.4rem;
   margin-bottom: 3.2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 `;
 
 const ChartCard = styled.div`
-  background-color: var(--color-grey-0);
+  background: var(--color-grey-100);
   border: 1px solid var(--color-grey-200);
-  border-radius: var(--border-radius-md);
+  border-radius: 16px;
   padding: 2.4rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    border-color: rgba(16, 185, 129, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
+  }
 `;
 
 const ChartTitle = styled.h3`
   font-size: 1.8rem;
   font-weight: 600;
-  color: var(--color-grey-800);
+  color: #ffffff;
   margin-bottom: 1.6rem;
 `;
 
@@ -126,6 +227,11 @@ const ChartContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--color-grey-100);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(16, 185, 129, 0.2);
 `;
 
 const CenterValue = styled.div`
@@ -135,7 +241,7 @@ const CenterValue = styled.div`
   transform: translate(-50%, -50%);
   font-size: 2.4rem;
   font-weight: 700;
-  color: var(--color-brand-800);
+  color: #10b981;
   z-index: 10;
 `;
 
@@ -152,7 +258,7 @@ const LegendItem = styled.div`
   align-items: center;
   gap: 0.5rem;
   font-size: 1.2rem;
-  color: var(--color-grey-600);
+  color: #d1d5db;
 `;
 
 const LegendColor = styled.div`
@@ -160,13 +266,42 @@ const LegendColor = styled.div`
   height: 1.2rem;
   border-radius: 50%;
   background-color: ${(props) => props.color};
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const TableCard = styled.div`
-  background-color: var(--color-grey-0);
+  background: var(--color-grey-100);
   border: 1px solid var(--color-grey-200);
-  border-radius: var(--border-radius-md);
+  border-radius: 16px;
   padding: 2.4rem;
+  margin-bottom: 2.4rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    border-color: rgba(16, 185, 129, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
+  }
 `;
 
 const Table = styled.table`
@@ -179,13 +314,13 @@ const TableHeader = styled.th`
   padding: 1.2rem 0;
   border-bottom: 1px solid var(--color-grey-200);
   font-weight: 600;
-  color: var(--color-grey-700);
+  color: #ffffff;
 `;
 
 const TableCell = styled.td`
   padding: 1.2rem 0;
   border-bottom: 1px solid var(--color-grey-100);
-  color: var(--color-grey-600);
+  color: #d1d5db;
 `;
 
 function Analytics() {
@@ -193,6 +328,10 @@ function Analytics() {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: "easeInOutQuart",
+    },
     plugins: {
       legend: {
         display: false,
@@ -209,18 +348,34 @@ function Analytics() {
       y: {
         beginAtZero: true,
         grid: {
-          color: "#374151",
+          color: "rgba(107, 114, 128, 0.2)",
+          lineWidth: 1,
         },
         ticks: {
-          color: "#F9FAFB",
+          color: "#ffffff",
+          font: {
+            size: 12,
+            weight: "500",
+          },
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
         },
       },
       x: {
         grid: {
-          color: "#374151",
+          color: "rgba(107, 114, 128, 0.2)",
+          lineWidth: 1,
         },
         ticks: {
-          color: "#F9FAFB",
+          color: "#ffffff",
+          font: {
+            size: 12,
+            weight: "500",
+          },
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
         },
       },
     },
@@ -229,6 +384,10 @@ function Analytics() {
   const doughnutOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: "easeInOutQuart",
+    },
     plugins: {
       legend: {
         display: false,
@@ -246,6 +405,10 @@ function Analytics() {
   const lineOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: "easeInOutQuart",
+    },
     plugins: {
       legend: {
         display: false,
@@ -262,18 +425,34 @@ function Analytics() {
       y: {
         beginAtZero: true,
         grid: {
-          color: "#374151",
+          color: "rgba(107, 114, 128, 0.2)",
+          lineWidth: 1,
         },
         ticks: {
-          color: "#F9FAFB",
+          color: "#ffffff",
+          font: {
+            size: 12,
+            weight: "500",
+          },
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
         },
       },
       x: {
         grid: {
-          color: "#374151",
+          color: "rgba(107, 114, 128, 0.2)",
+          lineWidth: 1,
         },
         ticks: {
-          color: "#F9FAFB",
+          color: "#ffffff",
+          font: {
+            size: 12,
+            weight: "500",
+          },
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
         },
       },
     },
@@ -299,8 +478,8 @@ function Analytics() {
       {
         label: "المشاريع المكتملة",
         data: [45, 52, 48, 61, 55, 67, 72, 68, 75, 82, 78, 85],
-        backgroundColor: "#3B82F6",
-        borderColor: "#1D4ED8",
+        backgroundColor: "#3b82f6",
+        borderColor: "#1d4ed8",
         borderWidth: 2,
       },
     ],
@@ -318,11 +497,11 @@ function Analytics() {
       {
         data: [35, 25, 20, 15, 5],
         backgroundColor: [
-          "#3B82F6",
-          "#10B981",
-          "#F59E0B",
-          "#EF4444",
-          "#8B5CF6",
+          "#3b82f6",
+          "#10b981",
+          "#f59e0b",
+          "#ef4444",
+          "#8b5cf6",
         ],
         borderWidth: 0,
       },
@@ -336,8 +515,8 @@ function Analytics() {
       {
         label: "الإيرادات (مليون ريال)",
         data: [2.5, 3.2, 2.8, 3.8, 4.2, 4.9],
-        borderColor: "#10B981",
-        backgroundColor: "rgba(16, 185, 129, 0.1)",
+        borderColor: "#f59e0b",
+        backgroundColor: "rgba(245, 158, 11, 0.1)",
         borderWidth: 3,
         fill: true,
         tension: 0.4,
@@ -351,11 +530,11 @@ function Analytics() {
       {
         data: [45, 30, 15, 8, 2],
         backgroundColor: [
-          "#10B981",
-          "#3B82F6",
-          "#F59E0B",
-          "#EF4444",
-          "#6B7280",
+          "#10b981",
+          "#3b82f6",
+          "#f59e0b",
+          "#ef4444",
+          "#6b7280",
         ],
         borderWidth: 0,
       },

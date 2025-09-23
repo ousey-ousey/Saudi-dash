@@ -9,7 +9,7 @@ const StyledSidebar = styled.aside`
   padding: ${(props) =>
     props.isCollapsed ? "3.2rem 1.2rem" : "3.2rem 2.4rem"};
   border-right: 1px solid var(--color-grey-200);
-  transition: all 0.3s ease;
+  transition: padding 0.1s ease;
 
   grid-row: 1 / -1;
   display: flex;
@@ -17,6 +17,7 @@ const StyledSidebar = styled.aside`
   gap: 3.2rem;
   position: relative;
   min-height: 100vh;
+  z-index: ${(props) => props.zIndex || 1000};
 `;
 
 const ToggleButton = styled.button`
@@ -38,7 +39,6 @@ const ToggleButton = styled.button`
   justify-content: center;
   cursor: pointer;
   z-index: 1000;
-  transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
   &:hover {

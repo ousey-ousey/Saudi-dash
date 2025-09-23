@@ -48,7 +48,6 @@ const StyledNavLink = styled(NavLink)`
   position: relative;
   z-index: 1;
   background-color: transparent;
-  transition: all 0.18s ease;
   justify-content: ${(props) => (props.isCollapsed ? "center" : "flex-start")};
 
   /* Base pseudo-elements (always present so transitions sync) */
@@ -119,12 +118,14 @@ const StyledNavLink = styled(NavLink)`
   &.active::after,
   &[aria-current="page"]::after {
     background-color: var(--color-grey-100);
+    transition: background-color 0.1s ease;
   }
 
   &:hover::before,
   &.active::before,
   &[aria-current="page"]::before {
     background-color: var(--color-grey-100);
+    transition: background-color 0.1s ease;
   }
 
   &.active svg,
@@ -149,8 +150,8 @@ const ExpandableItem = styled.div.withConfig({
   position: relative;
   width: ${(props) => (props.isCollapsed ? "5rem" : "25rem")};
   z-index: 1;
-  background-color: transparent;
-  transition: all 0.18s ease;
+  background-color:  props.isCollapsed  ?transparent : var(--color-grey-100);
+  transition: all 0.1s ease;
   border-radius: 2rem;
 
   /* Green indicator line when expanded */
@@ -164,14 +165,18 @@ const ExpandableItem = styled.div.withConfig({
     height: 60%;
     background-color: var(--color-brand-600);
     border-radius: 2px 0 0 2px;
-    transition: width 0.3s ease;
+    transition: width 0.15s ease;
   }
 
   &:hover {
     color: var(--color-grey-800);
     background-color: var(--color-grey-100);
+    transition: all 0.1s ease;
   }
-
+  &:active {
+    color: var(--color-grey-800);
+    background-color: var(--color-grey-100);
+  }
   & svg {
     width: 2.4rem;
     height: 2.4rem;
@@ -196,7 +201,7 @@ const ExpandableItem = styled.div.withConfig({
     `
     color: var(--color-brand-200);
     font-weight: 600;
-    
+    background-color: var(--color-grey-100);
     & svg {
       color: var(--color-brand-600);
     }
@@ -217,9 +222,22 @@ const SubList = styled.ul`
   padding-right: 2rem;
   max-height: ${(props) => (props.isOpen ? "auto" : "0")};
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
   opacity: ${(props) => (props.isOpen ? "1" : "0")};
   position: relative;
+
+  /* Tree connector line */
+  &::before {
+    content: "";
+    position: absolute;
+    left: 1.2rem;
+    top: -0.5rem;
+    width: 3px;
+    height: ${(props) => (props.isOpen ? "calc(100% + 2.4rem)" : "0")};
+    background-color: var(--color-grey-100);
+    transition: height 0.15s ease;
+    z-index: 0;
+  }
 
   /* Pseudo-elements for submenu container
   &::after,
@@ -264,6 +282,48 @@ const SubList = styled.ul`
 
 const SubItem = styled.li`
   margin: 0.5rem 0;
+  position: relative;
+
+  /* Tree branch connector */
+  &::before {
+    content: "";
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    width: 1rem;
+    height: 3px;
+    background-color: var(--color-grey-100);
+    z-index: 0;
+  }
+`;
+
+const Tooltip = styled.div`
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--color-grey-100);
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.8rem;
+  font-size: 1.4rem;
+  white-space: nowrap;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  margin-right: 1rem;
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.25);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0.6rem solid transparent;
+    border-left-color: var(--color-grey-800);
+  }
 `;
 
 const SubNavLink = styled(NavLink)`
@@ -271,12 +331,13 @@ const SubNavLink = styled(NavLink)`
   align-items: center;
   gap: 1rem;
   padding: 0.8rem 1.6rem;
+  padding-left: 3.2rem;
   font-size: 1.4rem;
   font-weight: 400;
   color: var(--color-grey-500);
   text-decoration: none;
   border-radius: 1rem;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
   position: relative;
   z-index: 1;
 
@@ -320,6 +381,84 @@ const SubNavLink = styled(NavLink)`
     color: var(--color-brand-600);
   }
 `;
+
+const CollapsedNavLink = styled(NavLink)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  padding: 1.2rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--color-grey-600);
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+  background-color: var(--color-grey-100);
+  transition: all 0.1s ease;
+  border-radius: 2rem;
+
+  & svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    color: var(--color-grey-600);
+  }
+
+  &:hover {
+    color: var(--color-grey-800);
+    background-color: var(--color-grey-100);
+  }
+
+  &:hover ${Tooltip} {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &.active,
+  &[aria-current="page"] {
+    color: var(--color-grey-800);
+    background-color: var(--color-grey-100);
+  }
+
+  &.active svg,
+  &[aria-current="page"] svg {
+    color: var(--color-brand-600);
+  }
+`;
+
+const CollapsedExpandableItem = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  padding: 1.2rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--color-grey-600);
+  position: relative;
+  z-index: 1;
+  background-color: var(--color-grey-100);
+  transition: all 0.1s ease;
+  border-radius: 2rem;
+
+  & svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    color: var(--color-grey-600);
+  }
+
+  &:hover {
+    color: var(--color-grey-800);
+    background-color: var(--color-grey-100);
+  }
+
+  &:hover ${Tooltip} {
+    opacity: 1;
+    visibility: visible;
+  }
+`;
+
 function MainNav({ isCollapsed }) {
   const [expandedMenus, setExpandedMenus] = useState(() => {
     // Load expanded state from localStorage
@@ -347,197 +486,308 @@ function MainNav({ isCollapsed }) {
       <NavList isCollapsed={isCollapsed}>
         {/* لوحات البيانات */}
         <li>
-          <ExpandableItem
-            isExpanded={expandedMenus.dashboards}
-            isCollapsed={isCollapsed}
-            onClick={() => !isCollapsed && toggleMenu("dashboards")}
-          >
-            <ExpandableContent>
+          {isCollapsed ? (
+            <CollapsedExpandableItem>
               <HiOutlineCog6Tooth />
-              {!isCollapsed && <span>لوحات البيانات</span>}
-            </ExpandableContent>
-            {!isCollapsed &&
-              (expandedMenus.dashboards ? (
-                <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
-              ) : (
-                <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
-              ))}
-          </ExpandableItem>
-          {!isCollapsed && (
-            <SubList isOpen={expandedMenus.dashboards}>
-              <SubItem>
-                <SubNavLink to="/dashboard">
-                  <HiOutlineHome />
-                  <span>الرئيسية</span>
-                </SubNavLink>
-              </SubItem>
-              <SubItem>
-                <SubNavLink to="/analytics">
-                  <HiOutlineClipboardDocumentList />
-                  <span>التحليلات</span>
-                </SubNavLink>
-              </SubItem>
-            </SubList>
+              <Tooltip>
+                <SubItem>
+                  <SubNavLink to="/dashboard">
+                    <HiOutlineHome />
+                    <span>الرئيسية</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/analytics">
+                    <HiOutlineClipboardDocumentList />
+                    <span>التحليلات</span>
+                  </SubNavLink>
+                </SubItem>
+              </Tooltip>
+            </CollapsedExpandableItem>
+          ) : (
+            <>
+              <ExpandableItem
+                isExpanded={expandedMenus.dashboards}
+                isCollapsed={isCollapsed}
+                onClick={() => toggleMenu("dashboards")}
+              >
+                <ExpandableContent>
+                  <HiOutlineCog6Tooth />
+                  <span>لوحات البيانات</span>
+                </ExpandableContent>
+                {expandedMenus.dashboards ? (
+                  <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
+                ) : (
+                  <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
+                )}
+              </ExpandableItem>
+              <SubList isOpen={expandedMenus.dashboards}>
+                <SubItem>
+                  <SubNavLink to="/dashboard">
+                    <HiOutlineHome />
+                    <span>الرئيسية</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/analytics">
+                    <HiOutlineClipboardDocumentList />
+                    <span>التحليلات</span>
+                  </SubNavLink>
+                </SubItem>
+              </SubList>
+            </>
           )}
         </li>
 
         {/* تقديم طلب جديد */}
         <li>
-          <StyledNavLink to="/new-request" isCollapsed={isCollapsed}>
-            <HiOutlinePlusCircle />
-            {!isCollapsed && <span>تقديم طلب جديد</span>}
-          </StyledNavLink>
+          {isCollapsed ? (
+            <CollapsedNavLink to="/new-request">
+              <HiOutlinePlusCircle />
+              <Tooltip>تقديم طلب جديد</Tooltip>
+            </CollapsedNavLink>
+          ) : (
+            <StyledNavLink to="/new-request" isCollapsed={isCollapsed}>
+              <HiOutlinePlusCircle />
+              <span>تقديم طلب جديد</span>
+            </StyledNavLink>
+          )}
         </li>
 
         {/* السجلات */}
         <li>
-          <ExpandableItem
-            isExpanded={expandedMenus.records}
-            isCollapsed={isCollapsed}
-            onClick={() => !isCollapsed && toggleMenu("records")}
-          >
-            <ExpandableContent>
+          {isCollapsed ? (
+            <CollapsedExpandableItem>
               <HiOutlineClipboardDocumentList />
-              {!isCollapsed && <span>السجلات</span>}
-            </ExpandableContent>
-            {!isCollapsed &&
-              (expandedMenus.records ? (
-                <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
-              ) : (
-                <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
-              ))}
-          </ExpandableItem>
-          {!isCollapsed && (
-            <SubList isOpen={expandedMenus.records}>
-              <SubItem>
-                <SubNavLink to="/projects-log">
+              <Tooltip>
+                <SubItem>
+                  <SubNavLink to="/projects-log">
+                    <HiOutlineClipboardDocumentList />
+                    <span>سجل المشاريع</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/risks-log">
+                    <HiOutlineExclamationTriangle />
+                    <span>سجل المخاطر</span>
+                  </SubNavLink>
+                </SubItem>
+              </Tooltip>
+            </CollapsedExpandableItem>
+          ) : (
+            <>
+              <ExpandableItem
+                isExpanded={expandedMenus.records}
+                isCollapsed={isCollapsed}
+                onClick={() => toggleMenu("records")}
+              >
+                <ExpandableContent>
                   <HiOutlineClipboardDocumentList />
-                  <span>سجل المشاريع</span>
-                </SubNavLink>
-              </SubItem>
-              <SubItem>
-                <SubNavLink to="/risks-log">
-                  <HiOutlineExclamationTriangle />
-                  <span>سجل المخاطر</span>
-                </SubNavLink>
-              </SubItem>
-            </SubList>
+                  <span>السجلات</span>
+                </ExpandableContent>
+                {expandedMenus.records ? (
+                  <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
+                ) : (
+                  <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
+                )}
+              </ExpandableItem>
+              <SubList isOpen={expandedMenus.records}>
+                <SubItem>
+                  <SubNavLink to="/projects-log">
+                    <HiOutlineClipboardDocumentList />
+                    <span>سجل المشاريع</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/risks-log">
+                    <HiOutlineExclamationTriangle />
+                    <span>سجل المخاطر</span>
+                  </SubNavLink>
+                </SubItem>
+              </SubList>
+            </>
           )}
         </li>
 
         {/* الجداول الزمنية */}
         <li>
-          <StyledNavLink to="/schedules" isCollapsed={isCollapsed}>
-            <HiOutlineCalendarDays />
-            {!isCollapsed && <span>الجداول الزمنية</span>}
-          </StyledNavLink>
+          {isCollapsed ? (
+            <CollapsedNavLink to="/schedules">
+              <HiOutlineCalendarDays />
+              <Tooltip>الجداول الزمنية</Tooltip>
+            </CollapsedNavLink>
+          ) : (
+            <StyledNavLink to="/schedules" isCollapsed={isCollapsed}>
+              <HiOutlineCalendarDays />
+              <span>الجداول الزمنية</span>
+            </StyledNavLink>
+          )}
         </li>
 
         {/* الخطابات والمراسلات */}
         <li>
-          <ExpandableItem
-            isExpanded={expandedMenus.correspondence}
-            isCollapsed={isCollapsed}
-            onClick={() => !isCollapsed && toggleMenu("correspondence")}
-          >
-            <ExpandableContent>
+          {isCollapsed ? (
+            <CollapsedExpandableItem>
               <HiOutlineEnvelope />
-              {!isCollapsed && <span>الخطابات والمراسلات</span>}
-            </ExpandableContent>
-            {!isCollapsed &&
-              (expandedMenus.correspondence ? (
-                <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
-              ) : (
-                <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
-              ))}
-          </ExpandableItem>
-          {!isCollapsed && (
-            <SubList isOpen={expandedMenus.correspondence}>
-              <SubItem>
-                <SubNavLink to="/incoming-letters">
+              <Tooltip>
+                {" "}
+                <SubItem>
+                  <SubNavLink to="/incoming-letters">
+                    <HiOutlineEnvelope />
+                    <span>الخطابات الواردة</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/outgoing-letters">
+                    <HiOutlineEnvelope />
+                    <span>الخطابات الصادرة</span>
+                  </SubNavLink>
+                </SubItem>
+              </Tooltip>
+            </CollapsedExpandableItem>
+          ) : (
+            <>
+              <ExpandableItem
+                isExpanded={expandedMenus.correspondence}
+                isCollapsed={isCollapsed}
+                onClick={() => toggleMenu("correspondence")}
+              >
+                <ExpandableContent>
                   <HiOutlineEnvelope />
-                  <span>الخطابات الواردة</span>
-                </SubNavLink>
-              </SubItem>
-              <SubItem>
-                <SubNavLink to="/outgoing-letters">
-                  <HiOutlineEnvelope />
-                  <span>الخطابات الصادرة</span>
-                </SubNavLink>
-              </SubItem>
-            </SubList>
+                  <span>الخطابات والمراسلات</span>
+                </ExpandableContent>
+                {expandedMenus.correspondence ? (
+                  <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
+                ) : (
+                  <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
+                )}
+              </ExpandableItem>
+              <SubList isOpen={expandedMenus.correspondence}>
+                <SubItem>
+                  <SubNavLink to="/incoming-letters">
+                    <HiOutlineEnvelope />
+                    <span>الخطابات الواردة</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/outgoing-letters">
+                    <HiOutlineEnvelope />
+                    <span>الخطابات الصادرة</span>
+                  </SubNavLink>
+                </SubItem>
+              </SubList>
+            </>
           )}
         </li>
 
         {/* الجودة */}
         <li>
-          <ExpandableItem
-            isExpanded={expandedMenus.quality}
-            isCollapsed={isCollapsed}
-            onClick={() => !isCollapsed && toggleMenu("quality")}
-          >
-            <ExpandableContent>
+          {isCollapsed ? (
+            <CollapsedExpandableItem>
               <HiOutlineStar />
-              {!isCollapsed && <span>الجودة</span>}
-            </ExpandableContent>
-            {!isCollapsed &&
-              (expandedMenus.quality ? (
-                <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
-              ) : (
-                <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
-              ))}
-          </ExpandableItem>
-          {!isCollapsed && (
-            <SubList isOpen={expandedMenus.quality}>
-              <SubItem>
-                <SubNavLink to="/quality-control">
+              <Tooltip>
+                <SubItem>
+                  <SubNavLink to="/quality-control">
+                    <HiOutlineStar />
+                    <span>مراقبة الجودة</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/quality-reports">
+                    <HiOutlineClipboardDocumentList />
+                    <span>تقارير الجودة</span>
+                  </SubNavLink>
+                </SubItem>
+              </Tooltip>
+            </CollapsedExpandableItem>
+          ) : (
+            <>
+              <ExpandableItem
+                isExpanded={expandedMenus.quality}
+                isCollapsed={isCollapsed}
+                onClick={() => toggleMenu("quality")}
+              >
+                <ExpandableContent>
                   <HiOutlineStar />
-                  <span>مراقبة الجودة</span>
-                </SubNavLink>
-              </SubItem>
-              <SubItem>
-                <SubNavLink to="/quality-reports">
-                  <HiOutlineClipboardDocumentList />
-                  <span>تقارير الجودة</span>
-                </SubNavLink>
-              </SubItem>
-            </SubList>
+                  <span>الجودة</span>
+                </ExpandableContent>
+                {expandedMenus.quality ? (
+                  <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
+                ) : (
+                  <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
+                )}
+              </ExpandableItem>
+              <SubList isOpen={expandedMenus.quality}>
+                <SubItem>
+                  <SubNavLink to="/quality-control">
+                    <HiOutlineStar />
+                    <span>مراقبة الجودة</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/quality-reports">
+                    <HiOutlineClipboardDocumentList />
+                    <span>تقارير الجودة</span>
+                  </SubNavLink>
+                </SubItem>
+              </SubList>
+            </>
           )}
         </li>
 
         {/* الميزانية */}
         <li>
-          <ExpandableItem
-            isExpanded={expandedMenus.budget}
-            isCollapsed={isCollapsed}
-            onClick={() => !isCollapsed && toggleMenu("budget")}
-          >
-            <ExpandableContent>
+          {isCollapsed ? (
+            <CollapsedExpandableItem>
               <HiOutlineScale />
-              {!isCollapsed && <span>الميزانية</span>}
-            </ExpandableContent>
-            {!isCollapsed &&
-              (expandedMenus.budget ? (
-                <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
-              ) : (
-                <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
-              ))}
-          </ExpandableItem>
-          {!isCollapsed && (
-            <SubList isOpen={expandedMenus.budget}>
-              <SubItem>
-                <SubNavLink to="/budget-planning">
+              <Tooltip>
+                {" "}
+                <SubItem>
+                  <SubNavLink to="/budget-planning">
+                    <HiOutlineScale />
+                    <span>تخطيط الميزانية</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/budget-tracking">
+                    <HiOutlineClipboardDocumentList />
+                    <span>تتبع الميزانية</span>
+                  </SubNavLink>
+                </SubItem>
+              </Tooltip>
+            </CollapsedExpandableItem>
+          ) : (
+            <>
+              <ExpandableItem
+                isExpanded={expandedMenus.budget}
+                isCollapsed={isCollapsed}
+                onClick={() => toggleMenu("budget")}
+              >
+                <ExpandableContent>
                   <HiOutlineScale />
-                  <span>تخطيط الميزانية</span>
-                </SubNavLink>
-              </SubItem>
-              <SubItem>
-                <SubNavLink to="/budget-tracking">
-                  <HiOutlineClipboardDocumentList />
-                  <span>تتبع الميزانية</span>
-                </SubNavLink>
-              </SubItem>
-            </SubList>
+                  <span>الميزانية</span>
+                </ExpandableContent>
+                {expandedMenus.budget ? (
+                  <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
+                ) : (
+                  <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
+                )}
+              </ExpandableItem>
+              <SubList isOpen={expandedMenus.budget}>
+                <SubItem>
+                  <SubNavLink to="/budget-planning">
+                    <HiOutlineScale />
+                    <span>تخطيط الميزانية</span>
+                  </SubNavLink>
+                </SubItem>
+                <SubItem>
+                  <SubNavLink to="/budget-tracking">
+                    <HiOutlineClipboardDocumentList />
+                    <span>تتبع الميزانية</span>
+                  </SubNavLink>
+                </SubItem>
+              </SubList>
+            </>
           )}
         </li>
       </NavList>
