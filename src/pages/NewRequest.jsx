@@ -22,6 +22,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3.2rem;
+  
 `;
 
 const FilterTabs = styled.div`
@@ -226,7 +227,7 @@ const ActionButton = styled.button`
   cursor: pointer;
   transition: all 0.2s ease;
   margin-left: 0.5rem;
-
+  z-index: 9999999 !important;
   &:hover {
     background: var(--color-grey-100);
     color: var(--color-grey-800);
@@ -293,7 +294,7 @@ const PaginationButton = styled.button`
 const ModalContent = styled.div`
   width: 80%;
   max-height: 90vh;
-  z-index: 100000;
+  z-index: 9999999;
 `;
 
 const FormSection = styled.div`
@@ -473,7 +474,7 @@ const ModalOverlay = styled.div`
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
-  z-index: 100000;
+  z-index: 9999999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -490,6 +491,7 @@ const ModalWrapper = styled.div`
   overflow-y: auto;
   position: relative;
   padding: 4rem;
+  z-index: 9999999;
 `;
 
 const CloseButton = styled.button`
@@ -501,7 +503,7 @@ const CloseButton = styled.button`
   font-size: 2.4rem;
   color: var(--color-grey-600);
   cursor: pointer;
-  z-index: 100000;
+  z-index: 9999999;
   width: 3rem;
   height: 3rem;
   display: flex;

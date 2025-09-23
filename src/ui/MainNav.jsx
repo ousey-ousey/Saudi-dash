@@ -46,7 +46,7 @@ const StyledNavLink = styled(NavLink)`
   color: var(--color-grey-600);
   text-decoration: none;
   position: relative;
-  z-index: 1;
+  z-index: 0;
   background-color: transparent;
   justify-content: ${(props) => (props.isCollapsed ? "center" : "flex-start")};
 
@@ -147,7 +147,7 @@ const ExpandableItem = styled.div.withConfig({
   color: var(--color-grey-600);
   position: relative;
   width: ${(props) => (props.isCollapsed ? "5rem" : "21rem")};
-  z-index: 1;
+  z-index:0;
   background-color:  props.isCollapsed  ?transparent : var(--color-grey-100);
   transition: all 0.1s ease;
   border-radius: 2rem;
@@ -338,7 +338,7 @@ const SubNavLink = styled(NavLink)`
   border-radius: 1rem;
   transition: all 0.15s ease;
   position: relative;
-  z-index: 1;
+  z-index: 0;
 
   & svg {
     width: 1.8rem;
