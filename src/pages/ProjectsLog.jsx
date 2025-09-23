@@ -30,11 +30,54 @@ ChartJS.register(
 );
 
 const Container = styled.div`
-  max-width: 120rem;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 3.2rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 2rem;
+  overflow-x: auto;
+  box-sizing: border-box;
+  background: var(--color-grey-100);
+  min-height: 100vh;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at 20% 80%,
+        rgba(16, 185, 129, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(34, 197, 94, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        rgba(22, 163, 74, 0.1) 0%,
+        transparent 50%
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 1200px) {
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
 `;
 
 const ProjectHeader = styled.div`
@@ -42,21 +85,58 @@ const ProjectHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  padding: 2rem;
+  background: var(--color-grey-100);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    border-color: rgba(16, 185, 129, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
 `;
 
 const ProjectTitle = styled.h1`
   font-size: 2.4rem;
   font-weight: 700;
-  color: var(--color-grey-800);
+  color: #ffffff;
   margin: 0;
 `;
 
 const ProjectDate = styled.div`
   font-size: 1.6rem;
-  color: var(--color-grey-600);
+  color: #d1d5db;
   background: var(--color-grey-100);
   padding: 0.8rem 1.6rem;
   border-radius: var(--border-radius-sm);
+  border: 1px solid rgba(16, 185, 129, 0.2);
 `;
 
 const DashboardGrid = styled.div`
@@ -67,16 +147,42 @@ const DashboardGrid = styled.div`
 `;
 
 const Card = styled.div`
-  background: var(--color-grey-0);
+  background: var(--color-grey-100);
   border: 1px solid var(--color-grey-200);
-  border-radius: var(--border-radius-md);
+  border-radius: 16px;
   padding: 2.4rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    border-color: rgba(16, 185, 129, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
+  }
 `;
 
 const CardTitle = styled.h3`
   font-size: 1.8rem;
   font-weight: 600;
-  color: var(--color-grey-800);
+  color: #ffffff;
   margin-bottom: 1.6rem;
 `;
 
@@ -86,6 +192,12 @@ const ChartContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--color-grey-100);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 1rem;
+  box-sizing: border-box;
 `;
 
 const ProjectDetails = styled.div`
@@ -96,10 +208,36 @@ const ProjectDetails = styled.div`
 `;
 
 const DetailsCard = styled.div`
-  background: var(--color-grey-0);
+  background: var(--color-grey-100);
   border: 1px solid var(--color-grey-200);
-  border-radius: var(--border-radius-md);
+  border-radius: 16px;
   padding: 2.4rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    border-color: rgba(16, 185, 129, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
+  }
 `;
 
 const DetailRow = styled.div`
@@ -116,13 +254,13 @@ const DetailRow = styled.div`
 
 const DetailLabel = styled.span`
   font-size: 1.4rem;
-  color: var(--color-grey-600);
+  color: #d1d5db;
   font-weight: 500;
 `;
 
 const DetailValue = styled.span`
   font-size: 1.4rem;
-  color: var(--color-grey-800);
+  color: #ffffff;
   font-weight: 600;
 `;
 
@@ -147,41 +285,105 @@ const StatusBadge = styled.span`
 
 const ProgressBar = styled.div`
   width: 100%;
-  height: 1.2rem;
-  background: var(--color-grey-200);
-  border-radius: 0.6rem;
+  height: 12px;
+  background: var(--color-grey-300);
+  border-radius: 6px;
   overflow: hidden;
   margin: 1.6rem 0;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
 `;
 
 const ProgressFill = styled.div`
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--color-brand-500),
-    var(--color-brand-600)
-  );
+  background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
   width: ${(props) => props.percentage}%;
-  transition: width 0.3s ease;
+  transition: width 0.8s ease;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 0 6px 6px 0;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+  }
 `;
 
 const ScopeSection = styled.div`
-  background: var(--color-grey-0);
+  background: var(--color-grey-100);
   border: 1px solid var(--color-grey-200);
-  border-radius: var(--border-radius-md);
+  border-radius: 16px;
   padding: 2.4rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    border-color: rgba(16, 185, 129, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
+  }
 `;
 
 const ScopeTitle = styled.h3`
   font-size: 1.8rem;
   font-weight: 600;
-  color: var(--color-grey-800);
+  color: #ffffff;
   margin-bottom: 1.6rem;
 `;
 
 const ScopeDescription = styled.p`
   font-size: 1.4rem;
-  color: var(--color-grey-700);
+  color: #d1d5db;
   line-height: 1.6;
   margin-bottom: 2rem;
 `;
@@ -194,9 +396,9 @@ const ScopeList = styled.ul`
 
 const ScopeItem = styled.li`
   font-size: 1.4rem;
-  color: var(--color-grey-700);
+  color: #d1d5db;
   padding: 0.8rem 0;
-  border-bottom: 1px solid var(--color-grey-100);
+  border-bottom: 1px solid var(--color-grey-200);
 
   &:last-child {
     border-bottom: none;
@@ -216,24 +418,27 @@ const NavButton = styled.button`
   align-items: center;
   gap: 0.8rem;
   padding: 1.2rem 2.4rem;
-  background: var(--color-brand-500);
+  background: linear-gradient(135deg, #10b981, #22c55e);
   color: white;
   border: none;
-  border-radius: var(--border-radius-sm);
+  border-radius: 12px;
   font-size: 1.4rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 
   &:hover {
-    background: var(--color-brand-600);
+    background: linear-gradient(135deg, #22c55e, #16a34a);
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
   }
 
   &:disabled {
     background: var(--color-grey-300);
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
   }
 `;
 
@@ -262,14 +467,18 @@ const TableHeader = styled.th`
   padding: 1.2rem;
   border-bottom: 1px solid var(--color-grey-200);
   font-weight: 600;
-  color: var(--color-grey-700);
-  background: var(--color-grey-50);
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    var(--color-grey-50) 0%,
+    var(--color-grey-100) 100%
+  );
 `;
 
 const TableCell = styled.td`
   padding: 1.2rem;
-  border-bottom: 1px solid var(--color-grey-100);
-  color: var(--color-grey-600);
+  border-bottom: 1px solid var(--color-grey-200);
+  color: #d1d5db;
   font-size: 1.3rem;
 `;
 
@@ -281,9 +490,9 @@ const AchievementList = styled.ul`
 
 const AchievementItem = styled.li`
   font-size: 1.3rem;
-  color: var(--color-grey-700);
+  color: #d1d5db;
   padding: 0.8rem 0;
-  border-bottom: 1px solid var(--color-grey-100);
+  border-bottom: 1px solid var(--color-grey-200);
   line-height: 1.5;
 
   &:last-child {
@@ -296,6 +505,11 @@ const QualityCharts = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   margin-top: 1.6rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 `;
 
 const EmptySection = styled.div`
@@ -304,10 +518,12 @@ const EmptySection = styled.div`
   align-items: center;
   justify-content: center;
   height: 20rem;
-  background: var(--color-grey-50);
-  border-radius: var(--border-radius-md);
-  color: var(--color-grey-500);
+  background: var(--color-grey-100);
+  border-radius: 16px;
+  color: #d1d5db;
   font-size: 1.6rem;
+  border: 1px solid var(--color-grey-200);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 `;
 
 const EmptyIcon = styled.div`
@@ -509,6 +725,10 @@ function ProjectsLog() {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: "easeInOutQuart",
+    },
     plugins: {
       legend: {
         position: "bottom",
@@ -518,19 +738,69 @@ function ProjectsLog() {
           font: {
             size: 12,
           },
+          color: "#ffffff",
+        },
+      },
+      tooltip: {
+        backgroundColor: "#1F2937",
+        titleColor: "#F9FAFB",
+        bodyColor: "#F9FAFB",
+        borderColor: "#374151",
+        borderWidth: 1,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          color: "rgba(107, 114, 128, 0.2)",
+        },
+        ticks: {
+          color: "#ffffff",
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
+        },
+      },
+      y: {
+        grid: {
+          color: "rgba(107, 114, 128, 0.2)",
+        },
+        ticks: {
+          color: "#ffffff",
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
         },
       },
     },
   };
 
   const doughnutOptions = {
-    ...chartOptions,
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: "easeInOutQuart",
+    },
     cutout: "70%",
     plugins: {
-      ...chartOptions.plugins,
       legend: {
-        ...chartOptions.plugins.legend,
-        position: "bottom",
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "#1F2937",
+        titleColor: "#F9FAFB",
+        bodyColor: "#F9FAFB",
+        borderColor: "#374151",
+        borderWidth: 1,
+      },
+    },
+    scales: {
+      x: {
+        display: false,
+      },
+      y: {
+        display: false,
       },
     },
   };
@@ -538,14 +808,36 @@ function ProjectsLog() {
   const lineOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: "easeInOutQuart",
+    },
     scales: {
+      x: {
+        grid: {
+          color: "rgba(107, 114, 128, 0.2)",
+        },
+        ticks: {
+          color: "#ffffff",
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
+        },
+      },
       y: {
         beginAtZero: true,
         max: 100,
+        grid: {
+          color: "rgba(107, 114, 128, 0.2)",
+        },
         ticks: {
+          color: "#ffffff",
           callback: function (value) {
             return value + "%";
           },
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
         },
       },
     },
@@ -555,7 +847,19 @@ function ProjectsLog() {
         labels: {
           usePointStyle: true,
           padding: 20,
+          color: "#ffffff",
+          font: {
+            size: 13,
+            weight: "600",
+          },
         },
+      },
+      tooltip: {
+        backgroundColor: "#1F2937",
+        titleColor: "#F9FAFB",
+        bodyColor: "#F9FAFB",
+        borderColor: "#374151",
+        borderWidth: 1,
       },
     },
   };
@@ -563,27 +867,66 @@ function ProjectsLog() {
   const scatterOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: "easeInOutQuart",
+    },
     scales: {
       x: {
         title: {
           display: true,
           text: "الاحتمالية",
+          color: "#ffffff",
+          font: {
+            size: 14,
+            weight: "600",
+          },
         },
         min: 1,
         max: 5,
+        grid: {
+          color: "rgba(107, 114, 128, 0.2)",
+        },
+        ticks: {
+          color: "#ffffff",
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
+        },
       },
       y: {
         title: {
           display: true,
           text: "التأثير",
+          color: "#ffffff",
+          font: {
+            size: 14,
+            weight: "600",
+          },
         },
         min: 1,
         max: 5,
+        grid: {
+          color: "rgba(107, 114, 128, 0.2)",
+        },
+        ticks: {
+          color: "#ffffff",
+        },
+        border: {
+          color: "rgba(107, 114, 128, 0.3)",
+        },
       },
     },
     plugins: {
       legend: {
         display: false,
+      },
+      tooltip: {
+        backgroundColor: "#1F2937",
+        titleColor: "#F9FAFB",
+        bodyColor: "#F9FAFB",
+        borderColor: "#374151",
+        borderWidth: 1,
       },
     },
   };
@@ -606,7 +949,7 @@ function ProjectsLog() {
     datasets: [
       {
         data: currentProject.financial.data,
-        backgroundColor: ["#6B7280", "#F59E0B"],
+        backgroundColor: ["#3b82f6", "#f59e0b"],
         borderWidth: 0,
       },
     ],
@@ -618,16 +961,18 @@ function ProjectsLog() {
       {
         label: "المخطط",
         data: currentProject.performance.planned,
-        borderColor: "#3B82F6",
-        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        borderColor: "#6b7280",
+        backgroundColor: "rgba(107, 114, 128, 0.1)",
         tension: 0.4,
+        borderDash: [5, 5],
       },
       {
         label: "الفعلي",
         data: currentProject.performance.actual,
-        borderColor: "#F59E0B",
-        backgroundColor: "rgba(245, 158, 11, 0.1)",
+        borderColor: "#10b981",
+        backgroundColor: "rgba(16, 185, 129, 0.1)",
         tension: 0.4,
+        fill: true,
       },
     ],
   };
@@ -638,12 +983,12 @@ function ProjectsLog() {
       {
         label: "المخطط",
         data: currentProject.stages.planned,
-        backgroundColor: "#F59E0B",
+        backgroundColor: "#f59e0b",
       },
       {
         label: "الفعلي",
         data: currentProject.stages.actual,
-        backgroundColor: "#3B82F6",
+        backgroundColor: "#3b82f6",
       },
     ],
   };
@@ -653,7 +998,7 @@ function ProjectsLog() {
     datasets: [
       {
         data: [currentProject.quality.deliverables.approved],
-        backgroundColor: ["#F59E0B"],
+        backgroundColor: ["#8b5cf6"],
         borderWidth: 0,
       },
     ],
@@ -671,11 +1016,11 @@ function ProjectsLog() {
       {
         data: currentProject.quality.technical.data,
         backgroundColor: [
-          "#10B981",
-          "#34D399",
-          "#F59E0B",
-          "#8B5CF6",
-          "#3B82F6",
+          "#10b981",
+          "#34d399",
+          "#f59e0b",
+          "#8b5cf6",
+          "#3b82f6",
         ],
         borderWidth: 0,
       },
@@ -691,10 +1036,11 @@ function ProjectsLog() {
           y: risk.y,
           label: risk.label,
         })),
-        backgroundColor: ["#F59E0B", "#EF4444"],
-        borderColor: ["#F59E0B", "#EF4444"],
-        pointRadius: 15,
-        pointHoverRadius: 20,
+        backgroundColor: ["#f59e0b", "#ef4444"],
+        borderColor: ["#f59e0b", "#ef4444"],
+        pointRadius: 12,
+        pointHoverRadius: 16,
+        borderWidth: 2,
       },
     ],
   };
@@ -768,7 +1114,7 @@ function ProjectsLog() {
                   style={{
                     fontSize: "1.4rem",
                     fontWeight: "600",
-                    color: "var(--color-grey-800)",
+                    color: "#ffffff",
                   }}
                 >
                   استلامات اعمال
@@ -780,6 +1126,28 @@ function ProjectsLog() {
                   options={doughnutOptions}
                 />
               </ChartContainer>
+              <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "1rem",
+                      height: "1rem",
+                      backgroundColor: "#8b5cf6",
+                      borderRadius: "50%",
+                    }}
+                  ></div>
+                  <span style={{ color: "#d1d5db", fontSize: "1.2rem" }}>
+                    معتمد مع ملاحظات
+                  </span>
+                </div>
+              </div>
             </div>
             <div>
               <div style={{ textAlign: "center", marginBottom: "1rem" }}>
@@ -787,7 +1155,7 @@ function ProjectsLog() {
                   style={{
                     fontSize: "1.4rem",
                     fontWeight: "600",
-                    color: "var(--color-grey-800)",
+                    color: "#ffffff",
                   }}
                 >
                   اعتمادات فنية
@@ -796,7 +1164,7 @@ function ProjectsLog() {
                   style={{
                     fontSize: "2.4rem",
                     fontWeight: "700",
-                    color: "var(--color-brand-600)",
+                    color: "#10b981",
                   }}
                 >
                   {currentProject.quality.technical.total}
@@ -823,11 +1191,11 @@ function ProjectsLog() {
                 style={{
                   width: "1rem",
                   height: "1rem",
-                  backgroundColor: "#EF4444",
+                  backgroundColor: "#ef4444",
                   borderRadius: "50%",
                 }}
               ></div>
-              <span>مرفوض</span>
+              <span style={{ color: "#d1d5db" }}>مرفوض</span>
             </div>
             <div
               style={{
@@ -841,11 +1209,11 @@ function ProjectsLog() {
                 style={{
                   width: "1rem",
                   height: "1rem",
-                  backgroundColor: "#F59E0B",
+                  backgroundColor: "#f59e0b",
                   borderRadius: "50%",
                 }}
               ></div>
-              <span>متأخر</span>
+              <span style={{ color: "#d1d5db" }}>متأخر</span>
             </div>
             <div
               style={{
@@ -859,11 +1227,11 @@ function ProjectsLog() {
                 style={{
                   width: "1rem",
                   height: "1rem",
-                  backgroundColor: "#8B5CF6",
+                  backgroundColor: "#8b5cf6",
                   borderRadius: "50%",
                 }}
               ></div>
-              <span>معتمد مع ملاحظات</span>
+              <span style={{ color: "#d1d5db" }}>معتمد مع ملاحظات</span>
             </div>
             <div
               style={{
@@ -877,11 +1245,11 @@ function ProjectsLog() {
                 style={{
                   width: "1rem",
                   height: "1rem",
-                  backgroundColor: "#34D399",
+                  backgroundColor: "#34d399",
                   borderRadius: "50%",
                 }}
               ></div>
-              <span>يعاد التسليم</span>
+              <span style={{ color: "#d1d5db" }}>يعاد التسليم</span>
             </div>
             <div
               style={{
@@ -895,11 +1263,11 @@ function ProjectsLog() {
                 style={{
                   width: "1rem",
                   height: "1rem",
-                  backgroundColor: "#10B981",
+                  backgroundColor: "#10b981",
                   borderRadius: "50%",
                 }}
               ></div>
-              <span>تحت الدراسة</span>
+              <span style={{ color: "#d1d5db" }}>تحت الدراسة</span>
             </div>
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
@@ -908,11 +1276,11 @@ function ProjectsLog() {
                 style={{
                   width: "1rem",
                   height: "1rem",
-                  backgroundColor: "#3B82F6",
+                  backgroundColor: "#3b82f6",
                   borderRadius: "50%",
                 }}
               ></div>
-              <span>معتمد بدون ملاحظات</span>
+              <span style={{ color: "#d1d5db" }}>معتمد بدون ملاحظات</span>
             </div>
           </div>
         </Card>
@@ -944,12 +1312,12 @@ function ProjectsLog() {
               style={{
                 fontSize: "2.4rem",
                 fontWeight: "700",
-                color: "var(--color-grey-800)",
+                color: "#ffffff",
               }}
             >
               {currentProject.financial.total}
             </div>
-            <div style={{ fontSize: "1.2rem", color: "var(--color-grey-600)" }}>
+            <div style={{ fontSize: "1.2rem", color: "#d1d5db" }}>
               إجمالي المبلغ
             </div>
           </div>
@@ -963,7 +1331,7 @@ function ProjectsLog() {
               style={{
                 fontSize: "3.2rem",
                 fontWeight: "700",
-                color: "var(--color-brand-600)",
+                color: "#10b981",
               }}
             >
               {
@@ -973,7 +1341,7 @@ function ProjectsLog() {
               }
               %
             </div>
-            <div style={{ fontSize: "1.4rem", color: "var(--color-grey-600)" }}>
+            <div style={{ fontSize: "1.4rem", color: "#d1d5db" }}>
               نسبة الانجاز الفعلي
             </div>
           </div>
@@ -990,7 +1358,7 @@ function ProjectsLog() {
           </DetailRow>
           <DetailRow>
             <DetailLabel>الحياد:</DetailLabel>
-            <DetailValue style={{ color: "var(--color-red-600)" }}>
+            <DetailValue style={{ color: "#ef4444" }}>
               {currentProject.performance.actual[
                 currentProject.performance.actual.length - 1
               ] -

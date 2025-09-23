@@ -26,7 +26,7 @@ function AppLayoutContent() {
     <StyledAppLayout isCollapsed={isCollapsed}>
       <Sidebar style={{ zIndex: 40 }} />
       <Header />
-      <Main style={{ zIndex: 30, width: "100%" }}>
+      <Main style={{ zIndex: 0, width: "100%" }}>
         <Outlet />
       </Main>
     </StyledAppLayout>

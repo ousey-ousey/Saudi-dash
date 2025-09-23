@@ -293,6 +293,7 @@ const PaginationButton = styled.button`
 const ModalContent = styled.div`
   width: 80%;
   max-height: 90vh;
+  z-index: 100000;
 `;
 
 const FormSection = styled.div`
@@ -472,7 +473,7 @@ const ModalOverlay = styled.div`
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
-  z-index: 1000;
+  z-index: 100000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -500,7 +501,7 @@ const CloseButton = styled.button`
   font-size: 2.4rem;
   color: var(--color-grey-600);
   cursor: pointer;
-  z-index: 10;
+  z-index: 100000;
   width: 3rem;
   height: 3rem;
   display: flex;

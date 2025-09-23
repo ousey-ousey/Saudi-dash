@@ -39,9 +39,9 @@ const StyledNavLink = styled(NavLink)`
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  width: ${(props) => (props.isCollapsed ? "5rem" : "23rem")};
+  width: ${(props) => (props.isCollapsed ? "5rem" : "21rem")};
   padding: ${(props) => (props.isCollapsed ? "1.2rem" : "1.2rem 2.4rem")};
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 500;
   color: var(--color-grey-600);
   text-decoration: none;
@@ -51,7 +51,7 @@ const StyledNavLink = styled(NavLink)`
   justify-content: ${(props) => (props.isCollapsed ? "center" : "flex-start")};
 
   /* Base pseudo-elements (always present so transitions sync) */
-  &::after,
+  /* &::after,
   &::before {
     content: "";
     position: absolute;
@@ -59,9 +59,10 @@ const StyledNavLink = styled(NavLink)`
     height: 100%;
     background-color: transparent;
     z-index: 0;
-    display: ${(props) => (props.isCollapsed ? "none" : "block")};
-  }
-  &::after {
+    transform: ${(props) => (props.isCollapsed ? "scale(0)" : "scale(1)")};
+    transition: transform 0.1s ease;
+  } */
+  /* &::after {
     top: -75%;
     width: 4.1875rem;
     right: 192px;
@@ -69,7 +70,6 @@ const StyledNavLink = styled(NavLink)`
     clip-path: path(
       "M0,12 C-15,-58 -77,-157 -2,-41 C-7,56 35,32 48,40 C70,49 55,40 63,49 C-48,108 56,-3 78,108 C42,116 34,120 26,49 C18,124 8,124 0,118 L0,12 Z"
     );
-    display: ${(props) => (props.isCollapsed ? "none" : "block")};
   }
 
   &::before {
@@ -80,14 +80,14 @@ const StyledNavLink = styled(NavLink)`
     clip-path: path(
       "M0,12 C-15,-58 -77,-157 -2,-41 C-7,56 35,32 48,40 C70,49 55,40 63,49 C-48,108 56,-3 78,108 C42,116 34,120 26,49 C18,124 8,124 0,118 L0,12 Z"
     );
-    display: ${(props) => (props.isCollapsed ? "none" : "block")};
-  }
+  } */
   ${(props) =>
     props.isCollapsed &&
     `
     &::after,
     &::before {
       background-color: transparent;
+      transform: scale(0);
    }
   `}
 
@@ -118,14 +118,12 @@ const StyledNavLink = styled(NavLink)`
   &.active::after,
   &[aria-current="page"]::after {
     background-color: var(--color-grey-100);
-    transition: background-color 0.1s ease;
   }
 
   &:hover::before,
   &.active::before,
   &[aria-current="page"]::before {
     background-color: var(--color-grey-100);
-    transition: background-color 0.1s ease;
   }
 
   &.active svg,
@@ -144,17 +142,17 @@ const ExpandableItem = styled.div.withConfig({
     props.isCollapsed ? "center" : "space-between"};
   gap: 1.2rem;
   padding: ${(props) => (props.isCollapsed ? "1.2rem" : "1.2rem 2.4rem")};
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 500;
   color: var(--color-grey-600);
   position: relative;
-  width: ${(props) => (props.isCollapsed ? "5rem" : "25rem")};
+  width: ${(props) => (props.isCollapsed ? "5rem" : "21rem")};
   z-index: 1;
   background-color:  props.isCollapsed  ?transparent : var(--color-grey-100);
   transition: all 0.1s ease;
   border-radius: 2rem;
 
-  /* Green indicator line when expanded */
+  Green indicator line when expanded
   &::after {
     content: "";
     position: absolute;
@@ -217,16 +215,17 @@ const ExpandableContent = styled.div`
 const SubList = styled.ul`
   list-style: none;
   padding: 0;
-  width: ${(props) => (props.isCollapsed ? "5rem" : "23rem")};
+  width: ${(props) => (props.isCollapsed ? "5rem" : "21rem")};
   margin: 0;
   padding-right: 2rem;
   max-height: ${(props) => (props.isOpen ? "auto" : "0")};
   overflow: hidden;
+  font-size: 1.4rem;
   transition: all 0.15s ease;
   opacity: ${(props) => (props.isOpen ? "1" : "0")};
   position: relative;
 
-  /* Tree connector line */
+  /* Tree connector line
   &::before {
     content: "";
     position: absolute;
@@ -237,7 +236,7 @@ const SubList = styled.ul`
     background-color: var(--color-grey-100);
     transition: height 0.15s ease;
     z-index: 0;
-  }
+  } */
 
   /* Pseudo-elements for submenu container
   &::after,
@@ -283,9 +282,9 @@ const SubList = styled.ul`
 const SubItem = styled.li`
   margin: 0.5rem 0;
   position: relative;
-
+  /* 
   /* Tree branch connector */
-  &::before {
+  /* &::before {
     content: "";
     position: absolute;
     left: 1.2rem;
@@ -294,7 +293,7 @@ const SubItem = styled.li`
     height: 3px;
     background-color: var(--color-grey-100);
     z-index: 0;
-  }
+  } */
 `;
 
 const Tooltip = styled.div`
@@ -308,7 +307,7 @@ const Tooltip = styled.div`
   border-radius: 0.8rem;
   font-size: 1.4rem;
   white-space: nowrap;
-  z-index: 9999;
+  z-index: 99999;
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s ease;
@@ -481,6 +480,23 @@ function MainNav({ isCollapsed }) {
     });
   };
 
+  const handleNavClick = () => {
+    // Remove focus and selection from all elements
+    if (document.activeElement) {
+      document.activeElement.blur();
+    }
+
+    // Clear any text selection
+    if (window.getSelection) {
+      window.getSelection().removeAllRanges();
+    }
+
+    // Remove focus from any focused element
+    if (document.activeElement && document.activeElement !== document.body) {
+      document.activeElement.blur();
+    }
+  };
+
   return (
     <Sidebar>
       <NavList isCollapsed={isCollapsed}>
@@ -491,13 +507,13 @@ function MainNav({ isCollapsed }) {
               <HiOutlineCog6Tooth />
               <Tooltip>
                 <SubItem>
-                  <SubNavLink to="/dashboard">
+                  <SubNavLink to="/dashboard" onClick={handleNavClick}>
                     <HiOutlineHome />
                     <span>الرئيسية</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/analytics">
+                  <SubNavLink to="/analytics" onClick={handleNavClick}>
                     <HiOutlineClipboardDocumentList />
                     <span>التحليلات</span>
                   </SubNavLink>
@@ -523,13 +539,13 @@ function MainNav({ isCollapsed }) {
               </ExpandableItem>
               <SubList isOpen={expandedMenus.dashboards}>
                 <SubItem>
-                  <SubNavLink to="/dashboard">
+                  <SubNavLink to="/dashboard" onClick={handleNavClick}>
                     <HiOutlineHome />
                     <span>الرئيسية</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/analytics">
+                  <SubNavLink to="/analytics" onClick={handleNavClick}>
                     <HiOutlineClipboardDocumentList />
                     <span>التحليلات</span>
                   </SubNavLink>
@@ -542,12 +558,16 @@ function MainNav({ isCollapsed }) {
         {/* تقديم طلب جديد */}
         <li>
           {isCollapsed ? (
-            <CollapsedNavLink to="/new-request">
+            <CollapsedNavLink to="/new-request" onClick={handleNavClick}>
               <HiOutlinePlusCircle />
               <Tooltip>تقديم طلب جديد</Tooltip>
             </CollapsedNavLink>
           ) : (
-            <StyledNavLink to="/new-request" isCollapsed={isCollapsed}>
+            <StyledNavLink
+              to="/new-request"
+              isCollapsed={isCollapsed}
+              onClick={handleNavClick}
+            >
               <HiOutlinePlusCircle />
               <span>تقديم طلب جديد</span>
             </StyledNavLink>
@@ -561,13 +581,13 @@ function MainNav({ isCollapsed }) {
               <HiOutlineClipboardDocumentList />
               <Tooltip>
                 <SubItem>
-                  <SubNavLink to="/projects-log">
+                  <SubNavLink to="/projects-log" onClick={handleNavClick}>
                     <HiOutlineClipboardDocumentList />
                     <span>سجل المشاريع</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/risks-log">
+                  <SubNavLink to="/risks-log" onClick={handleNavClick}>
                     <HiOutlineExclamationTriangle />
                     <span>سجل المخاطر</span>
                   </SubNavLink>
@@ -593,13 +613,13 @@ function MainNav({ isCollapsed }) {
               </ExpandableItem>
               <SubList isOpen={expandedMenus.records}>
                 <SubItem>
-                  <SubNavLink to="/projects-log">
+                  <SubNavLink to="/projects-log" onClick={handleNavClick}>
                     <HiOutlineClipboardDocumentList />
                     <span>سجل المشاريع</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/risks-log">
+                  <SubNavLink to="/risks-log" onClick={handleNavClick}>
                     <HiOutlineExclamationTriangle />
                     <span>سجل المخاطر</span>
                   </SubNavLink>
@@ -612,12 +632,16 @@ function MainNav({ isCollapsed }) {
         {/* الجداول الزمنية */}
         <li>
           {isCollapsed ? (
-            <CollapsedNavLink to="/schedules">
+            <CollapsedNavLink to="/schedules" onClick={handleNavClick}>
               <HiOutlineCalendarDays />
               <Tooltip>الجداول الزمنية</Tooltip>
             </CollapsedNavLink>
           ) : (
-            <StyledNavLink to="/schedules" isCollapsed={isCollapsed}>
+            <StyledNavLink
+              to="/schedules"
+              isCollapsed={isCollapsed}
+              onClick={handleNavClick}
+            >
               <HiOutlineCalendarDays />
               <span>الجداول الزمنية</span>
             </StyledNavLink>
@@ -632,13 +656,13 @@ function MainNav({ isCollapsed }) {
               <Tooltip>
                 {" "}
                 <SubItem>
-                  <SubNavLink to="/incoming-letters">
+                  <SubNavLink to="/incoming-letters" onClick={handleNavClick}>
                     <HiOutlineEnvelope />
                     <span>الخطابات الواردة</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/outgoing-letters">
+                  <SubNavLink to="/outgoing-letters" onClick={handleNavClick}>
                     <HiOutlineEnvelope />
                     <span>الخطابات الصادرة</span>
                   </SubNavLink>
@@ -664,13 +688,13 @@ function MainNav({ isCollapsed }) {
               </ExpandableItem>
               <SubList isOpen={expandedMenus.correspondence}>
                 <SubItem>
-                  <SubNavLink to="/incoming-letters">
+                  <SubNavLink to="/incoming-letters" onClick={handleNavClick}>
                     <HiOutlineEnvelope />
                     <span>الخطابات الواردة</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/outgoing-letters">
+                  <SubNavLink to="/outgoing-letters" onClick={handleNavClick}>
                     <HiOutlineEnvelope />
                     <span>الخطابات الصادرة</span>
                   </SubNavLink>
@@ -687,13 +711,13 @@ function MainNav({ isCollapsed }) {
               <HiOutlineStar />
               <Tooltip>
                 <SubItem>
-                  <SubNavLink to="/quality-control">
+                  <SubNavLink to="/quality-control" onClick={handleNavClick}>
                     <HiOutlineStar />
                     <span>مراقبة الجودة</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/quality-reports">
+                  <SubNavLink to="/quality-reports" onClick={handleNavClick}>
                     <HiOutlineClipboardDocumentList />
                     <span>تقارير الجودة</span>
                   </SubNavLink>
@@ -719,13 +743,13 @@ function MainNav({ isCollapsed }) {
               </ExpandableItem>
               <SubList isOpen={expandedMenus.quality}>
                 <SubItem>
-                  <SubNavLink to="/quality-control">
+                  <SubNavLink to="/quality-control" onClick={handleNavClick}>
                     <HiOutlineStar />
                     <span>مراقبة الجودة</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/quality-reports">
+                  <SubNavLink to="/quality-reports" onClick={handleNavClick}>
                     <HiOutlineClipboardDocumentList />
                     <span>تقارير الجودة</span>
                   </SubNavLink>
@@ -743,13 +767,13 @@ function MainNav({ isCollapsed }) {
               <Tooltip>
                 {" "}
                 <SubItem>
-                  <SubNavLink to="/budget-planning">
+                  <SubNavLink to="/budget-planning" onClick={handleNavClick}>
                     <HiOutlineScale />
                     <span>تخطيط الميزانية</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/budget-tracking">
+                  <SubNavLink to="/budget-tracking" onClick={handleNavClick}>
                     <HiOutlineClipboardDocumentList />
                     <span>تتبع الميزانية</span>
                   </SubNavLink>
@@ -775,13 +799,13 @@ function MainNav({ isCollapsed }) {
               </ExpandableItem>
               <SubList isOpen={expandedMenus.budget}>
                 <SubItem>
-                  <SubNavLink to="/budget-planning">
+                  <SubNavLink to="/budget-planning" onClick={handleNavClick}>
                     <HiOutlineScale />
                     <span>تخطيط الميزانية</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/budget-tracking">
+                  <SubNavLink to="/budget-tracking" onClick={handleNavClick}>
                     <HiOutlineClipboardDocumentList />
                     <span>تتبع الميزانية</span>
                   </SubNavLink>

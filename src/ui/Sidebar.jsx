@@ -17,7 +17,6 @@ const StyledSidebar = styled.aside`
   gap: 3.2rem;
   position: relative;
   min-height: 100vh;
-  z-index: ${(props) => props.zIndex || 1000};
 `;
 
 const ToggleButton = styled.button`
