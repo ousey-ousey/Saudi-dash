@@ -41,40 +41,9 @@ const Container = styled.div`
   padding: 2rem;
   overflow-x: auto;
   box-sizing: border-box;
-  background: var(--color-grey-100);
+  background: var(--primary-gradient);
   min-height: 100vh;
   position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-        circle at 20% 80%,
-        rgba(16, 185, 129, 0.1) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 80% 20%,
-        rgba(34, 197, 94, 0.1) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 40% 40%,
-        rgba(22, 163, 74, 0.1) 0%,
-        transparent 50%
-      );
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  > * {
-    position: relative;
-    z-index: 1;
-  }
 
   @media (max-width: 1200px) {
     padding: 1.5rem;

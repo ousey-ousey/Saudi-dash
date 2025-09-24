@@ -21,6 +21,31 @@ const Sidebar = styled.nav`
   padding: 1rem;
   background: transparent;
   overflow: visible;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at 20% 80%,
+        rgba(16, 185, 129, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(34, 197, 94, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        rgba(22, 163, 74, 0.1) 0%,
+        transparent 50%
+      );
+    pointer-events: none;
+    z-index: -10;
+  }
 `;
 
 const NavList = styled.ul.withConfig({
@@ -46,41 +71,10 @@ const StyledNavLink = styled(NavLink)`
   color: var(--color-grey-600);
   text-decoration: none;
   position: relative;
-  z-index: 0;
+  z-index: 5;
   background-color: transparent;
   justify-content: ${(props) => (props.isCollapsed ? "center" : "flex-start")};
 
-  /* Base pseudo-elements (always present so transitions sync) */
-  /* &::after,
-  &::before {
-    content: "";
-    position: absolute;
-    right: 1rem;
-    height: 100%;
-    background-color: transparent;
-    z-index: 0;
-    transform: ${(props) => (props.isCollapsed ? "scale(0)" : "scale(1)")};
-    transition: transform 0.1s ease;
-  } */
-  /* &::after {
-    top: -75%;
-    width: 4.1875rem;
-    right: 192px;
-    rotate: -5deg;
-    clip-path: path(
-      "M0,12 C-15,-58 -77,-157 -2,-41 C-7,56 35,32 48,40 C70,49 55,40 63,49 C-48,108 56,-3 78,108 C42,116 34,120 26,49 C18,124 8,124 0,118 L0,12 Z"
-    );
-  }
-
-  &::before {
-    top: 77%;
-    right: 190px;
-    width: 4.1875rem;
-    rotate: 108deg;
-    clip-path: path(
-      "M0,12 C-15,-58 -77,-157 -2,-41 C-7,56 35,32 48,40 C70,49 55,40 63,49 C-48,108 56,-3 78,108 C42,116 34,120 26,49 C18,124 8,124 0,118 L0,12 Z"
-    );
-  } */
   ${(props) =>
     props.isCollapsed &&
     `
@@ -110,25 +104,25 @@ const StyledNavLink = styled(NavLink)`
   &:hover,
   &.active,
   &[aria-current="page"] {
-    color: var(--color-grey-800);
-    background-color: var(--color-grey-100);
+    color: white;
+    background-color: var(--color-dark);
   }
 
   &:hover::after,
   &.active::after,
   &[aria-current="page"]::after {
-    background-color: var(--color-grey-100);
+    background-color: var(--color-dark);
   }
 
   &:hover::before,
   &.active::before,
   &[aria-current="page"]::before {
-    background-color: var(--color-grey-100);
+    background-color: var(--color-dark);
   }
 
   &.active svg,
   &[aria-current="page"] svg {
-    color: var(--color-brand-600);
+    color: #fff;
   }
 `;
 
@@ -147,8 +141,8 @@ const ExpandableItem = styled.div.withConfig({
   color: var(--color-grey-600);
   position: relative;
   width: ${(props) => (props.isCollapsed ? "5rem" : "21rem")};
-  z-index:0;
-  background-color:  props.isCollapsed  ?transparent : var(--color-grey-100);
+  z-index: 5;
+  background-color: props.isCollapsed ? transparent : var(--color-dark);
   transition: all 0.1s ease;
   border-radius: 2rem;
 
@@ -167,22 +161,22 @@ const ExpandableItem = styled.div.withConfig({
   }
 
   &:hover {
-    color: var(--color-grey-800);
-    background-color: var(--color-grey-100);
+    color: white;
+    background-color: var(--color-dark);
     transition: all 0.1s ease;
   }
   &:active {
-    color: var(--color-grey-800);
-    background-color: var(--color-grey-100);
+    color: white;
+    background-color: var(--color-dark);
   }
   & svg {
     width: 2.4rem;
     height: 2.4rem;
-    color: var(--color-grey-600);
+    color: #fff;
   }
 
   &:hover svg {
-    color: var(--color-grey-800);
+    color: #fff;
   }
   ${(props) =>
     props.isCollapsed &&
@@ -197,11 +191,11 @@ const ExpandableItem = styled.div.withConfig({
     props.isExpanded &&
     !props.isCollapsed &&
     `
-    color: var(--color-brand-200);
-    font-weight: 600;
-    background-color: var(--color-grey-100);
+    color: white;
+    font-weight: 200;
+    background-color: var(--color-dark);
     & svg {
-      color: var(--color-brand-600);
+      color: #fff;
     }
   `}
 `;
@@ -225,75 +219,25 @@ const SubList = styled.ul`
   opacity: ${(props) => (props.isOpen ? "1" : "0")};
   position: relative;
 
-  /* Tree connector line
-  &::before {
-    content: "";
-    position: absolute;
-    left: 1.2rem;
-    top: -0.5rem;
-    width: 3px;
-    height: ${(props) => (props.isOpen ? "calc(100% + 2.4rem)" : "0")};
-    background-color: var(--color-grey-100);
-    transition: height 0.15s ease;
-    z-index: 0;
-  } */
-
-  /* Pseudo-elements for submenu container
-  &::after,
-  &::before {
-    content: "";
-    position: absolute;
-    right: 1rem;
-    height: 100%;
-    background-color: transparent;
-    z-index: 0;
-    transition: background-color 1s ease;
-  }
-
-  &::after {
-    top: -20%;
-    width: 4.1875rem;
-    rotate: 279deg;
-    clip-path: path(
-      "M0,12 C-15,-58 -77,-157 -2,-41 C-7,56 35,32 48,40 C70,49 55,40 63,49 C-48,108 56,-3 78,108 C42,116 34,120 26,49 C18,124 8,124 0,118 L0,12 Z"
-    );
-  }
-
-  &::before {
-    top: 80%;
-    width: 4.1875rem;
-    rotate: 180deg;
-    clip-path: path(
-      "M0,12 C-15,-58 -77,-157 -2,-41 C-7,56 35,32 48,40 C70,49 55,40 63,49 C-48,108 56,-3 78,108 C42,116 34,120 26,49 C18,124 8,124 0,118 L0,12 Z"
-    );
-  } */
-
   /* Show pseudo-elements when submenu is open */
-  ${(props) =>
+  /* ${(props) =>
     props.isOpen &&
     `
     &::after,
-    &::before {
-      background-color: var(--color-grey-100);
+    &::before,&active {
+ color: white;
+    font-weight: 200;
+    background-color: var(--color-dark);
+    & svg,&active svg {
+      color: #fff;
+    }      
     }
-  `}
+  `} */
 `;
 
 const SubItem = styled.li`
   margin: 0.5rem 0;
   position: relative;
-  /* 
-  /* Tree branch connector */
-  /* &::before {
-    content: "";
-    position: absolute;
-    left: 1.2rem;
-    top: 50%;
-    width: 1rem;
-    height: 3px;
-    background-color: var(--color-grey-100);
-    z-index: 0;
-  } */
 `;
 
 const Tooltip = styled.div`
@@ -301,18 +245,17 @@ const Tooltip = styled.div`
   right: 100%;
   top: 50%;
   transform: translateY(-50%);
-  background: var(--color-grey-100);
+  background: var(--color-dark);
   color: white;
   padding: 0.8rem 1.2rem;
   border-radius: 0.8rem;
   font-size: 1.4rem;
   white-space: nowrap;
-  z-index: 99999;
+  z-index: 999999;
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s ease;
   margin-right: 1rem;
-  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.25);
 
   &::before {
     content: "";
@@ -321,7 +264,7 @@ const Tooltip = styled.div`
     top: 50%;
     transform: translateY(-50%);
     border: 0.6rem solid transparent;
-    border-left-color: var(--color-grey-800);
+    border-left-color: #fff;
   }
 `;
 
@@ -338,12 +281,12 @@ const SubNavLink = styled(NavLink)`
   border-radius: 1rem;
   transition: all 0.15s ease;
   position: relative;
-  z-index: 0;
+  z-index: 5;
 
   & svg {
     width: 1.8rem;
     height: 1.8rem;
-    color: inherit;
+    color: #fff;
     position: relative;
     z-index: 2;
   }
@@ -354,30 +297,32 @@ const SubNavLink = styled(NavLink)`
   }
 
   &:hover {
-    color: var(--color-grey-700);
-    background-color: var(--color-grey-100);
+    color: white;
+    background-color: var(--color-dark);
   }
 
   &.active,
   &[aria-current="page"] {
-    color: var(--color-brand-600);
-    background-color: var(--color-grey-100);
-    font-weight: 500;
+    background-color: var(--color-dark);
+    font-weight: 600;
+    color: white;
+    font-weight: 200;
+    background-color: var(--color-dark);
   }
 
   &.active::after,
   &[aria-current="page"]::after {
-    background-color: var(--color-grey-100);
+    background-color: var(--color-dark);
   }
 
   &.active::before,
   &[aria-current="page"]::before {
-    background-color: var(--color-grey-100);
+    background-color: var(--color-dark);
   }
 
   &.active svg,
   &[aria-current="page"] svg {
-    color: var(--color-brand-600);
+    color: #fff;
   }
 `;
 
@@ -392,20 +337,19 @@ const CollapsedNavLink = styled(NavLink)`
   color: var(--color-grey-600);
   text-decoration: none;
   position: relative;
-  z-index: 1;
-  background-color: var(--color-grey-100);
+  z-index: 10;
   transition: all 0.1s ease;
   border-radius: 2rem;
 
   & svg {
     width: 2.4rem;
     height: 2.4rem;
-    color: var(--color-grey-600);
+    color: #fff;
   }
 
   &:hover {
-    color: var(--color-grey-800);
-    background-color: var(--color-grey-100);
+    color: white;
+    background-color: var(--color-dark);
   }
 
   &:hover ${Tooltip} {
@@ -415,13 +359,13 @@ const CollapsedNavLink = styled(NavLink)`
 
   &.active,
   &[aria-current="page"] {
-    color: var(--color-grey-800);
-    background-color: var(--color-grey-100);
+    color: white;
+    background-color: var(--color-dark);
   }
 
   &.active svg,
   &[aria-current="page"] svg {
-    color: var(--color-brand-600);
+    color: #fff;
   }
 `;
 
@@ -436,25 +380,28 @@ const CollapsedExpandableItem = styled.div`
   font-weight: 500;
   color: var(--color-grey-600);
   position: relative;
-  z-index: 1;
-  background-color: var(--color-grey-100);
+  z-index: 10;
   transition: all 0.1s ease;
   border-radius: 2rem;
 
   & svg {
     width: 2.4rem;
     height: 2.4rem;
-    color: var(--color-grey-600);
+    color: #fff;
   }
 
   &:hover {
-    color: var(--color-grey-800);
-    background-color: var(--color-grey-100);
+    color: white;
+    background-color: var(--color-dark);
   }
 
   &:hover ${Tooltip} {
     opacity: 1;
     visibility: visible;
+  }
+  &::active {
+    color: white;
+    background-color: var(--color-dark);
   }
 `;
 
@@ -467,20 +414,88 @@ function MainNav({ isCollapsed }) {
 
   const toggleMenu = (menuKey) => {
     setExpandedMenus((prev) => {
-      const newState = {
-        ...prev,
-        [menuKey]: !prev[menuKey],
-      };
-      // Save to localStorage
-      localStorage.setItem(
-        "saudi-dash-expanded-menus",
-        JSON.stringify(newState)
-      );
-      return newState;
+      // If the clicked menu is already open, close it
+      if (prev[menuKey]) {
+        const newState = {
+          ...prev,
+          [menuKey]: false,
+        };
+        localStorage.setItem(
+          "saudi-dash-expanded-menus",
+          JSON.stringify(newState)
+        );
+        return newState;
+      } else {
+        // If the clicked menu is closed, open it and close all others
+        const newState = {
+          dashboards: false,
+          requests: false,
+          projects: false,
+          quality: false,
+          risks: false,
+          schedules: false,
+          letters: false,
+          budget: false,
+          [menuKey]: true,
+        };
+        localStorage.setItem(
+          "saudi-dash-expanded-menus",
+          JSON.stringify(newState)
+        );
+        return newState;
+      }
     });
   };
 
-  const handleNavClick = () => {
+  const handleNavClick = (menuKey = null) => {
+    // If a specific menu is provided, keep that menu open and close others
+    if (menuKey) {
+      setExpandedMenus((prev) => {
+        const newState = {
+          dashboards: false,
+          requests: false,
+          projects: false,
+          quality: false,
+          risks: false,
+          schedules: false,
+          letters: false,
+          budget: false,
+          [menuKey]: prev[menuKey], // Keep the current state of the clicked menu
+        };
+        localStorage.setItem(
+          "saudi-dash-expanded-menus",
+          JSON.stringify(newState)
+        );
+        return newState;
+      });
+    } else {
+      // If no menu specified, close all menus
+      setExpandedMenus({
+        dashboards: false,
+        requests: false,
+        projects: false,
+        quality: false,
+        risks: false,
+        schedules: false,
+        letters: false,
+        budget: false,
+      });
+
+      localStorage.setItem(
+        "saudi-dash-expanded-menus",
+        JSON.stringify({
+          dashboards: false,
+          requests: false,
+          projects: false,
+          quality: false,
+          risks: false,
+          schedules: false,
+          letters: false,
+          budget: false,
+        })
+      );
+    }
+
     // Remove focus and selection from all elements
     if (document.activeElement) {
       document.activeElement.blur();
@@ -507,13 +522,19 @@ function MainNav({ isCollapsed }) {
               <HiOutlineCog6Tooth />
               <Tooltip>
                 <SubItem>
-                  <SubNavLink to="/dashboard" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/dashboard"
+                    onClick={() => handleNavClick("dashboards")}
+                  >
                     <HiOutlineHome />
                     <span>الرئيسية</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/analytics" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/analytics"
+                    onClick={() => handleNavClick("dashboards")}
+                  >
                     <HiOutlineClipboardDocumentList />
                     <span>التحليلات</span>
                   </SubNavLink>
@@ -539,13 +560,19 @@ function MainNav({ isCollapsed }) {
               </ExpandableItem>
               <SubList isOpen={expandedMenus.dashboards}>
                 <SubItem>
-                  <SubNavLink to="/dashboard" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/dashboard"
+                    onClick={() => handleNavClick("dashboards")}
+                  >
                     <HiOutlineHome />
                     <span>الرئيسية</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/analytics" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/analytics"
+                    onClick={() => handleNavClick("dashboards")}
+                  >
                     <HiOutlineClipboardDocumentList />
                     <span>التحليلات</span>
                   </SubNavLink>
@@ -558,7 +585,10 @@ function MainNav({ isCollapsed }) {
         {/* تقديم طلب جديد */}
         <li>
           {isCollapsed ? (
-            <CollapsedNavLink to="/new-request" onClick={handleNavClick}>
+            <CollapsedNavLink
+              to="/new-request"
+              onClick={() => handleNavClick("requests")}
+            >
               <HiOutlinePlusCircle />
               <Tooltip>تقديم طلب جديد</Tooltip>
             </CollapsedNavLink>
@@ -566,7 +596,7 @@ function MainNav({ isCollapsed }) {
             <StyledNavLink
               to="/new-request"
               isCollapsed={isCollapsed}
-              onClick={handleNavClick}
+              onClick={() => handleNavClick("dashboards")}
             >
               <HiOutlinePlusCircle />
               <span>تقديم طلب جديد</span>
@@ -581,13 +611,19 @@ function MainNav({ isCollapsed }) {
               <HiOutlineClipboardDocumentList />
               <Tooltip>
                 <SubItem>
-                  <SubNavLink to="/projects-log" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/projects-log"
+                    onClick={() => handleNavClick("projects")}
+                  >
                     <HiOutlineClipboardDocumentList />
                     <span>سجل المشاريع</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/risks-log" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/risks-log"
+                    onClick={() => handleNavClick("risks")}
+                  >
                     <HiOutlineExclamationTriangle />
                     <span>سجل المخاطر</span>
                   </SubNavLink>
@@ -597,29 +633,35 @@ function MainNav({ isCollapsed }) {
           ) : (
             <>
               <ExpandableItem
-                isExpanded={expandedMenus.records}
+                isExpanded={expandedMenus.projects}
                 isCollapsed={isCollapsed}
-                onClick={() => toggleMenu("records")}
+                onClick={() => toggleMenu("projects")}
               >
                 <ExpandableContent>
                   <HiOutlineClipboardDocumentList />
                   <span>السجلات</span>
                 </ExpandableContent>
-                {expandedMenus.records ? (
+                {expandedMenus.projects ? (
                   <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
                 ) : (
                   <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
                 )}
               </ExpandableItem>
-              <SubList isOpen={expandedMenus.records}>
+              <SubList isOpen={expandedMenus.projects}>
                 <SubItem>
-                  <SubNavLink to="/projects-log" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/projects-log"
+                    onClick={() => handleNavClick("projects")}
+                  >
                     <HiOutlineClipboardDocumentList />
                     <span>سجل المشاريع</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/risks-log" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/risks-log"
+                    onClick={() => handleNavClick("projects")}
+                  >
                     <HiOutlineExclamationTriangle />
                     <span>سجل المخاطر</span>
                   </SubNavLink>
@@ -632,7 +674,10 @@ function MainNav({ isCollapsed }) {
         {/* الجداول الزمنية */}
         <li>
           {isCollapsed ? (
-            <CollapsedNavLink to="/schedules" onClick={handleNavClick}>
+            <CollapsedNavLink
+              to="/schedules"
+              onClick={() => handleNavClick("schedules")}
+            >
               <HiOutlineCalendarDays />
               <Tooltip>الجداول الزمنية</Tooltip>
             </CollapsedNavLink>
@@ -640,7 +685,7 @@ function MainNav({ isCollapsed }) {
             <StyledNavLink
               to="/schedules"
               isCollapsed={isCollapsed}
-              onClick={handleNavClick}
+              onClick={() => handleNavClick("schedules")}
             >
               <HiOutlineCalendarDays />
               <span>الجداول الزمنية</span>
@@ -656,13 +701,19 @@ function MainNav({ isCollapsed }) {
               <Tooltip>
                 {" "}
                 <SubItem>
-                  <SubNavLink to="/incoming-letters" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/incoming-letters"
+                    onClick={() => handleNavClick("letters")}
+                  >
                     <HiOutlineEnvelope />
                     <span>الخطابات الواردة</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/outgoing-letters" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/outgoing-letters"
+                    onClick={() => handleNavClick("letters")}
+                  >
                     <HiOutlineEnvelope />
                     <span>الخطابات الصادرة</span>
                   </SubNavLink>
@@ -672,29 +723,35 @@ function MainNav({ isCollapsed }) {
           ) : (
             <>
               <ExpandableItem
-                isExpanded={expandedMenus.correspondence}
+                isExpanded={expandedMenus.letters}
                 isCollapsed={isCollapsed}
-                onClick={() => toggleMenu("correspondence")}
+                onClick={() => toggleMenu("letters")}
               >
                 <ExpandableContent>
                   <HiOutlineEnvelope />
                   <span>الخطابات والمراسلات</span>
                 </ExpandableContent>
-                {expandedMenus.correspondence ? (
+                {expandedMenus.letters ? (
                   <HiOutlineChevronUp style={{ marginLeft: "1rem" }} />
                 ) : (
                   <HiOutlineChevronDown style={{ marginLeft: "1rem" }} />
                 )}
               </ExpandableItem>
-              <SubList isOpen={expandedMenus.correspondence}>
+              <SubList isOpen={expandedMenus.letters}>
                 <SubItem>
-                  <SubNavLink to="/incoming-letters" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/incoming-letters"
+                    onClick={() => handleNavClick("letters")}
+                  >
                     <HiOutlineEnvelope />
                     <span>الخطابات الواردة</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/outgoing-letters" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/outgoing-letters"
+                    onClick={() => handleNavClick("letters")}
+                  >
                     <HiOutlineEnvelope />
                     <span>الخطابات الصادرة</span>
                   </SubNavLink>
@@ -711,13 +768,19 @@ function MainNav({ isCollapsed }) {
               <HiOutlineStar />
               <Tooltip>
                 <SubItem>
-                  <SubNavLink to="/quality-control" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/quality-control"
+                    onClick={() => handleNavClick("quality")}
+                  >
                     <HiOutlineStar />
                     <span>مراقبة الجودة</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/quality-reports" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/quality-reports"
+                    onClick={() => handleNavClick("quality")}
+                  >
                     <HiOutlineClipboardDocumentList />
                     <span>تقارير الجودة</span>
                   </SubNavLink>
@@ -743,13 +806,19 @@ function MainNav({ isCollapsed }) {
               </ExpandableItem>
               <SubList isOpen={expandedMenus.quality}>
                 <SubItem>
-                  <SubNavLink to="/quality-control" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/quality-control"
+                    onClick={() => handleNavClick("quality")}
+                  >
                     <HiOutlineStar />
                     <span>مراقبة الجودة</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/quality-reports" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/quality-reports"
+                    onClick={() => handleNavClick("quality")}
+                  >
                     <HiOutlineClipboardDocumentList />
                     <span>تقارير الجودة</span>
                   </SubNavLink>
@@ -767,13 +836,19 @@ function MainNav({ isCollapsed }) {
               <Tooltip>
                 {" "}
                 <SubItem>
-                  <SubNavLink to="/budget-planning" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/budget-planning"
+                    onClick={() => handleNavClick("budget")}
+                  >
                     <HiOutlineScale />
                     <span>تخطيط الميزانية</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/budget-tracking" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/budget-tracking"
+                    onClick={() => handleNavClick("budget")}
+                  >
                     <HiOutlineClipboardDocumentList />
                     <span>تتبع الميزانية</span>
                   </SubNavLink>
@@ -799,13 +874,19 @@ function MainNav({ isCollapsed }) {
               </ExpandableItem>
               <SubList isOpen={expandedMenus.budget}>
                 <SubItem>
-                  <SubNavLink to="/budget-planning" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/budget-planning"
+                    onClick={() => handleNavClick("budget")}
+                  >
                     <HiOutlineScale />
                     <span>تخطيط الميزانية</span>
                   </SubNavLink>
                 </SubItem>
                 <SubItem>
-                  <SubNavLink to="/budget-tracking" onClick={handleNavClick}>
+                  <SubNavLink
+                    to="/budget-tracking"
+                    onClick={() => handleNavClick("budget")}
+                  >
                     <HiOutlineClipboardDocumentList />
                     <span>تتبع الميزانية</span>
                   </SubNavLink>

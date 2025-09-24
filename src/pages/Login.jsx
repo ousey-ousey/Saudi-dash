@@ -8,9 +8,35 @@ import SpinnerMini from "../ui/SpinnerMini";
 const LoginLayout = styled.main`
   min-height: 100vh;
   display: flex;
-  background: var(--color-grey-100);
+  background: var(--primary-gradient);
   position: relative;
   overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at 20% 80%,
+        rgba(16, 185, 129, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(34, 197, 94, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        rgba(22, 163, 74, 0.1) 0%,
+        transparent 50%
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -31,7 +57,6 @@ const LoginContainer = styled.div`
 
 const WelcomeSection = styled.div`
   flex: 1;
-  background: var(--color-brand-600);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,8 +64,43 @@ const WelcomeSection = styled.div`
   padding: 4rem;
   position: relative;
   overflow: hidden;
-  border-radius: 40rem 0 30rem 0;
 
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 40rem 0 30rem 0;
+    background: var(--color-brand-500);
+    z-index: 1;
+  }
+  /* &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at 20% 80%,
+        rgba(16, 185, 129, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(34, 197, 94, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        rgba(22, 163, 74, 0.1) 0%,
+        transparent 50%
+      );
+    pointer-events: none;
+    z-index: 1;
+  } */
   @media (max-width: 768px) {
     flex: none;
     min-height: 30rem;
@@ -48,11 +108,7 @@ const WelcomeSection = styled.div`
     padding: 3rem 2rem;
 
     &::before {
-      display: none;
-    }
-
-    &::after {
-      display: none;
+      border-radius: 0 0 4rem 4rem;
     }
   }
 `;
@@ -60,7 +116,7 @@ const WelcomeSection = styled.div`
 const LoginFormSection = styled.div`
   flex: 1;
   padding: 4rem;
-  background: var(--color-grey-100);
+  background-color: var(--color-grey-50);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -82,6 +138,7 @@ const LoginFormSection = styled.div`
     background: var(--color-brand-600);
     border-radius: 37rem 0 45rem 0;
   }
+
   @media (max-width: 768px) {
     &::before {
       display: none;
@@ -98,7 +155,6 @@ const Logo = styled.div`
     height: 15rem;
     width: auto;
     animation: logoFloat 3s ease-in-out infinite;
-    filter: drop-shadow(0 0.5rem 1rem rgba(0, 0, 0, 0.2));
 
     @media (max-width: 768px) {
       height: 12rem;
@@ -189,28 +245,9 @@ const StyledInput = styled.input`
   border-radius: 1rem;
   outline: none;
   border: none;
-
-  &::placeholder {
-    color: var(--color-grey-300) !important;
-  }
-
   &:focus {
     outline: none;
-    background: var(--color-grey-100) !important;
   }
-
-  &:active {
-    background: var(--color-grey-100) !important;
-  }
-
-  &:hover {
-    background: var(--color-grey-100) !important;
-  }
-
-  &:visited {
-    background: var(--color-grey-100) !important;
-  }
-
   /* Prevent background change on text selection */
   &::selection {
     background: var(--color-brand-600) !important;
@@ -271,7 +308,7 @@ const LoginButton = styled.button`
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none;
+    transform: translateY(0rem);
   }
 
   @media (max-width: 480px) {

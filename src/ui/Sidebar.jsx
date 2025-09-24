@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { HiOutlineBars3, HiOutlineXMark } from "react-icons/hi2";
 import Logo from "./Logo";
 import MainNav from "./MainNav";
+import Header from "./Header";
 import { useSidebar } from "../contexts/SidebarContext";
 
 const StyledSidebar = styled.aside`
@@ -17,6 +18,37 @@ const StyledSidebar = styled.aside`
   gap: 3.2rem;
   position: relative;
   min-height: 100vh;
+  overflow: visible;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at 20% 80%,
+        rgba(16, 185, 129, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(34, 197, 94, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        rgba(22, 163, 74, 0.1) 0%,
+        transparent 50%
+      );
+    pointer-events: none;
+    z-index: -1;
+    will-change: auto;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
 `;
 
 const ToggleButton = styled.button`
@@ -68,6 +100,7 @@ function Sidebar() {
         {isCollapsed ? <HiOutlineBars3 /> : <HiOutlineXMark />}
       </ToggleButton>
 
+      {/* {!isCollapsed && <Header />} */}
       {!isCollapsed && <Logo />}
       <MainNav isCollapsed={isCollapsed} />
     </StyledSidebar>

@@ -7,6 +7,7 @@ const initialState = {
   user: null,
   isAuthenticated: false,
   isLoading: true,
+  showSettingsDropdown: false,
 };
 
 function authReducer(state, action) {
@@ -26,6 +27,7 @@ function authReducer(state, action) {
         user: null,
         isAuthenticated: false,
         isLoading: false,
+        showSettingsDropdown: false,
       };
     case "init":
       return {
@@ -33,6 +35,16 @@ function authReducer(state, action) {
         user: action.payload,
         isAuthenticated: !!action.payload,
         isLoading: false,
+      };
+    case "toggleSettingsDropdown":
+      return {
+        ...state,
+        showSettingsDropdown: !state.showSettingsDropdown,
+      };
+    case "closeSettingsDropdown":
+      return {
+        ...state,
+        showSettingsDropdown: false,
       };
     default:
       throw new Error("Unknown action type");
@@ -45,10 +57,8 @@ const FAKE_USER = {
 };
 
 function AuthProvider({ children }) {
-  const [{ user, isAuthenticated, isLoading }, dispatch] = useReducer(
-    authReducer,
-    initialState
-  );
+  const [{ user, isAuthenticated, isLoading, showSettingsDropdown }, dispatch] =
+    useReducer(authReducer, initialState);
 
   useEffect(() => {
     // Check if user is already logged in from localStorage
@@ -80,14 +90,25 @@ function AuthProvider({ children }) {
     localStorage.removeItem("saudi-dash-user");
   }
 
+  function toggleSettingsDropdown() {
+    dispatch({ type: "toggleSettingsDropdown" });
+  }
+
+  function closeSettingsDropdown() {
+    dispatch({ type: "closeSettingsDropdown" });
+  }
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated,
         isLoading,
+        showSettingsDropdown,
         login,
         logout,
+        toggleSettingsDropdown,
+        closeSettingsDropdown,
       }}
     >
       {children}

@@ -1,102 +1,44 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  PointElement,
-  LineElement,
-} from "chart.js";
-import { Doughnut, Bar, Line, Scatter } from "react-chartjs-2";
+import Chart from "react-apexcharts";
 import Heading from "../ui/Heading";
 import {
-  TrendingUp,
-  MapPin,
-  Target,
-  DollarSign,
-  PieChart,
   Activity,
-  AlertTriangle,
-  CheckCircle,
-  Users,
   Building,
   Clock,
   FileText,
-  Shield,
-  Zap,
+  RefreshCw,
+  Home,
+  Maximize2,
+  CheckCircle,
+  AlertTriangle,
   BarChart3,
-  LineChart,
-  ScatterChart,
-  Award,
-  TrendingDown,
+  Users,
+  GitCommit,
+  Zap,
 } from "lucide-react";
 
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  PointElement,
-  LineElement
-);
+// --- Styled Components ---
 
 const Container = styled.div`
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 2rem;
+  padding: 1rem;
   overflow-x: auto;
   box-sizing: border-box;
-  background: var(--color-grey-100);
+  background: var(--color-dark);
   min-height: 100vh;
   position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-        circle at 20% 80%,
-        rgba(16, 185, 129, 0.1) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 80% 20%,
-        rgba(34, 197, 94, 0.1) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 40% 40%,
-        rgba(22, 163, 74, 0.1) 0%,
-        transparent 50%
-      );
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  > * {
-    position: relative;
-    z-index: 1;
-  }
+  direction: rtl;
 
   @media (max-width: 1200px) {
-    padding: 1.5rem;
+    padding: 0.8rem;
   }
 
   @media (max-width: 768px) {
-    padding: 1rem;
+    padding: 0.5rem;
   }
 `;
 
@@ -104,913 +46,1297 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding: 2rem;
-  background: var(--color-grey-100);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: var(--color-dark);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   flex-wrap: wrap;
-  gap: 1rem;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
-  }
+  gap: 0.5rem;
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
-    padding: 1.5rem;
+    padding: 1rem;
   }
 `;
 
 const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
+  order: 3;
 
   @media (max-width: 768px) {
+    order: 1;
     justify-content: center;
-    text-align: center;
+  }
+`;
+
+const HeaderCenter = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  order: 2;
+
+  @media (max-width: 768px) {
+    order: 2;
+    justify-content: center;
   }
 `;
 
 const HeaderRight = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
+  order: 1;
 
   @media (max-width: 768px) {
+    order: 3;
     justify-content: center;
-    gap: 0.5rem;
   }
 `;
 
-const SelectContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-`;
-
-const SelectInput = styled.select`
-  padding: 1rem 1.5rem;
-  border: 2px solid var(--color-grey-300);
-  border-radius: 12px;
-  background: var(--color-grey-100);
+const FilterSelect = styled.select`
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: var(--color-dark);
   color: #ffffff;
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  width: 20rem;
-  max-width: 100%;
-  box-sizing: border-box;
+  min-width: 120px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  text-align: right;
+  direction: rtl;
 
   &:focus {
     outline: none;
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-    transform: translateY(-2px);
+    border-color: var(--color-brand-500);
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
   }
 
   &:hover {
-    border-color: #22c55e;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  option {
+    background: var(--color-dark);
+    color: #ffffff;
+    direction: rtl;
   }
 
   @media (max-width: 768px) {
-    width: 100%;
-    max-width: 20rem;
+    min-width: 100px;
+    font-size: 0.75rem;
   }
 `;
 
-const DashboardGrid = styled.div`
+const IconButton = styled.button`
+  width: 2rem;
+  height: 2rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+  }
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+  }
+`;
+
+const TopSection = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  width: 100%;
-  box-sizing: border-box;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-`;
-
-const ChartsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  width: 100%;
-  box-sizing: border-box;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-`;
-
-const MetricsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
-  margin-bottom: 1.5rem;
-  width: 100%;
-  box-sizing: border-box;
+  margin-bottom: 1rem;
+  align-items: stretch;
 
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.8rem;
+  @media (min-width: 2400px) {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @media (max-width: 1800px) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const BottomSection = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+
+  @media (min-width: 2400px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
   }
 `;
 
 const Card = styled(motion.div)`
-  background: var(--color-grey-100);
-  border: 1px solid var(--color-grey-200);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--color-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
+  min-height: 250px;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
+  display: flex;
+  flex-direction: column;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
-    border-color: rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  }
 
-    &::before {
-      opacity: 1;
-    }
+  @media (max-width: 768px) {
+    min-height: 200px;
+    padding: 0.8rem;
   }
 `;
 
 const CardTitle = styled.h3`
-  font-size: 1.25rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: #ffffff;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-`;
+  gap: 0.3rem;
+  direction: rtl;
+  text-align: right;
 
-const MetricCard = styled.div`
-  background: var(--color-grey-100);
-  border: 1px solid var(--color-grey-200);
-  border-radius: 12px;
-  padding: 1rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #10b981, #22c55e);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
   }
-
-  &:hover {
-    background: var(--color-grey-100);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-
-    &::before {
-      opacity: 1;
-    }
-  }
-`;
-
-const MetricValue = styled.div`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 0.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-`;
-
-const MetricLabel = styled.div`
-  font-size: 0.875rem;
-  color: #d1d5db;
-  font-weight: 500;
 `;
 
 const ChartContainer = styled.div`
-  height: 250px;
+  height: 200px;
   position: relative;
-  margin: 1rem 0;
-  background: var(--color-grey-100);
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin: 0.5rem 0;
+  background: transparent;
+
+  @media (max-width: 1400px) {
+    height: 180px;
+  }
+
+  @media (max-width: 1200px) {
+    height: 160px;
+  }
 
   @media (max-width: 768px) {
-    height: 200px;
+    height: 150px;
   }
 `;
 
 const LargeChartContainer = styled.div`
-  height: 350px;
+  height: 250px;
   position: relative;
-  margin: 1rem 0;
-  background: var(--color-grey-100);
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin: 0.5rem 0;
+  background: transparent;
+
+  @media (max-width: 1400px) {
+    height: 220px;
+  }
+
+  @media (max-width: 1200px) {
+    height: 200px;
+  }
 
   @media (max-width: 768px) {
-    height: 250px;
+    height: 180px;
   }
 `;
 
-const ProgressBar = styled.div`
-  width: 100%;
-  height: 12px;
-  background: var(--color-grey-300);
+const MetricCard = styled.div`
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  overflow: hidden;
-  margin: 1rem 0;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-`;
-
-const ProgressFill = styled.div`
-  height: 100%;
-  background: ${(props) => props.color || "#10b981"};
-  width: ${(props) => props.percentage}%;
-  transition: width 0.8s ease;
-  border-radius: 6px;
+  padding: 0.8rem;
+  text-align: center;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.3),
-      transparent
-    );
-    animation: shimmer 2s infinite;
-  }
-
-  @keyframes shimmer {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(100%);
-    }
-  }
+  margin-bottom: 0.5rem;
 `;
 
-const StatusIndicator = styled.div`
+const MetricValue = styled.div`
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: #d1d5db;
-  margin-top: 0.5rem;
+  justify-content: center;
+  gap: 0.3rem;
+  direction: ltr;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
-const StatusDot = styled.div`
-  width: 0.25rem;
-  height: 0.25rem;
+const MetricLabel = styled.div`
+  font-size: 0.7rem;
+  color: #d1d5db;
+  font-weight: 500;
+  direction: rtl;
+
+  @media (max-width: 768px) {
+    font-size: 0.65rem;
+  }
+`;
+
+const Legend = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+  font-size: 0.6rem;
+  direction: rtl;
+  justify-content: flex-end;
+
+  @media (max-width: 768px) {
+    font-size: 0.55rem;
+  }
+`;
+
+const LegendItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: #d1d5db;
+`;
+
+const LegendDot = styled.div`
+  width: 0.4rem;
+  height: 0.4rem;
   border-radius: 50%;
   background: ${(props) => props.color};
 `;
 
-const DataTable = styled.div`
-  margin-top: 1rem;
+const Table = styled.div`
+  margin-top: 0.5rem;
 `;
 
 const TableRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.7rem;
+  direction: rtl;
 
   &:last-child {
     border-bottom: none;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.65rem;
   }
 `;
 
 const TableCell = styled.div`
-  font-size: 0.875rem;
-  color: ${(props) => (props.emphasis ? "#ffffff" : "#d1d5db")};
-  font-weight: ${(props) => (props.emphasis ? "600" : "400")};
-`;
+  font-size: 0.7rem;
+  color: ${(props) => (props.emphasis === "true" ? "#ffffff" : "#d1d5db")};
+  font-weight: ${(props) => (props.emphasis === "true" ? "600" : "400")};
+  text-align: ${(props) => (props.rtl === "true" ? "right" : "left")};
+  flex-basis: ${(props) => props.basis || "auto"};
 
-const IconWrapper = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: #10b981;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-
-  svg {
-    color: white;
-    width: 20px;
-    height: 20px;
+  @media (max-width: 768px) {
+    font-size: 0.65rem;
   }
 `;
 
-const KPIValueLarge = styled.div`
+const ExecutiveSummary = styled.div`
+  max-height: 120px;
+  overflow-y: auto;
+  padding-right: 0.3rem;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: #d1d5db;
+  direction: rtl;
+  text-align: right;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.65rem;
+  }
+`;
+
+const StatusBlock = styled.div`
+  background: ${(props) => props.color};
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  span {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+`;
+
+const StatusGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 1rem;
+`;
+
+const QualityStatCard = styled.div`
+  background: ${(props) => props.color}20;
+  border-radius: 6px;
+  padding: 0.8rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+`;
+
+const QualityValue = styled.div`
   font-size: 2rem;
   font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 0.5rem;
+  color: ${(props) => props.color};
+  line-height: 1;
 `;
 
-const KPILabel = styled.div`
-  font-size: 0.875rem;
-  color: #d1d5db;
-  font-weight: 500;
-`;
-
-const AlertCard = styled.div`
-  background: ${(props) =>
-    props.type === "warning"
-      ? "rgba(245, 158, 11, 0.1)"
-      : "rgba(16, 185, 129, 0.1)"};
-  border: 1px solid
-    ${(props) =>
-      props.type === "warning"
-        ? "rgba(245, 158, 11, 0.3)"
-        : "rgba(16, 185, 129, 0.3)"};
-  border-radius: 12px;
-  padding: 1rem;
-  margin: 0.5rem 0;
-`;
-
-const AlertText = styled.div`
-  font-size: 0.875rem;
+const QualityLabel = styled.div`
+  font-size: 0.8rem;
   color: #ffffff;
   font-weight: 500;
+  margin-top: 0.3rem;
+  direction: rtl;
 `;
 
-const TimelineContainer = styled.div`
-  margin: 1rem 0;
-`;
+// Small Donut Card for Quality Section
+const SmallDonutCard = ({ title, options, series, labels, chartOptions }) => (
+  <div
+    style={{
+      background: "var(--color-dark)",
+      border: "1px solid rgba(255, 255, 255, 0.1)",
+      borderRadius: "6px",
+      padding: "0.5rem",
+    }}
+  >
+    <div
+      style={{
+        fontSize: "0.7rem",
+        fontWeight: 600,
+        color: "#ffffff",
+        marginBottom: "0.3rem",
+        textAlign: "right",
+        direction: "rtl",
+      }}
+    >
+      {title}
+    </div>
+    <div style={{ height: "80px" }}>
+      <Chart
+        options={{
+          ...options,
+          plotOptions: {
+            pie: {
+              donut: {
+                size: "70%",
+                labels: { show: false },
+              },
+            },
+          },
+          legend: { show: false },
+          dataLabels: { enabled: false },
+        }}
+        series={series}
+        type="donut"
+        height={80}
+      />
+    </div>
+    <Legend style={{ fontSize: "0.5rem", justifyContent: "flex-end" }}>
+      {labels.map((label, index) => (
+        <LegendItem key={label}>
+          <LegendDot
+            color={chartOptions.colors[index % chartOptions.colors.length]}
+          />
+          {label}
+        </LegendItem>
+      ))}
+    </Legend>
+  </div>
+);
 
-const TimelineItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #f3f4f6;
-
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const TimelineDot = styled.div`
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #3b82f6;
-  flex-shrink: 0;
-`;
-
-const TimelineContent = styled.div`
-  flex: 1;
-`;
-
-const TimelineDate = styled.div`
-  font-size: 0.75rem;
-  color: #d1d5db;
-  margin-bottom: 0.25rem;
-`;
-
-const TimelineText = styled.div`
-  font-size: 0.875rem;
-  color: #ffffff;
-  font-weight: 500;
-`;
+// --- Dashboard Component ---
 
 function Dashboard() {
   const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedProject, setSelectedProject] = useState("");
+  const [selectedStage, setSelectedStage] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedSector, setSelectedSector] = useState("");
 
-  // Comprehensive API Data Object
-  const apiData = {
-    regions: [
-      { value: "", label: "المنطقة" },
-      { value: "جازان", label: "جازان" },
-      { value: "مناطق المملكة", label: "مناطق المملكة" },
-      { value: "الرياض", label: "الرياض" },
-      { value: "مكة المكرمة", label: "مكة المكرمة" },
-      { value: "المنطقة الشرقية", label: "المنطقة الشرقية" },
-      { value: "المدينة المنورة", label: "المدينة المنورة" },
-      { value: "نجران", label: "نجران" },
-      { value: "حائل", label: "حائل" },
-      { value: "القصيم", label: "القصيم" },
-      { value: "الحدود الشمالية", label: "الحدود الشمالية" },
-      { value: "عسير", label: "عسير" },
-      { value: "الباحة", label: "الباحة" },
-      { value: "تبوك", label: "تبوك" },
-      { value: "الجوف", label: "الجوف" },
-    ],
-    overview: {
-      totalProjects: 112,
-      completedProjects: 38,
-      activeProjects: 74,
-      totalBudget: "35.55 مليار",
-      spentBudget: "8.26 مليار",
-      completionRate: 28,
-      plannedCompletion: 32,
-      timelineProgress: 28,
-    },
-    regionalData: {
-      جازان: { projects: 26, completion: 85, budget: 2.8 },
-      "مناطق المملكة": { projects: 21, completion: 78, budget: 3.2 },
-      الرياض: { projects: 13, completion: 92, budget: 4.1 },
-      "مكة المكرمة": { projects: 9, completion: 88, budget: 2.5 },
-      "المنطقة الشرقية": { projects: 5, completion: 75, budget: 1.8 },
-    },
-    sectors: [
-      { name: "الأسماك", projects: 16, value: 0.22 },
-      { name: "البن العربي", projects: 9, value: 0.38 },
-      { name: "العسل", projects: 12, value: 0.48 },
-      { name: "الفاكهة", projects: 12, value: 0.72 },
-      { name: "القيمة المضافة", projects: 20, value: 1.09 },
-    ],
-    projectStages: [
-      { stage: "بدء المشروع", count: 4, value: 0.9 },
-      { stage: "الطرح", count: 1, value: 0.98 },
-      { stage: "إنتهاء المشروع", count: 21, value: 1.12 },
-      { stage: "تم الترسية", count: 63, value: 1.53 },
-    ],
-    recentActivities: [
-      {
-        date: "2025-09-15",
-        activity: "تسليم 6 أراضي لقطاعات الأسماك والورد والماشية",
-      },
-      {
-        date: "2025-09-10",
-        activity: "إنتهاء الدراسات الفنية لـ4 مشاريع تسويقية",
-      },
-      { date: "2025-09-05", activity: "مراجعة 620 طلب إعتماد فني" },
-      { date: "2025-09-01", activity: "توقيع 8 عقود جديدة بقيمة 2.3 مليار" },
-    ],
-    risks: [
-      { id: 1, risk: "تأخير في ترسية مشاريع الاشراف", level: "high" },
-      { id: 2, risk: "تأخير في المشاريع مع الالتزام المالي", level: "medium" },
-      { id: 3, risk: "تأخير في صرف المستخلصات", level: "medium" },
-    ],
-    qualityMetrics: {
-      fieldVisits: 350,
-      approvals: 287,
-      complianceRate: 92,
-      changeOrders: 14,
-    },
-    monthlyProgress: [
-      { month: "يناير", planned: 5, actual: 4, budget: 2.1 },
-      { month: "فبراير", planned: 10, actual: 8, budget: 4.2 },
-      { month: "مارس", planned: 15, actual: 12, budget: 6.3 },
-      { month: "أبريل", planned: 20, actual: 18, budget: 8.4 },
-      { month: "مايو", planned: 25, actual: 22, budget: 10.5 },
-      { month: "يونيو", planned: 30, actual: 28, budget: 12.6 },
-    ],
-    performanceMetrics: [
-      { metric: "كفاءة التنفيذ", value: 94, target: 90, trend: "up" },
-      { metric: "جودة المشاريع", value: 88, target: 85, trend: "up" },
-      { metric: "الالتزام بالمواعيد", value: 76, target: 80, trend: "down" },
-      { metric: "رضا العملاء", value: 92, target: 90, trend: "up" },
-    ],
-    budgetAllocation: [
-      { category: "البنية التحتية", amount: 15.2, percentage: 43 },
-      { category: "التطوير التقني", amount: 8.5, percentage: 24 },
-      { category: "الموارد البشرية", amount: 6.8, percentage: 19 },
-      { category: "التشغيل والصيانة", amount: 5.0, percentage: 14 },
-    ],
-    riskAssessment: [
-      { risk: "مخاطر تقنية", probability: 25, impact: 70, level: "medium" },
-      { risk: "مخاطر مالية", probability: 10, impact: 85, level: "medium" },
-      { risk: "مخاطر زمنية", probability: 40, impact: 60, level: "high" },
-      { risk: "مخاطر جودة", probability: 20, impact: 75, level: "medium" },
-    ],
-  };
-
-  // Filter data based on selected region
-  const getFilteredData = () => {
-    if (!selectedRegion) {
-      return apiData;
-    }
-
-    const regionData = apiData.regionalData[selectedRegion];
-    if (!regionData) {
-      return apiData;
-    }
-
-    // Return filtered data for the selected region
-    return {
-      ...apiData,
-      overview: {
-        ...apiData.overview,
-        totalProjects: regionData.projects,
-        completedProjects: Math.round(
-          regionData.projects * (regionData.completion / 100)
-        ),
-        activeProjects:
-          regionData.projects -
-          Math.round(regionData.projects * (regionData.completion / 100)),
-        totalBudget: `${regionData.budget} مليار`,
-        spentBudget: `${(
-          regionData.budget *
-          (regionData.completion / 100)
-        ).toFixed(2)} مليار`,
-        completionRate: regionData.completion,
-        plannedCompletion: regionData.completion + 5, // Add some planned vs actual difference
-        timelineProgress: regionData.completion,
-      },
-      regionalData: {
-        [selectedRegion]: regionData,
-      },
-      sectors: apiData.sectors.map((sector) => ({
-        ...sector,
-        projects: Math.round(
-          sector.projects *
-            (regionData.projects / apiData.overview.totalProjects)
-        ),
-      })),
-      projectStages: apiData.projectStages.map((stage) => ({
-        ...stage,
-        count: Math.round(
-          stage.count * (regionData.projects / apiData.overview.totalProjects)
-        ),
-      })),
-    };
-  };
-
-  const filteredData = getFilteredData();
-  const regionOptions = apiData.regions;
-  const overview = filteredData.overview;
-  const regionalData = filteredData.regionalData;
-  const sectors = filteredData.sectors;
-  const projectStages = filteredData.projectStages;
-  const recentActivities = filteredData.recentActivities;
-  const risks = filteredData.risks;
-  const qualityMetrics = filteredData.qualityMetrics;
-  const monthlyProgress = apiData.monthlyProgress;
-  const performanceMetrics = apiData.performanceMetrics;
-  const budgetAllocation = apiData.budgetAllocation;
-  const riskAssessment = apiData.riskAssessment;
-
-  // Chart data configurations
-  const regionalChartData = {
-    labels: Object.keys(regionalData),
-    datasets: [
-      {
-        data: Object.values(regionalData).map((r) => r.projects),
-        backgroundColor: [
-          "#3b82f6",
-          "#10b981",
-          "#f59e0b",
-          "#ef4444",
-          "#8b5cf6",
-        ],
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const sectorsChartData = {
-    labels: sectors.map((s) => s.name),
-    datasets: [
-      {
-        data: sectors.map((s) => s.projects),
-        backgroundColor: [
-          "#3b82f6",
-          "#10b981",
-          "#f59e0b",
-          "#ef4444",
-          "#8b5cf6",
-        ],
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const stagesChartData = {
-    labels: projectStages.map((s) => s.stage),
-    datasets: [
-      {
-        data: projectStages.map((s) => s.count),
-        backgroundColor: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const timelineData = {
-    labels: ["2021", "2022", "2023", "2024", "2025", "2026"],
-    datasets: [
-      {
-        label: "المخطط",
-        data: [0, 15, 30, 45, 60, 75],
-        borderColor: "#6b7280",
-        backgroundColor: "rgba(107, 114, 128, 0.1)",
-        borderDash: [5, 5],
-        borderWidth: 2,
-        pointBackgroundColor: "#6b7280",
-        pointBorderColor: "#ffffff",
-        pointBorderWidth: 2,
-        pointRadius: 6,
-      },
-      {
-        label: "الفعلي",
-        data: [0, 8, 18, 25, 28, 28],
-        borderColor: "#10b981",
-        backgroundColor: "rgba(16, 185, 129, 0.1)",
-        tension: 0.4,
-        borderWidth: 3,
-        pointBackgroundColor: "#10b981",
-        pointBorderColor: "#ffffff",
-        pointBorderWidth: 2,
-        pointRadius: 8,
-        fill: true,
-      },
-    ],
-  };
-
-  const monthlyProgressData = {
-    labels: monthlyProgress.map((m) => m.month),
-    datasets: [
-      {
-        label: "المخطط",
-        data: monthlyProgress.map((m) => m.planned),
-        borderColor: "#6b7280",
-        backgroundColor: "rgba(107, 114, 128, 0.1)",
-        tension: 0.4,
-        borderWidth: 2,
-        pointBackgroundColor: "#6b7280",
-        pointBorderColor: "#ffffff",
-        pointBorderWidth: 2,
-        pointRadius: 6,
-      },
-      {
-        label: "الفعلي",
-        data: monthlyProgress.map((m) => m.actual),
-        borderColor: "#10b981",
-        backgroundColor: "rgba(16, 185, 129, 0.1)",
-        tension: 0.4,
-        borderWidth: 3,
-        pointBackgroundColor: "#10b981",
-        pointBorderColor: "#ffffff",
-        pointBorderWidth: 2,
-        pointRadius: 8,
-        fill: true,
-      },
-    ],
-  };
-
-  const budgetAllocationData = {
-    labels: budgetAllocation.map((b) => b.category),
-    datasets: [
-      {
-        data: budgetAllocation.map((b) => b.amount),
-        backgroundColor: ["#10b981", "#22c55e", "#16a34a", "#15803d"],
-        borderWidth: 2,
-        borderColor: "#ffffff",
-        hoverBackgroundColor: ["#059669", "#16a34a", "#15803d", "#166534"],
-        hoverBorderWidth: 3,
-      },
-    ],
-  };
-
-  const riskAssessmentData = {
-    datasets: [
-      {
-        label: "مخاطر المشاريع",
-        data: riskAssessment.map((r) => ({
-          x: r.probability,
-          y: r.impact,
-        })),
-        backgroundColor: riskAssessment.map((r) =>
-          r.level === "high"
-            ? "#ef4444"
-            : r.level === "medium"
-            ? "#f59e0b"
-            : "#10b981"
-        ),
-        borderColor: "#ffffff",
-        borderWidth: 2,
-        pointRadius: 12,
-        hoverRadius: 16,
-        width: 2,
-        tension: 0.4,
-        height: 2,
-        hoverBorderWidth: 2,
-      },
-    ],
-  };
-
+  // Chart options for dark theme
   const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: {
-      duration: 2000,
-      easing: "easeInOutQuart",
+    theme: {
+      mode: "dark",
     },
-    plugins: {
-      legend: {
-        display: false,
+    chart: {
+      background: "transparent",
+      toolbar: {
+        show: false,
       },
-    },
-  };
-
-  const doughnutOptions = {
-    ...chartOptions,
-    cutout: "60%",
-    plugins: {
-      ...chartOptions.plugins,
-      legend: {
-        position: "bottom",
-        labels: {
-          padding: 20,
-          usePointStyle: true,
-          color: "#ffffff",
-          font: {
-            size: 13,
-            weight: "600",
+      fontFamily: "inherit",
+      locales: [
+        {
+          name: "ar",
+          options: {
+            toolbar: {
+              download: "تحميل",
+              selection: "تحديد",
+              zoom: "تكبير",
+              zoomin: "تكبير",
+              zoomout: "تصغير",
+              pan: "تحريك",
+              reset: "إعادة تعيين",
+            },
           },
         },
+      ],
+      defaultLocale: "ar",
+    },
+    colors: [
+      "#8b5cf6",
+      "#f59e0b",
+      "#fbbf24",
+      "#fde047",
+      "#86efac",
+      "#22c55e",
+      "#ef4444",
+      "#f97316",
+      "#06b6d4",
+      "#3b82f6",
+      "#84cc16",
+      "#10b981",
+      "#6366f1",
+      "#d946ef",
+    ],
+    legend: {
+      labels: {
+        colors: "#ffffff",
       },
+      position: "bottom",
+      horizontalAlign: "center",
+      fontFamily: "inherit",
+      fontSize: "12px",
     },
-  };
-
-  const lineOptions = {
-    ...chartOptions,
-    animation: {
-      duration: 2000,
-      easing: "easeInOutQuart",
-    },
-    scales: {
+    tooltip: {
+      theme: "dark",
+      rtl: true,
       y: {
-        beginAtZero: true,
-        grid: {
-          color: "rgba(107, 114, 128, 0.2)",
-          lineWidth: 1,
-        },
-        ticks: {
-          color: "#ffffff",
-          font: {
-            size: 12,
-            weight: "500",
-          },
-        },
-        border: {
-          color: "rgba(107, 114, 128, 0.3)",
-        },
-      },
-      x: {
-        grid: {
-          color: "rgba(107, 114, 128, 0.2)",
-          lineWidth: 1,
-        },
-        ticks: {
-          color: "#ffffff",
-          font: {
-            size: 12,
-            weight: "500",
-          },
-        },
-        border: {
-          color: "rgba(107, 114, 128, 0.3)",
+        formatter: function (value) {
+          if (typeof value === "number") {
+            if (value > 1000000000)
+              return (value / 1000000000).toFixed(2) + " بليون";
+            if (value > 1000000) return (value / 1000000).toFixed(2) + " مليون";
+            if (value > 1000) return (value / 1000).toFixed(0) + " ألف";
+          }
+          return value;
         },
       },
     },
-    plugins: {
-      legend: {
-        labels: {
-          color: "#ffffff",
-          font: {
-            size: 13,
-            weight: "600",
+    dataLabels: {
+      enabled: false,
+    },
+  };
+
+  // Base donut options for sectors, stages, types
+  const baseDonutOptions = {
+    ...chartOptions,
+    chart: {
+      ...chartOptions.chart,
+      type: "donut",
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "70%",
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              label: "",
+              fontSize: "14px",
+              fontWeight: 600,
+              color: "#ffffff",
+            },
           },
-          padding: 20,
+        },
+      },
+    },
+    legend: { show: false },
+  };
+
+  // Geographical Distribution Chart
+  const geographicalDistributionOptions = {
+    ...chartOptions,
+    chart: {
+      ...chartOptions.chart,
+      type: "bar",
+      stacked: true,
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        barHeight: "80%",
+      },
+    },
+    xaxis: {
+      categories: [
+        "الجوف",
+        "تبوك",
+        "الباحة",
+        "عسير",
+        "الحدود الشمالية",
+        "القصيم",
+        "حائل",
+        "نجران",
+        "المدينة المنورة",
+        "المنطقة الشرقية",
+        "مكة المكرمة",
+        "الرياض",
+        "مناطق المملكة",
+        "جازان",
+      ],
+      labels: {
+        style: {
+          colors: "#ffffff",
+        },
+      },
+    },
+    yaxis: {
+      labels: {
+        style: {
+          colors: "#ffffff",
+        },
+      },
+    },
+    grid: {
+      borderColor: "rgba(255, 255, 255, 0.1)",
+    },
+    legend: {
+      ...chartOptions.legend,
+      position: "bottom",
+      itemMargin: { horizontal: 5, vertical: 0 },
+      markers: {
+        width: 8,
+        height: 8,
+      },
+      onItemClick: { toggleDataSeries: false },
+    },
+  };
+
+  const geographicalDistributionSeries = [
+    { name: "الورد", data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] },
+    { name: "المواشي", data: [0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 2, 4, 4] },
+    {
+      name: "المحاصيل البعليه",
+      data: [0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 2, 3, 3],
+    },
+    {
+      name: "القيمة المضافة",
+      data: [0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 2],
+    },
+    { name: "الفاكهة", data: [0, 1, 1, 1, 0, 0, 0, 1, 1, 2, 1, 2, 3, 2] },
+    { name: "العسل", data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2, 4, 3] },
+    { name: "البن العربي", data: [0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 2, 1, 3, 2] },
+    { name: "الاسماك", data: [0, 1, 1, 2, 1, 0, 1, 1, 1, 1, 3, 2, 5, 3] },
+  ];
+
+  // Sector Distribution
+  const sectorDistributionLabels = [
+    "الاسماك",
+    "البن العربي",
+    "العسل",
+    "الفاكهة",
+    "القيمة المضافة",
+    "المحاصيل البعليه",
+    "المواشي",
+    "الورد",
+  ];
+  const sectorDistributionSeriesCount = [20, 18, 6, 18, 12, 12, 9, 16];
+  const sectorDistributionSeriesValue = [
+    0.37, 0.24, 0.19, 0.12, 0.13, 0.09, 0.17, 0.22,
+  ];
+
+  const sectorDistributionCountOptions = {
+    ...baseDonutOptions,
+    labels: sectorDistributionLabels,
+    plotOptions: {
+      ...baseDonutOptions.plotOptions,
+      pie: {
+        ...baseDonutOptions.plotOptions.pie,
+        donut: {
+          ...baseDonutOptions.plotOptions.pie.donut,
+          labels: {
+            ...baseDonutOptions.plotOptions.pie.donut.labels,
+            total: {
+              ...baseDonutOptions.plotOptions.pie.donut.labels.total,
+              formatter: () =>
+                sectorDistributionSeriesCount.reduce((a, b) => a + b, 0),
+            },
+          },
         },
       },
     },
   };
 
-  const scatterOptions = {
-    ...chartOptions,
-    animation: {
-      duration: 2000,
-      easing: "easeInOutQuart",
+  const sectorDistributionValueOptions = {
+    ...baseDonutOptions,
+    labels: sectorDistributionLabels,
+    plotOptions: {
+      ...baseDonutOptions.plotOptions,
+      pie: {
+        ...baseDonutOptions.plotOptions.pie,
+        donut: {
+          ...baseDonutOptions.plotOptions.pie.donut,
+          labels: {
+            ...baseDonutOptions.plotOptions.pie.donut.labels,
+            total: {
+              ...baseDonutOptions.plotOptions.pie.donut.labels.total,
+              formatter: () =>
+                sectorDistributionSeriesValue
+                  .reduce((a, b) => a + b, 0)
+                  .toFixed(2) + " B",
+            },
+          },
+        },
+      },
     },
-    scales: {
-      x: {
-        beginAtZero: true,
+    tooltip: {
+      ...chartOptions.tooltip,
+      y: {
+        formatter: (val) => val.toFixed(2) + " B",
+      },
+    },
+  };
+
+  // Project Stages
+  const projectStagesLabels = [
+    "بدء المشروع",
+    "لجنة فحص العروض",
+    "تم الترسية",
+    "تم التوقيع",
+    "الطرح",
+    "إنتهاء المشروع",
+  ];
+  const projectStagesSeriesCount = [63, 21, 13, 9, 11, 4];
+  const projectStagesSeriesValue = [0.74, 0.34, 0.05, 0.01, 0.13, 0.04];
+
+  const projectStagesCountOptions = {
+    ...baseDonutOptions,
+    labels: projectStagesLabels,
+    plotOptions: {
+      ...baseDonutOptions.plotOptions,
+      pie: {
+        ...baseDonutOptions.plotOptions.pie,
+        donut: {
+          ...baseDonutOptions.plotOptions.pie.donut,
+          labels: {
+            ...baseDonutOptions.plotOptions.pie.donut.labels,
+            total: {
+              ...baseDonutOptions.plotOptions.pie.donut.labels.total,
+              formatter: () =>
+                projectStagesSeriesCount.reduce((a, b) => a + b, 0),
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const projectStagesValueOptions = {
+    ...baseDonutOptions,
+    labels: projectStagesLabels,
+    plotOptions: {
+      ...baseDonutOptions.plotOptions,
+      pie: {
+        ...baseDonutOptions.plotOptions.pie,
+        donut: {
+          ...baseDonutOptions.plotOptions.pie.donut,
+          labels: {
+            ...baseDonutOptions.plotOptions.pie.donut.labels,
+            total: {
+              ...baseDonutOptions.plotOptions.pie.donut.labels.total,
+              formatter: () =>
+                projectStagesSeriesValue.reduce((a, b) => a + b, 0).toFixed(2) +
+                " B",
+            },
+          },
+        },
+      },
+    },
+    tooltip: {
+      ...chartOptions.tooltip,
+      y: {
+        formatter: (val) => val.toFixed(2) + " B",
+      },
+    },
+  };
+
+  // Project Types
+  const projectTypesLabels = [
+    "انشاءات",
+    "اعمال الخدمات",
+    "توريدات",
+    "تشغيل",
+    "الاشراف",
+    "استشارات",
+    "تقنية المعلومات",
+  ];
+  const projectTypesSeriesCount = [65, 19, 17, 3, 2, 2, 3];
+  const projectTypesSeriesValue = [0.8, 0.25, 0.03, 0.05, 0.09, 0.03, 0.07];
+
+  const projectTypesCountOptions = {
+    ...baseDonutOptions,
+    labels: projectTypesLabels,
+    plotOptions: {
+      ...baseDonutOptions.plotOptions,
+      pie: {
+        ...baseDonutOptions.plotOptions.pie,
+        donut: {
+          ...baseDonutOptions.plotOptions.pie.donut,
+          labels: {
+            ...baseDonutOptions.plotOptions.pie.donut.labels,
+            total: {
+              ...baseDonutOptions.plotOptions.pie.donut.labels.total,
+              formatter: () =>
+                projectTypesSeriesCount.reduce((a, b) => a + b, 0),
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const projectTypesValueOptions = {
+    ...baseDonutOptions,
+    labels: projectTypesLabels,
+    plotOptions: {
+      ...baseDonutOptions.plotOptions,
+      pie: {
+        ...baseDonutOptions.plotOptions.pie,
+        donut: {
+          ...baseDonutOptions.plotOptions.pie.donut,
+          labels: {
+            ...baseDonutOptions.plotOptions.pie.donut.labels,
+            total: {
+              ...baseDonutOptions.plotOptions.pie.donut.labels.total,
+              formatter: () =>
+                projectTypesSeriesValue.reduce((a, b) => a + b, 0).toFixed(2) +
+                " B",
+            },
+          },
+        },
+      },
+    },
+    tooltip: {
+      ...chartOptions.tooltip,
+      y: {
+        formatter: (val) => val.toFixed(2) + " B",
+      },
+    },
+  };
+
+  // Budget Distribution
+  const budgetChartOptions = {
+    ...chartOptions,
+    chart: {
+      ...chartOptions.chart,
+      type: "bar",
+      stacked: true,
+      horizontal: true,
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        barHeight: "50%",
+        borderRadius: 4,
+      },
+    },
+    xaxis: {
+      categories: ["الميزانية"],
+      labels: {
+        show: false,
+      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+    },
+    yaxis: {
+      labels: {
+        show: false,
+      },
+    },
+    grid: {
+      show: false,
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      ...chartOptions.tooltip,
+      y: {
+        formatter: (val) => val.toFixed(2) + " M",
+      },
+    },
+  };
+
+  const budgetChartSeries = [
+    {
+      name: "مبالغ تحت إجراءات الترسية",
+      data: [366.45],
+      color: "#f97316",
+    },
+    {
+      name: "مشاريع تمت ترسيتها",
+      data: [221.42],
+      color: "#fbbf24",
+    },
+    {
+      name: "الفرق بين التقديري و الفعلي",
+      data: [2.22],
+      color: "#22c55e",
+    },
+    {
+      name: "المبلغ المتبقي",
+      data: [226.28],
+      color: "#8b5cf6",
+    },
+  ];
+
+  // Program Completion Timeline
+  const completionTimelineOptions = {
+    ...chartOptions,
+    chart: {
+      ...chartOptions.chart,
+      type: "line",
+      stacked: false,
+    },
+    stroke: {
+      width: [4, 4, 0, 0],
+      curve: "smooth",
+    },
+    plotOptions: {
+      bar: {
+        columnWidth: "70%",
+      },
+    },
+    xaxis: {
+      categories: [
+        "21-H1",
+        "21-H2",
+        "22-H1",
+        "22-H2",
+        "23-H1",
+        "23-H2",
+        "24-H1",
+        "24-H2",
+        "25-H1",
+        "25-H2",
+        "26-H1",
+        "26-H2",
+      ],
+      labels: {
+        style: {
+          colors: "#ffffff",
+        },
+        rotate: -45,
+      },
+    },
+    yaxis: [
+      {
+        seriesName: "المخطط التراكمي",
+        opposite: true,
+        axisTicks: { show: true },
+        axisBorder: { show: true, color: "#3b82f6" },
+        labels: {
+          style: { colors: "#3b82f6" },
+          formatter: (val) => val + "%",
+        },
+        title: {
+          text: "النسبة التراكمية",
+          style: { color: "#3b82f6" },
+        },
         min: 0,
         max: 100,
+      },
+      {
+        seriesName: "نسبة الانجاز المخطط",
+        axisTicks: { show: true },
+        axisBorder: { show: true, color: "#22c55e" },
+        labels: {
+          style: { colors: "#22c55e" },
+          formatter: (val) => val + "%",
+        },
         title: {
-          display: true,
-          text: "احتمالية الحدوث (%)",
-          color: "#ffffff",
-          font: {
-            size: 14,
-            weight: "600",
-          },
-        },
-        grid: {
-          color: "rgba(107, 114, 128, 0.2)",
-          lineWidth: 1,
-        },
-        ticks: {
-          color: "#ffffff",
-          font: {
-            size: 12,
-            weight: "500",
-          },
-        },
-        border: {
-          color: "rgba(107, 114, 128, 0.3)",
+          text: "نسبة الانجاز",
+          style: { color: "#22c55e" },
         },
       },
-      y: {
-        beginAtZero: true,
-        min: 0,
-        max: 100,
-        title: {
-          display: true,
-          text: "التأثير (%)",
-          color: "#ffffff",
-          font: {
-            size: 14,
-            weight: "600",
+    ],
+    series: [
+      {
+        name: "المخطط التراكمي",
+        type: "line",
+        data: [5, 15, 24, 31, 41, 54, 66, 74, 81, 89, 95, 100],
+        color: "#3b82f6",
+      },
+      {
+        name: "الفعلي التراكمي",
+        type: "line",
+        data: [4, 14, 22, 29, 39, 52, 64, 72, 79, 87, 93, 98],
+        color: "#ef4444",
+      },
+      {
+        name: "نسبة الانجاز المخطط",
+        type: "bar",
+        data: [5, 10, 9, 7, 13, 12, 8, 13, 7, 8, 6, 5],
+        color: "#fbbf24",
+      },
+      {
+        name: "نسبة الانجاز الفعلي",
+        type: "bar",
+        data: [4, 10, 8, 6, 12, 11, 7, 12, 6, 7, 5, 4],
+        color: "#06b6d4",
+      },
+    ],
+    grid: {
+      borderColor: "rgba(255, 255, 255, 0.1)",
+    },
+    legend: {
+      ...chartOptions.legend,
+      position: "bottom",
+    },
+  };
+
+  // Work Receipts and Technical Approvals base
+  const baseStatusDonutOptions = {
+    ...chartOptions,
+    chart: { ...chartOptions.chart, type: "donut" },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "80%",
+          labels: {
+            show: true,
+            name: { show: false },
+            value: { show: false },
+            total: {
+              show: true,
+              label: "",
+              fontSize: "12px",
+              fontWeight: 400,
+              color: "#d1d5db",
+            },
           },
-        },
-        grid: {
-          color: "rgba(107, 114, 128, 0.2)",
-          lineWidth: 1,
-        },
-        ticks: {
-          color: "#ffffff",
-          font: {
-            size: 12,
-            weight: "500",
-          },
-        },
-        border: {
-          color: "rgba(107, 114, 128, 0.3)",
         },
       },
     },
+    labels: [
+      "مرفوض",
+      "متأخر",
+      "معتمد مع ملاحظات",
+      "يعاد التسليم",
+      "تحت الدراسة",
+      "معتمد بدون ملاحظات",
+    ],
+    legend: { show: false },
+    dataLabels: {
+      enabled: true,
+      formatter: function (val, opts) {
+        return (
+          opts.w.config.series[opts.seriesIndex] + " (" + val.toFixed(0) + "%)"
+        );
+      },
+      style: {
+        fontSize: "10px",
+        colors: ["#fff"],
+      },
+      dropShadow: {
+        enabled: true,
+      },
+    },
   };
+
+  const workReceiptsOptions = {
+    ...baseStatusDonutOptions,
+    plotOptions: {
+      ...baseStatusDonutOptions.plotOptions,
+      pie: {
+        ...baseStatusDonutOptions.plotOptions.pie,
+        donut: {
+          ...baseStatusDonutOptions.plotOptions.pie.donut,
+          labels: {
+            ...baseStatusDonutOptions.plotOptions.pie.donut.labels,
+            total: {
+              ...baseStatusDonutOptions.plotOptions.pie.donut.labels.total,
+              label: "اجمالي استلام",
+              formatter: () => "5595",
+            },
+          },
+        },
+      },
+    },
+    series: [3994, 916, 195, 119, 130, 19],
+  };
+
+  const workReceiptsLabels = [
+    "مرفوض",
+    "متأخر",
+    "معتمد مع ملاحظات",
+    "يعاد التسليم",
+    "تحت الدراسة",
+    "معتمد بدون ملاحظات",
+  ];
+
+  const technicalApprovalsOptions = {
+    ...baseStatusDonutOptions,
+    plotOptions: {
+      ...baseStatusDonutOptions.plotOptions,
+      pie: {
+        ...baseStatusDonutOptions.plotOptions.pie,
+        donut: {
+          ...baseStatusDonutOptions.plotOptions.pie.donut,
+          labels: {
+            ...baseStatusDonutOptions.plotOptions.pie.donut.labels,
+            total: {
+              ...baseStatusDonutOptions.plotOptions.pie.donut.labels.total,
+              label: "اجمالي اعتمادات",
+              formatter: () => "7715",
+            },
+          },
+        },
+      },
+    },
+    series: [3988, 2764, 398, 140, 56, 26],
+  };
+
+  const technicalApprovalsLabels = [
+    "مرفوض",
+    "متأخر",
+    "معتمد مع ملاحظات",
+    "يعاد التسليم",
+    "تحت الدراسة",
+    "معتمد بدون ملاحظات",
+  ];
+
+  // Change Orders and Non-Conformance specific
+  const changeOrdersOptions = {
+    ...chartOptions,
+    chart: { type: "donut" },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "70%",
+          labels: { show: false },
+        },
+      },
+    },
+    labels: ["مرفوض", "مفتوح", "معتمد"],
+    legend: { show: false },
+    dataLabels: { enabled: false },
+  };
+
+  const changeOrdersLabels = ["مرفوض", "مفتوح", "معتمد"];
+  const changeOrdersSeries = [1, 1, 14];
+
+  const nonConformanceOptions = {
+    ...chartOptions,
+    chart: { type: "donut" },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "70%",
+          labels: { show: false },
+        },
+      },
+    },
+    labels: ["غير مطابق", "تحت المعالجة", "مطابق"],
+    legend: { show: false },
+    dataLabels: { enabled: false },
+  };
+
+  const nonConformanceLabels = ["غير مطابق", "تحت المعالجة", "مطابق"];
+  const nonConformanceSeries = [3, 3, 11];
+
+  // Project Status Gauge
+  const actualCompletionSeries = [28];
+  const actualCompletionOptions = {
+    ...chartOptions,
+    chart: {
+      ...chartOptions.chart,
+      type: "radialBar",
+      animations: { enabled: false },
+    },
+    plotOptions: {
+      radialBar: {
+        hollow: {
+          margin: 0,
+          size: "60%",
+        },
+        dataLabels: {
+          showOn: "always",
+          name: { show: false },
+          value: {
+            color: "#ffffff",
+            fontSize: "28px",
+            fontWeight: 700,
+            show: true,
+            offsetY: 8,
+            formatter: (val) => val + "%",
+          },
+        },
+        track: {
+          background: "#4b5563",
+          margin: 0,
+        },
+      },
+    },
+    fill: {
+      colors: ["#3b82f6"],
+    },
+    stroke: {
+      lineCap: "round",
+    },
+    labels: ["نسبة الإنجاز الفعلي"],
+    legend: { show: false },
+  };
+
+  // Risk Matrix
+  const riskMatrixOptions = {
+    ...chartOptions,
+    chart: {
+      ...chartOptions.chart,
+      type: "scatter",
+      toolbar: { show: true },
+    },
+    xaxis: {
+      title: {
+        text: "الاحتمالية",
+        style: { colors: "#ffffff" },
+      },
+      tickAmount: 5,
+      min: 1,
+      max: 5,
+      labels: {
+        style: { colors: "#ffffff" },
+      },
+    },
+    yaxis: {
+      title: {
+        text: "التأثير",
+        style: { colors: "#ffffff" },
+      },
+      tickAmount: 5,
+      min: 1,
+      max: 5,
+      labels: {
+        style: { colors: "#ffffff" },
+      },
+    },
+    grid: {
+      borderColor: "rgba(255, 255, 255, 0.1)",
+      xaxis: { lines: { show: true } },
+      yaxis: { lines: { show: true } },
+    },
+    markers: {
+      size: 10,
+      colors: ["#ef4444"],
+      strokeColors: "#fff",
+      strokeWidth: 2,
+      hover: { size: 12 },
+    },
+    tooltip: {
+      ...chartOptions.tooltip,
+      y: {
+        formatter: (val) => "التأثير: " + val,
+      },
+      x: {
+        formatter: (val) => "الاحتمالية: " + val,
+      },
+    },
+  };
+
+  const riskMatrixSeries = [
+    {
+      name: "المخاطر",
+      data: [
+        { x: 3, y: 4, meta: "تأخر تورسية المشاريع" },
+        { x: 4, y: 3, meta: "تأخر في صرف المستحقات" },
+        { x: 4, y: 4, meta: "عدم تفرغ الكادر" },
+      ],
+    },
+  ];
+
+  const risksTableData = [
+    { id: 1, name: "تأخر تورسية المشاريع", impact: 4, probability: 3 },
+    { id: 2, name: "تأخر في صرف المستحقات", impact: 3, probability: 4 },
+    { id: 3, name: "عدم تفرغ الكادر", impact: 4, probability: 4 },
+  ];
 
   return (
     <Container>
@@ -1019,486 +1345,723 @@ function Dashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <Header>
+        {/* Header */}
+        {/* <Header>
           <HeaderLeft>
+            <IconButton>
+              <FileText />
+            </IconButton>
+            <IconButton>
+              <RefreshCw />
+            </IconButton>
+          </HeaderLeft>
+          <HeaderCenter>
+            <FilterSelect
+              value={selectedRegion}
+              onChange={(e) => setSelectedRegion(e.target.value)}
+            >
+              <option value="">المنطقة</option>
+              <option value="جازان">جازان</option>
+              <option value="الرياض">الرياض</option>
+              <option value="مكة المكرمة">مكة المكرمة</option>
+            </FilterSelect>
+            <FilterSelect
+              value={selectedProject}
+              onChange={(e) => setSelectedProject(e.target.value)}
+            >
+              <option value="">المشروع</option>
+              <option value="مشروع1">مشروع 1</option>
+              <option value="مشروع2">مشروع 2</option>
+            </FilterSelect>
+            <FilterSelect
+              value={selectedStage}
+              onChange={(e) => setSelectedStage(e.target.value)}
+            >
+              <option value="">مراحل المشروع</option>
+              <option value="بدء">بدء المشروع</option>
+              <option value="تنفيذ">التنفيذ</option>
+            </FilterSelect>
+            <FilterSelect
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+              <option value="">حالة المشروع</option>
+              <option value="نشط">نشط</option>
+              <option value="مكتمل">مكتمل</option>
+            </FilterSelect>
+            <FilterSelect
+              value={selectedSector}
+              onChange={(e) => setSelectedSector(e.target.value)}
+            >
+              <option value="">القطاع</option>
+              <option value="الاسماك">الاسماك</option>
+              <option value="البن العربي">البن العربي</option>
+            </FilterSelect>
+          </HeaderCenter>
+          <HeaderRight>
             <Heading
               as="h1"
-              style={{ color: "var(--color-grey-800)", fontSize: "2rem" }}
+              style={{ color: "#ffffff", fontSize: "1.2rem", margin: 0 }}
             >
-              لوحة متابعة المشاريع
+              لوحة بيانات المشاريع
             </Heading>
             <span
               style={{
-                fontSize: "1.2rem",
-                color: "var(--color-grey-600)",
+                fontSize: "0.8rem",
+                color: "#d1d5db",
                 fontWeight: "500",
               }}
             >
-              تحديث سبتمبر 2025
+              سبتمبر 2025
             </span>
-          </HeaderLeft>
-          <HeaderRight>
-            <SelectContainer>
-              <SelectInput
-                value={selectedRegion}
-                onChange={(e) => setSelectedRegion(e.target.value)}
-              >
-                {regionOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </SelectInput>
-            </SelectContainer>
+            <IconButton>
+              <Maximize2 />
+            </IconButton>
+            <IconButton>
+              <Home />
+            </IconButton>
           </HeaderRight>
-        </Header>
-      </motion.div>
+        </Header> */}
 
-      {/* Overview Metrics */}
-      <DashboardGrid>
-        <Card>
-          <IconWrapper color="var(--color-brand-500)">
-            <Building />
-          </IconWrapper>
-          <CardTitle>إجمالي المشاريع</CardTitle>
-          <KPIValueLarge>{overview.totalProjects}</KPIValueLarge>
-          <KPILabel>مشروع نشط</KPILabel>
-          <ProgressBar>
-            <ProgressFill
-              percentage={
-                (overview.completedProjects / overview.totalProjects) * 100
-              }
-              color="var(--color-brand-500)"
-            />
-          </ProgressBar>
-          <StatusIndicator>
-            <StatusDot color="var(--color-green-500)" />
-            <span>مكتمل: {overview.completedProjects}</span>
-            <StatusDot color="var(--color-brand-500)" />
-            <span>نشط: {overview.activeProjects}</span>
-          </StatusIndicator>
-        </Card>
+        {/* Top Section (Matching Image 1) */}
+        <TopSection>
+          {/* Geographical Distribution */}
+          <Card>
+            <CardTitle>
+              <BarChart3 size={16} />
+              التوزيع الجغرافي للمشاريع
+            </CardTitle>
+            <ChartContainer style={{ height: "400px" }}>
+              <Chart
+                options={geographicalDistributionOptions}
+                series={geographicalDistributionSeries}
+                type="bar"
+                height={400}
+              />
+            </ChartContainer>
+          </Card>
 
-        <Card>
-          <IconWrapper color="var(--color-green-500)">
-            <DollarSign />
-          </IconWrapper>
-          <CardTitle>الميزانية</CardTitle>
-          <KPIValueLarge>{overview.totalBudget}</KPIValueLarge>
-          <KPILabel>ريال سعودي</KPILabel>
-          <ProgressBar>
-            <ProgressFill
-              percentage={
-                (parseFloat(overview.spentBudget) /
-                  parseFloat(overview.totalBudget)) *
-                100
-              }
-              color="var(--color-brand-500)"
-            />
-          </ProgressBar>
-          <StatusIndicator>
-            <StatusDot color="var(--color-brand-500)" />
-            <span>منفق: {overview.spentBudget}</span>
-            <StatusDot color="var(--color-brand-500)" />
-            <span>
-              متبقي:{" "}
-              {parseFloat(overview.totalBudget) -
-                parseFloat(overview.spentBudget)}{" "}
-              مليار
-            </span>
-          </StatusIndicator>
-        </Card>
-
-        <Card>
-          <IconWrapper color="var(--color-yellow-500)">
-            <Target />
-          </IconWrapper>
-          <CardTitle>معدل الإنجاز</CardTitle>
-          <KPIValueLarge>{overview.completionRate}%</KPIValueLarge>
-          <KPILabel>من المستهدف</KPILabel>
-          <ProgressBar>
-            <ProgressFill
-              percentage={overview.completionRate}
-              color="var(--color-brand-500)"
-            />
-          </ProgressBar>
-          <StatusIndicator>
-            <StatusDot color="var(--color-yellow-500)" />
-            <span>فعلي: {overview.completionRate}%</span>
-            <StatusDot color="var(--color-brand-500)" />
-            <span>مخطط: {overview.plannedCompletion}%</span>
-          </StatusIndicator>
-        </Card>
-
-        <Card>
-          <IconWrapper color="var(--color-red-500)">
-            <Clock />
-          </IconWrapper>
-          <CardTitle>التقدم الزمني</CardTitle>
-          <KPIValueLarge>{overview.timelineProgress}%</KPIValueLarge>
-          <KPILabel>من الجدول الزمني</KPILabel>
-          <ProgressBar>
-            <ProgressFill
-              percentage={overview.timelineProgress}
-              color="var(--color-brand-500)"
-            />
-          </ProgressBar>
-          <StatusIndicator>
-            <StatusDot color="var(--color-brand-500)" />
-            <span>
-              متقدم عن الجدول: +
-              {overview.timelineProgress - overview.plannedCompletion}%
-            </span>
-          </StatusIndicator>
-        </Card>
-      </DashboardGrid>
-
-      {/* Regional Distribution */}
-      <ChartsGrid>
-        <Card>
-          <CardTitle>
-            <MapPin size={20} />
-            التوزيع الجغرافي
-          </CardTitle>
-          <ChartContainer>
-            <Doughnut data={regionalChartData} options={doughnutOptions} />
-          </ChartContainer>
-          <DataTable>
-            {Object.entries(regionalData).map(([region, data]) => (
-              <TableRow key={region}>
-                <TableCell emphasis>{region}</TableCell>
-                <TableCell>{data.projects} مشروع</TableCell>
-                <TableCell>{data.completion}% إنجاز</TableCell>
-              </TableRow>
-            ))}
-          </DataTable>
-        </Card>
-
-        <Card>
-          <CardTitle>
-            <PieChart size={20} />
-            التوزيع القطاعي
-          </CardTitle>
-          <ChartContainer>
-            <Doughnut data={sectorsChartData} options={doughnutOptions} />
-          </ChartContainer>
-          <DataTable>
-            {sectors.map((sector) => (
-              <TableRow key={sector.name}>
-                <TableCell emphasis>{sector.name}</TableCell>
-                <TableCell>{sector.projects} مشروع</TableCell>
-                <TableCell>{sector.value} مليار</TableCell>
-              </TableRow>
-            ))}
-          </DataTable>
-        </Card>
-      </ChartsGrid>
-
-      {/* Project Progress */}
-      <ChartsGrid>
-        <Card>
-          <CardTitle>
-            <Activity size={20} />
-            مراحل المشاريع
-          </CardTitle>
-          <ChartContainer>
-            <Doughnut data={stagesChartData} options={doughnutOptions} />
-          </ChartContainer>
-          <DataTable>
-            {projectStages.map((stage) => (
-              <TableRow key={stage.stage}>
-                <TableCell emphasis>{stage.stage}</TableCell>
-                <TableCell>{stage.count} مشروع</TableCell>
-                <TableCell>{stage.value} مليار</TableCell>
-              </TableRow>
-            ))}
-          </DataTable>
-        </Card>
-
-        <Card>
-          <CardTitle>
-            <TrendingUp size={20} />
-            التقدم الزمني
-          </CardTitle>
-          <ChartContainer>
-            <Bar data={timelineData} options={lineOptions} />
-          </ChartContainer>
-          <MetricsGrid>
-            <MetricCard>
-              <MetricValue>28%</MetricValue>
-              <MetricLabel>الإنجاز الفعلي</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricValue>32%</MetricValue>
-              <MetricLabel>المخطط</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricValue>-4%</MetricValue>
-              <MetricLabel>الانحراف</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricValue>2026</MetricValue>
-              <MetricLabel>نهاية البرنامج</MetricLabel>
-            </MetricCard>
-          </MetricsGrid>
-        </Card>
-      </ChartsGrid>
-
-      {/* Quality and Activities */}
-      <DashboardGrid>
-        <Card>
-          <CardTitle>
-            <CheckCircle size={20} />
-            مؤشرات الجودة
-          </CardTitle>
-          <MetricsGrid>
-            <MetricCard>
-              <MetricValue>{qualityMetrics.fieldVisits}</MetricValue>
-              <MetricLabel>زيارات ميدانية</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricValue>{qualityMetrics.approvals}</MetricValue>
-              <MetricLabel>اعتمادات</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricValue>{qualityMetrics.complianceRate}%</MetricValue>
-              <MetricLabel>معدل المطابقة</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricValue>{qualityMetrics.changeOrders}</MetricValue>
-              <MetricLabel>أوامر التغيير</MetricLabel>
-            </MetricCard>
-          </MetricsGrid>
-
-          <StatusIndicator>
-            <StatusDot color="var(--color-brand-500)" />
-            <span>أداء عالي</span>
-            <StatusDot color="var(--color-yellow-700)" />
-            <span>متوسط</span>
-            <StatusDot color="var(--color-red-700)" />
-            <span>يتطلب تحسين</span>
-          </StatusIndicator>
-        </Card>
-
-        <Card>
-          <CardTitle>
-            <FileText size={20} />
-            النشاطات الحديثة
-          </CardTitle>
-          <TimelineContainer>
-            {recentActivities.map((activity, index) => (
-              <TimelineItem key={index}>
-                <TimelineDot />
-                <TimelineContent>
-                  <TimelineDate>{activity.date}</TimelineDate>
-                  <TimelineText>{activity.activity}</TimelineText>
-                </TimelineContent>
-              </TimelineItem>
-            ))}
-          </TimelineContainer>
-        </Card>
-      </DashboardGrid>
-
-      {/* Risks and Alerts */}
-      <DashboardGrid>
-        <Card>
-          <CardTitle>
-            <AlertTriangle size={20} />
-            المخاطر الرئيسية
-          </CardTitle>
-          {risks.map((risk) => (
-            <AlertCard
-              key={risk.id}
-              type={risk.level === "high" ? "warning" : "info"}
+          {/* Sector Distribution */}
+          <Card style={{ minHeight: "350px" }}>
+            <CardTitle>
+              <BarChart3 size={16} />
+              توزيع المشاريع بالقطاعات
+            </CardTitle>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "1rem",
+              }}
             >
-              <AlertText>{risk.risk}</AlertText>
-              <StatusIndicator>
-                <StatusDot
-                  color={
-                    risk.level === "high"
-                      ? "var(--color-red-700)"
-                      : "var(--color-yellow-700)"
-                  }
-                />
-                <span>مستوى {risk.level === "high" ? "عالي" : "متوسط"}</span>
-              </StatusIndicator>
-            </AlertCard>
-          ))}
-        </Card>
-
-        <Card>
-          <CardTitle>
-            <Shield size={20} />
-            مؤشرات الأمان
-          </CardTitle>
-          <MetricsGrid>
-            <MetricCard>
-              <MetricValue>98%</MetricValue>
-              <MetricLabel>التزام بالمواصفات</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricValue>100%</MetricValue>
-              <MetricLabel>تقارير السلامة</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricValue>0</MetricValue>
-              <MetricLabel>حوادث رئيسية</MetricLabel>
-            </MetricCard>
-            <MetricCard>
-              <MetricValue>95%</MetricValue>
-              <MetricLabel>تدريب العاملين</MetricLabel>
-            </MetricCard>
-          </MetricsGrid>
-        </Card>
-      </DashboardGrid>
-
-      {/* Performance Indicators */}
-      <DashboardGrid>
-        <Card>
-          <CardTitle>
-            <Zap size={20} />
-            أداء المشاريع
-          </CardTitle>
-          <DataTable>
-            <TableRow>
-              <TableCell emphasis>المشاريع ضمن الميزانية</TableCell>
-              <TableCell>94%</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell emphasis>المشاريع ضمن الجدول</TableCell>
-              <TableCell>88%</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell emphasis>رضا العملاء</TableCell>
-              <TableCell>96%</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell emphasis>جودة التنفيذ</TableCell>
-              <TableCell>92%</TableCell>
-            </TableRow>
-          </DataTable>
-        </Card>
-
-        <Card>
-          <CardTitle>
-            <Users size={20} />
-            الموارد البشرية
-          </CardTitle>
-          <DataTable>
-            <TableRow>
-              <TableCell emphasis>إجمالي العاملين</TableCell>
-              <TableCell>1,250</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell emphasis>مهندسين</TableCell>
-              <TableCell>450</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell emphasis>فنيين</TableCell>
-              <TableCell>600</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell emphasis>إداريين</TableCell>
-              <TableCell>200</TableCell>
-            </TableRow>
-          </DataTable>
-        </Card>
-      </DashboardGrid>
-
-      {/* New Charts Section */}
-      <ChartsGrid>
-        <Card>
-          <CardTitle>
-            <LineChart size={20} />
-            التقدم الشهري
-          </CardTitle>
-          <LargeChartContainer>
-            <Line data={monthlyProgressData} options={lineOptions} />
-          </LargeChartContainer>
-          <DataTable>
-            {monthlyProgress.map((month) => (
-              <TableRow key={month.month}>
-                <TableCell emphasis>{month.month}</TableCell>
-                <TableCell>مخطط: {month.planned}%</TableCell>
-                <TableCell>فعلي: {month.actual}%</TableCell>
-              </TableRow>
-            ))}
-          </DataTable>
-        </Card>
-
-        <Card>
-          <CardTitle>
-            <BarChart3 size={20} />
-            توزيع الميزانية
-          </CardTitle>
-          <ChartContainer>
-            <Doughnut data={budgetAllocationData} options={doughnutOptions} />
-          </ChartContainer>
-          <DataTable>
-            {budgetAllocation.map((budget) => (
-              <TableRow key={budget.category}>
-                <TableCell emphasis>{budget.category}</TableCell>
-                <TableCell>{budget.amount} مليار</TableCell>
-                <TableCell>{budget.percentage}%</TableCell>
-              </TableRow>
-            ))}
-          </DataTable>
-        </Card>
-      </ChartsGrid>
-
-      {/* Risk Assessment Chart */}
-      <ChartsGrid>
-        <Card>
-          <CardTitle>
-            <ScatterChart size={20} />
-            تقييم المخاطر
-          </CardTitle>
-          <LargeChartContainer>
-            <Scatter data={riskAssessmentData} options={scatterOptions} />
-          </LargeChartContainer>
-          <DataTable>
-            {riskAssessment.map((risk) => (
-              <TableRow key={risk.risk}>
-                <TableCell emphasis>{risk.risk}</TableCell>
-                <TableCell>احتمالية: {risk.probability}%</TableCell>
-                <TableCell>تأثير: {risk.impact}%</TableCell>
-              </TableRow>
-            ))}
-          </DataTable>
-        </Card>
-
-        <Card>
-          <CardTitle>
-            <Award size={20} />
-            مؤشرات الأداء
-          </CardTitle>
-          <MetricsGrid>
-            {performanceMetrics.map((metric) => (
-              <MetricCard key={metric.metric}>
-                <MetricValue>
-                  {metric.value}%
-                  {metric.trend === "up" ? (
-                    <TrendingUp size={16} color="var(--color-brand-500)" />
-                  ) : (
-                    <TrendingDown size={16} color="var(--color-red-700)" />
-                  )}
-                </MetricValue>
-                <MetricLabel>{metric.metric}</MetricLabel>
-                <ProgressBar>
-                  <ProgressFill
-                    percentage={metric.value}
+              <div>
+                <div
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                    textAlign: "center",
+                  }}
+                >
+                  العدد
+                </div>
+                <ChartContainer style={{ height: "200px" }}>
+                  <Chart
+                    options={sectorDistributionCountOptions}
+                    series={sectorDistributionSeriesCount}
+                    type="donut"
+                    height={200}
+                  />
+                </ChartContainer>
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                    textAlign: "center",
+                  }}
+                >
+                  القيمة (B)
+                </div>
+                <ChartContainer style={{ height: "200px" }}>
+                  <Chart
+                    options={sectorDistributionValueOptions}
+                    series={sectorDistributionSeriesValue}
+                    type="donut"
+                    height={200}
+                  />
+                </ChartContainer>
+              </div>
+            </div>
+            <Legend style={{ justifyContent: "center" }}>
+              {sectorDistributionLabels.map((label, index) => (
+                <LegendItem key={label}>
+                  <LegendDot
                     color={
-                      metric.value >= metric.target
-                        ? "var(--color-brand-500)"
-                        : "var(--color-red-700)"
+                      chartOptions.colors[index % chartOptions.colors.length]
                     }
                   />
-                </ProgressBar>
-              </MetricCard>
-            ))}
-          </MetricsGrid>
-        </Card>
-      </ChartsGrid>
+                  {label}
+                </LegendItem>
+              ))}
+            </Legend>
+          </Card>
+
+          {/* Project Stages */}
+          <Card style={{ minHeight: "350px" }}>
+            <CardTitle>
+              <BarChart3 size={16} />
+              توزيع مراحل المشاريع
+            </CardTitle>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "1rem",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                    textAlign: "center",
+                  }}
+                >
+                  العدد
+                </div>
+                <ChartContainer style={{ height: "200px" }}>
+                  <Chart
+                    options={projectStagesCountOptions}
+                    series={projectStagesSeriesCount}
+                    type="donut"
+                    height={200}
+                  />
+                </ChartContainer>
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                    textAlign: "center",
+                  }}
+                >
+                  القيمة (B)
+                </div>
+                <ChartContainer style={{ height: "200px" }}>
+                  <Chart
+                    options={projectStagesValueOptions}
+                    series={projectStagesSeriesValue}
+                    type="donut"
+                    height={200}
+                  />
+                </ChartContainer>
+              </div>
+            </div>
+            <Legend style={{ justifyContent: "center" }}>
+              {projectStagesLabels.map((label, index) => (
+                <LegendItem key={label}>
+                  <LegendDot
+                    color={
+                      chartOptions.colors[index % chartOptions.colors.length]
+                    }
+                  />
+                  {label}
+                </LegendItem>
+              ))}
+            </Legend>
+          </Card>
+
+          {/* Project Types */}
+          <Card style={{ minHeight: "350px" }}>
+            <CardTitle>
+              <Building size={16} />
+              توزيع أنواع المشاريع
+            </CardTitle>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "1rem",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                    textAlign: "center",
+                  }}
+                >
+                  العدد
+                </div>
+                <ChartContainer style={{ height: "200px" }}>
+                  <Chart
+                    options={projectTypesCountOptions}
+                    series={projectTypesSeriesCount}
+                    type="donut"
+                    height={200}
+                  />
+                </ChartContainer>
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "#ffffff",
+                    marginBottom: "0.5rem",
+                    textAlign: "center",
+                  }}
+                >
+                  القيمة (B)
+                </div>
+                <ChartContainer style={{ height: "200px" }}>
+                  <Chart
+                    options={projectTypesValueOptions}
+                    series={projectTypesSeriesValue}
+                    type="donut"
+                    height={200}
+                  />
+                </ChartContainer>
+              </div>
+            </div>
+            <Legend style={{ justifyContent: "center" }}>
+              {projectTypesLabels.map((label, index) => (
+                <LegendItem key={label}>
+                  <LegendDot
+                    color={
+                      chartOptions.colors[index % chartOptions.colors.length]
+                    }
+                  />
+                  {label}
+                </LegendItem>
+              ))}
+            </Legend>
+          </Card>
+
+          {/* Timeline */}
+          <Card style={{ minHeight: "350px" }}>
+            <CardTitle>
+              <Clock size={16} />
+              الخط الزمني لنسب إنجاز البرنامج
+            </CardTitle>
+            <LargeChartContainer style={{ height: "300px" }}>
+              <Chart
+                options={completionTimelineOptions}
+                series={completionTimelineOptions.series}
+                type="line"
+                height="100%"
+              />
+            </LargeChartContainer>
+            <Legend>
+              <LegendItem>
+                <LegendDot color="#3b82f6" />
+                المخطط التراكمي
+              </LegendItem>
+              <LegendItem>
+                <LegendDot color="#ef4444" />
+                الفعلي التراكمي
+              </LegendItem>
+              <LegendItem>
+                <LegendDot color="#fbbf24" />
+                نسبة الانجاز المخطط
+              </LegendItem>
+              <LegendItem>
+                <LegendDot color="#06b6d4" />
+                نسبة الانجاز الفعلي
+              </LegendItem>
+            </Legend>
+          </Card>
+
+          {/* Project Status */}
+          <Card style={{ minHeight: "350px" }}>
+            <CardTitle>
+              <Activity size={16} />
+              احصائيات وضع المشاريع
+            </CardTitle>
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              <ChartContainer style={{ height: "150px", flex: "1 1 50%" }}>
+                <Chart
+                  options={actualCompletionOptions}
+                  series={actualCompletionSeries}
+                  type="radialBar"
+                  height={150}
+                />
+              </ChartContainer>
+              <div style={{ flex: "1 1 50%" }}>
+                <MetricValue
+                  style={{
+                    fontSize: "1rem",
+                    justifyContent: "flex-end",
+                    color: "#3b82f6",
+                    direction: "rtl",
+                  }}
+                >
+                  نسبة الإنجاز الفعلي
+                </MetricValue>
+                <MetricValue
+                  style={{
+                    fontSize: "1.5rem",
+                    justifyContent: "flex-end",
+                    color: "#3b82f6",
+                    direction: "rtl",
+                  }}
+                >
+                  28%
+                </MetricValue>
+                <MetricValue
+                  style={{
+                    fontSize: "1rem",
+                    justifyContent: "flex-end",
+                    color: "#ef4444",
+                    marginTop: "0.5rem",
+                    direction: "rtl",
+                  }}
+                >
+                  نسبة التأخير
+                </MetricValue>
+                <MetricValue
+                  style={{
+                    fontSize: "1.5rem",
+                    justifyContent: "flex-end",
+                    color: "#ef4444",
+                    direction: "rtl",
+                  }}
+                >
+                  -4%
+                </MetricValue>
+                <MetricValue
+                  style={{
+                    fontSize: "1rem",
+                    justifyContent: "flex-end",
+                    color: "#22c55e",
+                    marginTop: "0.5rem",
+                    direction: "rtl",
+                  }}
+                >
+                  نسبة الخطة
+                </MetricValue>
+                <MetricValue
+                  style={{
+                    fontSize: "1.5rem",
+                    justifyContent: "flex-end",
+                    color: "#22c55e",
+                    direction: "rtl",
+                  }}
+                >
+                  32%
+                </MetricValue>
+              </div>
+            </div>
+            <StatusGrid>
+              <StatusBlock color="#3b82f6">
+                <span>88</span>
+                <div style={{ fontSize: "0.7rem" }}>منتظم</div>
+              </StatusBlock>
+              <StatusBlock color="#f59e0b">
+                <span>13</span>
+                <div style={{ fontSize: "0.7rem" }}>مكتمل</div>
+              </StatusBlock>
+              <StatusBlock color="#ef4444">
+                <span>5</span>
+                <div style={{ fontSize: "0.7rem" }}>متأخر</div>
+              </StatusBlock>
+            </StatusGrid>
+          </Card>
+        </TopSection>
+
+        {/* Bottom Section (Matching Image 2) */}
+        <BottomSection>
+          {/* Quality */}
+          <Card style={{ minHeight: "300px" }}>
+            <CardTitle>
+              <Zap size={16} />
+              احصائيات الجودة
+            </CardTitle>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "1rem",
+                marginBottom: "1rem",
+              }}
+            >
+              <QualityStatCard color="#22c55e">
+                <QualityValue color="#22c55e">350</QualityValue>
+                <QualityLabel>اجمالي زيارات ميدانية</QualityLabel>
+              </QualityStatCard>
+              <QualityStatCard color="#8b5cf6">
+                <QualityValue color="#8b5cf6">13505</QualityValue>
+                <QualityLabel>اجمالي الاعتمادات و الاستلامات</QualityLabel>
+              </QualityStatCard>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "0.5rem",
+              }}
+            >
+              <SmallDonutCard
+                title="استلام الأعمال"
+                options={workReceiptsOptions}
+                series={workReceiptsOptions.series}
+                labels={workReceiptsLabels}
+                chartOptions={chartOptions}
+              />
+              <SmallDonutCard
+                title="الاعتمادات الفنية"
+                options={technicalApprovalsOptions}
+                series={technicalApprovalsOptions.series}
+                labels={technicalApprovalsLabels}
+                chartOptions={chartOptions}
+              />
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "0.5rem",
+                marginTop: "0.5rem",
+              }}
+            >
+              <SmallDonutCard
+                title="أوامر التغيير"
+                options={changeOrdersOptions}
+                series={changeOrdersSeries}
+                labels={changeOrdersLabels}
+                chartOptions={chartOptions}
+              />
+              <SmallDonutCard
+                title="عدم المطابقة"
+                options={nonConformanceOptions}
+                series={nonConformanceSeries}
+                labels={nonConformanceLabels}
+                chartOptions={chartOptions}
+              />
+            </div>
+          </Card>
+
+          {/* Budget */}
+          <Card style={{ minHeight: "200px" }}>
+            <CardTitle>
+              <Activity size={16} />
+              توزيع ميزانية البرنامج
+            </CardTitle>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "0.5rem",
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    color: "#ffffff",
+                    fontSize: "1.2rem",
+                    fontWeight: 700,
+                  }}
+                >
+                  1.53 bn
+                </div>
+                <div style={{ color: "#d1d5db", fontSize: "0.7rem" }}>
+                  اجمالي الميزانية
+                </div>
+              </div>
+              <div>
+                <div
+                  style={{
+                    color: "#86efac",
+                    fontSize: "1.2rem",
+                    fontWeight: 700,
+                  }}
+                >
+                  922.63 M
+                </div>
+                <div style={{ color: "#d1d5db", fontSize: "0.7rem" }}>
+                  اجمالي التعاقدات
+                </div>
+              </div>
+            </div>
+            <ChartContainer style={{ height: "60px" }}>
+              <Chart
+                options={budgetChartOptions}
+                series={budgetChartSeries}
+                type="bar"
+                height={60}
+              />
+            </ChartContainer>
+            <Legend style={{ justifyContent: "space-around" }}>
+              {budgetChartSeries.map((item, index) => (
+                <LegendItem key={item.name}>
+                  <LegendDot color={item.color} />
+                  {item.name}
+                </LegendItem>
+              ))}
+            </Legend>
+          </Card>
+
+          {/* Milestones */}
+          <Card style={{ minHeight: "250px" }}>
+            <CardTitle>
+              <CheckCircle size={16} />
+              أعلى مهام الإنجاز المطلوبة
+            </CardTitle>
+            <Table>
+              <TableRow style={{ fontWeight: "600", color: "#ffffff" }}>
+                <TableCell basis="20%" emphasis="true" rtl="true">
+                  الانجاز
+                </TableCell>
+                <TableCell basis="80%" emphasis="true" rtl="true">
+                  مسمى المشروع
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell
+                  basis="20%"
+                  emphasis="true"
+                  rtl="true"
+                  style={{ color: "#86efac" }}
+                >
+                  99%
+                </TableCell>
+                <TableCell basis="80%" rtl="true">
+                  إعادة محطة تربية الكائنات المائية بـ روابح جازان
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell
+                  basis="20%"
+                  emphasis="true"
+                  rtl="true"
+                  style={{ color: "#86efac" }}
+                >
+                  78%
+                </TableCell>
+                <TableCell basis="80%" rtl="true">
+                  تنفيذ وتطوير مزارع تربية مواشي في عدد من المناطق
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell
+                  basis="20%"
+                  emphasis="true"
+                  rtl="true"
+                  style={{ color: "#86efac" }}
+                >
+                  78%
+                </TableCell>
+                <TableCell basis="80%" rtl="true">
+                  تنفيذ محطات فرز التمور في رياض الخبراء بالقصيم
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell
+                  basis="20%"
+                  emphasis="true"
+                  rtl="true"
+                  style={{ color: "#86efac" }}
+                >
+                  75%
+                </TableCell>
+                <TableCell basis="80%" rtl="true">
+                  إعادة محطات تربية الكائنات المائية في روابح جازان
+                </TableCell>
+              </TableRow>
+            </Table>
+            <ExecutiveSummary style={{ marginTop: "1rem" }}>
+              <span>ملخص تنفيذي:</span>
+              <p>
+                إعادة محطة تربية الكائنات المائية بـ روابح جازان تعد من المشاريع
+                الحيوية المهمة. يتطلب تنفيذ المشروع متابعة دقيقة من الإدارة
+                وضرورة الالتزام بالميزانية المقررة والجدول الزمني لضمان تحقيق
+                الأهداف.
+              </p>
+            </ExecutiveSummary>
+          </Card>
+
+          {/* Risk */}
+          <Card style={{ minHeight: "350px" }}>
+            <CardTitle>
+              <AlertTriangle size={16} />
+              إدارة المخاطر
+            </CardTitle>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "2fr 1fr",
+                gap: "0.5rem",
+                height: "250px",
+              }}
+            >
+              <Table style={{ maxHeight: "250px", overflowY: "auto" }}>
+                <TableRow
+                  style={{
+                    fontWeight: "600",
+                    color: "#ffffff",
+                    padding: "0.6rem 0",
+                  }}
+                >
+                  <TableCell basis="10%" emphasis="true" rtl="true">
+                    #
+                  </TableCell>
+                  <TableCell basis="60%" emphasis="true" rtl="true">
+                    المخاطر
+                  </TableCell>
+                  <TableCell basis="15%" emphasis="true" rtl="true">
+                    التأثير
+                  </TableCell>
+                  <TableCell basis="15%" emphasis="true" rtl="true">
+                    الاحتمالية
+                  </TableCell>
+                </TableRow>
+                {risksTableData.map((risk) => (
+                  <TableRow key={risk.id}>
+                    <TableCell basis="10%" rtl="true">
+                      {risk.id}
+                    </TableCell>
+                    <TableCell basis="60%" rtl="true">
+                      {risk.name}
+                    </TableCell>
+                    <TableCell
+                      basis="15%"
+                      emphasis="true"
+                      style={{ color: "#ef4444" }}
+                      rtl="true"
+                    >
+                      {risk.impact}
+                    </TableCell>
+                    <TableCell
+                      basis="15%"
+                      emphasis="true"
+                      style={{ color: "#f59e0b" }}
+                      rtl="true"
+                    >
+                      {risk.probability}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </Table>
+              <ChartContainer style={{ height: "250px", margin: 0 }}>
+                <Chart
+                  options={riskMatrixOptions}
+                  series={riskMatrixSeries}
+                  type="scatter"
+                  height={250}
+                />
+              </ChartContainer>
+            </div>
+          </Card>
+        </BottomSection>
+      </motion.div>
     </Container>
   );
 }

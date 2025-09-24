@@ -5,13 +5,21 @@ import { useAuth } from "../contexts/AuthContext";
 import ButtonIcon from "./ButtonIcon";
 
 const StyledHeader = styled.header`
-  background: var(--color-grey-50);
-  padding: 1.2rem 4.8rem;
-  border-bottom: 1px solid var(--color-grey-200);
+  padding: 1.2rem;
   display: flex;
-  gap: 2.4rem;
+  gap: 1.2rem;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  width: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--color-brand-500),
+    var(--color-brand-600)
+  );
+  border-radius: 0.8rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const UserInfo = styled.div`
@@ -22,7 +30,7 @@ const UserInfo = styled.div`
 
 const UserAvatar = styled.img`
   display: block;
-  width: 3.6rem;
+  width: 3rem;
   aspect-ratio: 1;
   object-fit: cover;
   object-position: center;
@@ -34,19 +42,19 @@ const AvatarFallback = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3.6rem;
-  height: 3.6rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   color: white;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 600;
   outline: 2px solid var(--color-grey-100);
 `;
 
 const UserName = styled.span`
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  color: var(--color-grey-600);
+  color: white;
 `;
 
 function Header() {
@@ -64,25 +72,21 @@ function Header() {
 
   return (
     <StyledHeader>
-      <div>
-        <UserInfo>
-          {user.avatar && !imageError ? (
-            <UserAvatar
-              src={user.avatar}
-              alt={`Avatar of ${user.name}`}
-              onError={handleImageError}
-            />
-          ) : (
-            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-          )}
-          <UserName>{user.name}</UserName>
-        </UserInfo>
-      </div>
-      <div>
-        <ButtonIcon onClick={logout}>
-          <HiArrowRightOnRectangle />
-        </ButtonIcon>
-      </div>
+      <UserInfo>
+        {user.avatar && !imageError ? (
+          <UserAvatar
+            src={user.avatar}
+            alt={`Avatar of ${user.name}`}
+            onError={handleImageError}
+          />
+        ) : (
+          <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+        )}
+        <UserName>{user.name}</UserName>
+      </UserInfo>
+      <ButtonIcon onClick={logout} style={{ color: "white" }}>
+        <HiArrowRightOnRectangle />
+      </ButtonIcon>
     </StyledHeader>
   );
 }

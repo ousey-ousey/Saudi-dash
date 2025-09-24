@@ -12,10 +12,14 @@ const GlobalStyles = createGlobalStyle`
   --color-brand-800: #166534;
   --color-brand-900: #14532d;
 
+  /* Primary Gradient Background */
+  --primary-gradient: linear-gradient(to right, #3f3f46, #27272a);
+
+  --color-dark:#0f172a;
   /* Dark Theme Colors */
-  --color-grey-0: #18181b;
-  --color-grey-50: #1f1f23;
-  --color-grey-100: #27272a;
+  --color-grey-0: linear-gradient(to right, #3f3f46, #27272a);
+  --color-grey-50: linear-gradient(to right, #3f3f46, #27272a);
+  --color-grey-100:  linear-gradient(to right, #3f3f46, #27272a);
   --color-grey-200: #3f3f46;
   --color-grey-300: #52525b;
   --color-grey-400: #71717a;
@@ -69,12 +73,13 @@ const GlobalStyles = createGlobalStyle`
 
 html {
   font-size: 62.5%;
+
 }
 
 body {
   font-family: "Cairo", "Poppins", sans-serif;
   color: var(--color-grey-700);
-  background-color: var(--color-grey-0);
+  background: var(--primary-gradient);
   direction: rtl;
 
   transition: color 0.3s, background-color 0.3s;

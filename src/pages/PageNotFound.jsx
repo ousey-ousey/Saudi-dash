@@ -5,7 +5,7 @@ import Heading from "../ui/Heading";
 
 const StyledPageNotFound = styled.main`
   height: 100vh;
-  background-color: var(--color-grey-50);
+  background: var(--primary-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
