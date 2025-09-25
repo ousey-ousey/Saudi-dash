@@ -721,7 +721,7 @@ function Analytics() {
 
   return (
     <Container>
-      <Row type="horizontal">
+      <Row type="horizontal" style={{margin: "3rem 0 1rem 0"}}>
         <Heading
           as="h1"
           style={{ color: "#ffffff", fontSize: "1.2rem", margin: "1rem 0" }}
