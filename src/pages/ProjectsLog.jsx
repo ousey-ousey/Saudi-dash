@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { motion } from "framer-motion";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -36,9 +37,10 @@ const Container = styled.div`
   padding: 2rem;
   overflow-x: auto;
   box-sizing: border-box;
-  background: var(--primary-gradient);
+  background: var(--color-dark);
   min-height: 100vh;
   position: relative;
+  direction: rtl;
 
   @media (max-width: 1200px) {
     padding: 1.5rem;
@@ -49,18 +51,20 @@ const Container = styled.div`
   }
 `;
 
-const ProjectHeader = styled.div`
+const ProjectHeader = styled(motion.div)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
   padding: 2rem;
-  background: var(--color-grey-100);
+  background: var(--color-dark);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  min-height: 120px;
 
   &::before {
     content: "";
@@ -92,20 +96,25 @@ const ProjectHeader = styled.div`
   }
 `;
 
-const ProjectTitle = styled.h1`
+const ProjectTitle = styled(motion.h1)`
   font-size: 2.4rem;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
+  background: linear-gradient(135deg, #10b981, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 `;
 
-const ProjectDate = styled.div`
+const ProjectDate = styled(motion.div)`
   font-size: 1.6rem;
   color: #d1d5db;
-  background: var(--color-grey-100);
+  background: var(--color-dark);
   padding: 0.8rem 1.6rem;
   border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
 `;
 
 const DashboardGrid = styled.div`
@@ -115,15 +124,16 @@ const DashboardGrid = styled.div`
   margin-bottom: 3.2rem;
 `;
 
-const Card = styled.div`
-  background: var(--color-grey-100);
-  border: 1px solid var(--color-grey-200);
+const Card = styled(motion.div)`
+  background: var(--color-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 2.4rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
 
   &::before {
     content: "";
@@ -148,25 +158,33 @@ const Card = styled.div`
   }
 `;
 
-const CardTitle = styled.h3`
+const CardTitle = styled(motion.h3)`
   font-size: 1.8rem;
   font-weight: 600;
   color: #ffffff;
   margin-bottom: 1.6rem;
+  background: linear-gradient(135deg, #10b981, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
-const ChartContainer = styled.div`
+const ChartContainer = styled(motion.div)`
   position: relative;
   height: 20rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-grey-100);
+  background: var(--color-dark);
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1rem;
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const ProjectDetails = styled.div`
@@ -176,15 +194,17 @@ const ProjectDetails = styled.div`
   margin-bottom: 3.2rem;
 `;
 
-const DetailsCard = styled.div`
-  background: var(--color-grey-100);
-  border: 1px solid var(--color-grey-200);
+const DetailsCard = styled(motion.div)`
+  background: var(--color-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 2.4rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  min-height: 320px;
 
   &::before {
     content: "";
@@ -214,7 +234,7 @@ const DetailRow = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1.2rem 0;
-  border-bottom: 1px solid var(--color-grey-100);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   &:last-child {
     border-bottom: none;
@@ -236,16 +256,11 @@ const DetailValue = styled.span`
 const StatusBadge = styled.span`
   background: ${(props) =>
     props.status === "regular"
-      ? "var(--color-green-100)"
+      ? "#10b981"
       : props.status === "delayed"
-      ? "var(--color-red-100)"
-      : "var(--color-yellow-100)"};
-  color: ${(props) =>
-    props.status === "regular"
-      ? "var(--color-green-700)"
-      : props.status === "delayed"
-      ? "var(--color-red-700)"
-      : "var(--color-yellow-700)"};
+      ? "#ef4444"
+      : "#f59e0b"};
+  color: #ffffff;
   padding: 0.4rem 1.2rem;
   border-radius: var(--border-radius-sm);
   font-size: 1.2rem;
@@ -255,7 +270,7 @@ const StatusBadge = styled.span`
 const ProgressBar = styled.div`
   width: 100%;
   height: 12px;
-  background: var(--color-grey-300);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   overflow: hidden;
   margin: 1.6rem 0;
@@ -310,15 +325,17 @@ const ProgressFill = styled.div`
   }
 `;
 
-const ScopeSection = styled.div`
-  background: var(--color-grey-100);
-  border: 1px solid var(--color-grey-200);
+const ScopeSection = styled(motion.div)`
+  background: var(--color-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 2.4rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  min-height: 320px;
 
   &::before {
     content: "";
@@ -343,11 +360,15 @@ const ScopeSection = styled.div`
   }
 `;
 
-const ScopeTitle = styled.h3`
+const ScopeTitle = styled(motion.h3)`
   font-size: 1.8rem;
   font-weight: 600;
   color: #ffffff;
   margin-bottom: 1.6rem;
+  background: linear-gradient(135deg, #10b981, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 `;
 
 const ScopeDescription = styled.p`
@@ -367,7 +388,7 @@ const ScopeItem = styled.li`
   font-size: 1.4rem;
   color: #d1d5db;
   padding: 0.8rem 0;
-  border-bottom: 1px solid var(--color-grey-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   &:last-child {
     border-bottom: none;
@@ -382,7 +403,7 @@ const NavigationContainer = styled.div`
   padding: 2rem 0;
 `;
 
-const NavButton = styled.button`
+const NavButton = styled(motion.button)`
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -404,7 +425,7 @@ const NavButton = styled.button`
   }
 
   &:disabled {
-    background: var(--color-grey-300);
+    background: rgba(255, 255, 255, 0.1);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -434,19 +455,19 @@ const RiskTable = styled.table`
 const TableHeader = styled.th`
   text-align: right;
   padding: 1.2rem;
-  border-bottom: 1px solid var(--color-grey-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   font-weight: 600;
   color: #ffffff;
   background: linear-gradient(
     135deg,
-    var(--color-grey-50) 0%,
-    var(--color-grey-100) 100%
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 100%
   );
 `;
 
 const TableCell = styled.td`
   padding: 1.2rem;
-  border-bottom: 1px solid var(--color-grey-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   color: #d1d5db;
   font-size: 1.3rem;
 `;
@@ -461,7 +482,7 @@ const AchievementItem = styled.li`
   font-size: 1.3rem;
   color: #d1d5db;
   padding: 0.8rem 0;
-  border-bottom: 1px solid var(--color-grey-200);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   line-height: 1.5;
 
   &:last-child {
@@ -481,18 +502,19 @@ const QualityCharts = styled.div`
   }
 `;
 
-const EmptySection = styled.div`
+const EmptySection = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 20rem;
-  background: var(--color-grey-100);
+  background: var(--color-dark);
   border-radius: 16px;
   color: #d1d5db;
   font-size: 1.6rem;
-  border: 1px solid var(--color-grey-200);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
 `;
 
 const EmptyIcon = styled.div`
@@ -721,24 +743,24 @@ function ProjectsLog() {
     scales: {
       x: {
         grid: {
-          color: "rgba(107, 114, 128, 0.2)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
         ticks: {
           color: "#ffffff",
         },
         border: {
-          color: "rgba(107, 114, 128, 0.3)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
       },
       y: {
         grid: {
-          color: "rgba(107, 114, 128, 0.2)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
         ticks: {
           color: "#ffffff",
         },
         border: {
-          color: "rgba(107, 114, 128, 0.3)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
       },
     },
@@ -764,12 +786,9 @@ function ProjectsLog() {
         borderWidth: 1,
       },
     },
-    scales: {
-      x: {
-        display: false,
-      },
-      y: {
-        display: false,
+    elements: {
+      arc: {
+        borderWidth: 0,
       },
     },
   };
@@ -784,20 +803,20 @@ function ProjectsLog() {
     scales: {
       x: {
         grid: {
-          color: "rgba(107, 114, 128, 0.2)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
         ticks: {
           color: "#ffffff",
         },
         border: {
-          color: "rgba(107, 114, 128, 0.3)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
       },
       y: {
         beginAtZero: true,
         max: 100,
         grid: {
-          color: "rgba(107, 114, 128, 0.2)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
         ticks: {
           color: "#ffffff",
@@ -806,7 +825,7 @@ function ProjectsLog() {
           },
         },
         border: {
-          color: "rgba(107, 114, 128, 0.3)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
       },
     },
@@ -854,13 +873,13 @@ function ProjectsLog() {
         min: 1,
         max: 5,
         grid: {
-          color: "rgba(107, 114, 128, 0.2)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
         ticks: {
           color: "#ffffff",
         },
         border: {
-          color: "rgba(107, 114, 128, 0.3)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
       },
       y: {
@@ -876,13 +895,13 @@ function ProjectsLog() {
         min: 1,
         max: 5,
         grid: {
-          color: "rgba(107, 114, 128, 0.2)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
         ticks: {
           color: "#ffffff",
         },
         border: {
-          color: "rgba(107, 114, 128, 0.3)",
+          color: "rgba(255, 255, 255, 0.1)",
         },
       },
     },
@@ -1016,31 +1035,85 @@ function ProjectsLog() {
 
   return (
     <Container>
-      <ProjectHeader>
-        <ProjectTitle>{currentProject.title}</ProjectTitle>
-        <ProjectDate>{currentProject.date}</ProjectDate>
+      <ProjectHeader
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <ProjectTitle
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          {currentProject.title}
+        </ProjectTitle>
+        <ProjectDate
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          {currentProject.date}
+        </ProjectDate>
       </ProjectHeader>
 
       <DashboardSection>
         {/* الاداء الحالي للمشروع */}
-        <Card>
-          <CardTitle>الاداء الحالي للمشروع</CardTitle>
-          <ChartContainer>
+        <Card
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <CardTitle
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            الاداء الحالي للمشروع
+          </CardTitle>
+          <ChartContainer
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
             <Line data={performanceData} options={lineOptions} />
           </ChartContainer>
         </Card>
 
         {/* مراحل المشروع */}
-        <Card>
-          <CardTitle>مراحل المشروع</CardTitle>
-          <ChartContainer>
+        <Card
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <CardTitle
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            مراحل المشروع
+          </CardTitle>
+          <ChartContainer
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
             <Bar data={stagesData} options={chartOptions} />
           </ChartContainer>
         </Card>
 
         {/* المخاطر */}
-        <Card>
-          <CardTitle>المخاطر</CardTitle>
+        <Card
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <CardTitle
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            المخاطر
+          </CardTitle>
           <RiskTable>
             <thead>
               <tr>
@@ -1064,60 +1137,81 @@ function ProjectsLog() {
 
       <BottomSection>
         {/* ما تم انجازه */}
-        <Card>
-          <CardTitle>ما تم انجازه</CardTitle>
+        <Card
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          <CardTitle
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+          >
+            ما تم انجازه
+          </CardTitle>
           <AchievementList>
             {currentProject.achievements.map((achievement, index) => (
               <AchievementItem key={index}>{achievement}</AchievementItem>
             ))}
           </AchievementList>
+          <div>
+            <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+              <div
+                style={{
+                  fontSize: "1.4rem",
+                  fontWeight: "600",
+                  color: "#ffffff",
+                }}
+              >
+                استلامات اعمال
+              </div>
+            </div>
+            <ChartContainer style={{ height: "15rem" }}>
+              <Doughnut
+                data={qualityDeliverablesData}
+                options={doughnutOptions}
+              />
+            </ChartContainer>
+            <div style={{ textAlign: "center", marginTop: "2rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: "1rem",
+                    height: "1rem",
+                    backgroundColor: "#8b5cf6",
+                    borderRadius: "50%",
+                  }}
+                ></div>
+                <span style={{ color: "#d1d5db", fontSize: "1.2rem" }}>
+                  معتمد مع ملاحظات
+                </span>
+              </div>
+            </div>
+          </div>
         </Card>
 
         {/* ادارة الجودة */}
-        <Card>
-          <CardTitle>ادارة الجودة</CardTitle>
+        <Card
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <CardTitle
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 1.0 }}
+          >
+            ادارة الجودة
+          </CardTitle>
           <QualityCharts>
-            <div>
-              <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-                <div
-                  style={{
-                    fontSize: "1.4rem",
-                    fontWeight: "600",
-                    color: "#ffffff",
-                  }}
-                >
-                  استلامات اعمال
-                </div>
-              </div>
-              <ChartContainer style={{ height: "15rem" }}>
-                <Doughnut
-                  data={qualityDeliverablesData}
-                  options={doughnutOptions}
-                />
-              </ChartContainer>
-              <div style={{ textAlign: "center", marginTop: "1rem" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "1rem",
-                      height: "1rem",
-                      backgroundColor: "#8b5cf6",
-                      borderRadius: "50%",
-                    }}
-                  ></div>
-                  <span style={{ color: "#d1d5db", fontSize: "1.2rem" }}>
-                    معتمد مع ملاحظات
-                  </span>
-                </div>
-              </div>
-            </div>
             <div>
               <div style={{ textAlign: "center", marginBottom: "1rem" }}>
                 <div
@@ -1148,24 +1242,6 @@ function ProjectsLog() {
             </div>
           </QualityCharts>
           <div style={{ marginTop: "1rem", fontSize: "1.2rem" }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                marginBottom: "0.5rem",
-              }}
-            >
-              <div
-                style={{
-                  width: "1rem",
-                  height: "1rem",
-                  backgroundColor: "#ef4444",
-                  borderRadius: "50%",
-                }}
-              ></div>
-              <span style={{ color: "#d1d5db" }}>مرفوض</span>
-            </div>
             <div
               style={{
                 display: "flex",
@@ -1255,9 +1331,23 @@ function ProjectsLog() {
         </Card>
 
         {/* تقييم المخاطر */}
-        <Card>
-          <CardTitle>تقييم المخاطر</CardTitle>
-          <ChartContainer>
+        <Card
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.0 }}
+        >
+          <CardTitle
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 1.1 }}
+          >
+            تقييم المخاطر
+          </CardTitle>
+          <ChartContainer
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 1.2 }}
+          >
             <Scatter data={riskAssessmentData} options={scatterOptions} />
           </ChartContainer>
         </Card>
@@ -1265,15 +1355,33 @@ function ProjectsLog() {
 
       <BottomSection>
         {/* لا يوجد */}
-        <EmptySection>
+        <EmptySection
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.3 }}
+        >
           <EmptyIcon>📷</EmptyIcon>
           <div>لا يوجد</div>
         </EmptySection>
 
         {/* البيانات المالية */}
-        <Card>
-          <CardTitle>البيانات المالية</CardTitle>
-          <ChartContainer>
+        <Card
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.4 }}
+        >
+          <CardTitle
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 1.5 }}
+          >
+            البيانات المالية
+          </CardTitle>
+          <ChartContainer
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 1.6 }}
+          >
             <Doughnut data={financialData} options={doughnutOptions} />
           </ChartContainer>
           <div style={{ textAlign: "center", marginTop: "1rem" }}>
@@ -1293,8 +1401,18 @@ function ProjectsLog() {
         </Card>
 
         {/* مؤشر انجاز المشروع */}
-        <Card>
-          <CardTitle>مؤشر انجاز المشروع</CardTitle>
+        <Card
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.5 }}
+        >
+          <CardTitle
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 1.6 }}
+          >
+            مؤشر انجاز المشروع
+          </CardTitle>
           <div style={{ textAlign: "center", marginBottom: "1.6rem" }}>
             <div
               style={{
@@ -1353,6 +1471,11 @@ function ProjectsLog() {
         <NavButton
           onClick={handlePrevious}
           disabled={currentProjectIndex === 0}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 1.7 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           <HiOutlineChevronLeft />
           السابق
@@ -1360,6 +1483,11 @@ function ProjectsLog() {
         <NavButton
           onClick={handleNext}
           disabled={currentProjectIndex === projectsData.length - 1}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 1.7 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           التالي
           <HiOutlineChevronRight />

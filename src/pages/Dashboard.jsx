@@ -25,7 +25,7 @@ import {
 const Container = styled.div`
   width: 100%;
   max-width: 100%;
-  margin: 0;
+  margin: 3rem 0 0 0;
   padding: 1rem;
   overflow-x: auto;
   box-sizing: border-box;
@@ -209,70 +209,75 @@ const BottomSection = styled.div`
 const Card = styled(motion.div)`
   background: var(--color-dark);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
-  min-height: 250px;
-  transition: all 0.3s ease;
+  min-height: 280px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  backdrop-filter: blur(10px);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
   }
 
   @media (max-width: 768px) {
-    min-height: 200px;
-    padding: 0.8rem;
+    min-height: 240px;
+    padding: 1.2rem;
   }
 `;
 
-const CardTitle = styled.h3`
-  font-size: 0.9rem;
-  font-weight: 600;
+const CardTitle = styled(motion.h3)`
+  font-size: 1rem;
+  font-weight: 700;
   color: #ffffff;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.5rem;
   direction: rtl;
   text-align: right;
+  background: linear-gradient(135deg, #10b981, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 
   @media (max-width: 768px) {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 `;
 
-const ChartContainer = styled.div`
-  height: 200px;
-  position: relative;
-  margin: 0.5rem 0;
-  background: transparent;
-
-  @media (max-width: 1400px) {
-    height: 180px;
-  }
-
-  @media (max-width: 1200px) {
-    height: 160px;
-  }
-
-  @media (max-width: 768px) {
-    height: 150px;
-  }
-`;
-
-const LargeChartContainer = styled.div`
+const ChartContainer = styled(motion.div)`
   height: 250px;
   position: relative;
   margin: 0.5rem 0;
   background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
 
   @media (max-width: 1400px) {
     height: 220px;
@@ -284,6 +289,27 @@ const LargeChartContainer = styled.div`
 
   @media (max-width: 768px) {
     height: 180px;
+  }
+`;
+
+const LargeChartContainer = styled(motion.div)`
+  height: 300px;
+  position: relative;
+  margin: 0.5rem 0;
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+
+  @media (max-width: 1400px) {
+    height: 270px;
+  }
+
+  @media (max-width: 1200px) {
+    height: 250px;
+  }
+
+  @media (max-width: 768px) {
+    height: 220px;
   }
 `;
 
@@ -475,6 +501,7 @@ const SmallDonutCard = ({
   labels = [],
   chartOptions = {},
   style = {},
+  centerValue = "",
 }) => (
   <div
     style={{
@@ -498,7 +525,13 @@ const SmallDonutCard = ({
     >
       {title}
     </div>
-    <div style={{ height: "100px", background: "#0f172a !important" }}>
+    <div
+      style={{
+        position: "relative",
+        height: "100px",
+        background: "#0f172a !important",
+      }}
+    >
       <Chart
         options={{
           ...options,
@@ -518,6 +551,28 @@ const SmallDonutCard = ({
         height={100}
         style={{ background: "#0f172a !important" }}
       />
+      {/* Center Value */}
+      {centerValue && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            fontSize: "1rem",
+            fontWeight: "700",
+            color: "#fff",
+            textAlign: "center",
+            zIndex: 10,
+            background: "linear-gradient(135deg, #10b981, #22c55e)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          {centerValue}
+        </div>
+      )}
     </div>
     <Legend style={{ fontSize: "0.5rem", justifyContent: "flex-end" }}>
       {labels.map((label, index) => (
@@ -539,6 +594,7 @@ SmallDonutCard.propTypes = {
   labels: PropTypes.array,
   chartOptions: PropTypes.object,
   style: PropTypes.object,
+  centerValue: PropTypes.string,
 };
 
 // --- Dashboard Component ---
@@ -1284,10 +1340,10 @@ function Dashboard() {
     labels: ["مرفوض", "مفتوح", "معتمد"],
     legend: { show: false },
     dataLabels: { enabled: false },
+    series: [1, 1, 14],
   };
 
   const changeOrdersLabels = ["مرفوض", "مفتوح", "معتمد"];
-  const changeOrdersSeries = [1, 1, 14];
 
   const nonConformanceOptions = {
     ...chartOptions,
@@ -1303,10 +1359,10 @@ function Dashboard() {
     labels: ["غير مطابق", "تحت المعالجة", "مطابق"],
     legend: { show: false },
     dataLabels: { enabled: false },
+    series: [3, 3, 11],
   };
 
   const nonConformanceLabels = ["غير مطابق", "تحت المعالجة", "مطابق"];
-  const nonConformanceSeries = [3, 3, 11];
 
   // Project Status Gauge
   const actualCompletionSeries = [28];
@@ -1511,7 +1567,11 @@ function Dashboard() {
         {/* Top Section (Matching Image 1) */}
         <TopSection>
           {/* Geographical Distribution */}
-          <Card>
+          <Card
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
             <CardTitle>
               <BarChart3 size={16} />
               التوزيع الجغرافي للمشاريع
@@ -1527,7 +1587,12 @@ function Dashboard() {
           </Card>
 
           {/* Sector Distribution */}
-          <Card style={{ minHeight: "350px" }}>
+          <Card
+            style={{ minHeight: "350px" }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <CardTitle>
               <BarChart3 size={16} />
               توزيع المشاريع بالقطاعات
@@ -1731,7 +1796,12 @@ function Dashboard() {
           </Card>
 
           {/* Combined Program Overview */}
-          <Card style={{}}>
+          <Card
+            style={{}}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
             {/* Timeline Section */}
             <div style={{ margin: "4rem 1rem 1rem 1rem" }}>
               <CardTitle
@@ -2206,6 +2276,7 @@ function Dashboard() {
                 series={workReceiptsOptions.series}
                 labels={workReceiptsLabels}
                 chartOptions={chartOptions}
+                centerValue="100%"
               />
               <SmallDonutCard
                 title="الاعتمادات الفنية"
@@ -2213,20 +2284,23 @@ function Dashboard() {
                 series={technicalApprovalsOptions.series}
                 labels={technicalApprovalsLabels}
                 chartOptions={chartOptions}
+                centerValue="42"
               />
               <SmallDonutCard
-                title="أوامر التغيير"
-                options={changeOrdersOptions}
-                series={changeOrdersSeries}
+                title="اوامر التغيير"
+                options={technicalApprovalsOptions}
+                series={technicalApprovalsOptions.series}
                 labels={changeOrdersLabels}
-                chartOptions={chartOptions}
+                chartOptions={changeOrdersOptions}
+                centerValue="16"
               />
               <SmallDonutCard
                 title="عدم المطابقة"
-                options={nonConformanceOptions}
-                series={nonConformanceSeries}
+                options={technicalApprovalsOptions}
+                series={nonConformanceOptions.series}
                 labels={nonConformanceLabels}
-                chartOptions={chartOptions}
+                chartOptions={nonConformanceOptions}
+                centerValue="17"
               />
             </div>
           </Card>
