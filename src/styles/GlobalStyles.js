@@ -20,8 +20,8 @@ const GlobalStyles = createGlobalStyle`
   --color-grey-0: linear-gradient(to right, #3f3f46, #27272a);
   --color-grey-50: linear-gradient(to right, #3f3f46, #27272a);
   --color-grey-100:  linear-gradient(to right, #3f3f46, #27272a);
-  --color-grey-200: #3f3f46;
-  --color-grey-300: #52525b;
+  --color-grey-200: #0f172a;
+  --color-grey-300: #0f172a;
   --color-grey-400: #71717a;
   --color-grey-500: #a1a1aa;
   --color-grey-600: #d4d4d8;
@@ -79,7 +79,7 @@ html {
 body {
   font-family: "Cairo", "Poppins", sans-serif;
   color: var(--color-grey-700);
-  background: var(--primary-gradient);
+  background: var(--color-dark);
   direction: rtl;
 
   transition: color 0.3s, background-color 0.3s;
