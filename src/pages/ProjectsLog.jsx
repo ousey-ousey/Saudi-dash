@@ -17,6 +17,7 @@ import { Doughnut, Bar, Line, Scatter } from "react-chartjs-2";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
+import usePageTitle from "../hooks/usePageTitle";
 
 ChartJS.register(
   ArcElement,
@@ -1032,7 +1033,7 @@ function ProjectsLog() {
       },
     ],
   };
-
+  usePageTitle(" تحليل المشروع");
   return (
     <Container>
       <ProjectHeader

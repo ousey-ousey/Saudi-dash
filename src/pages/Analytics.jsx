@@ -22,6 +22,7 @@ import {
   LineElement,
 } from "chart.js";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
+import usePageTitle from "../hooks/usePageTitle";
 
 ChartJS.register(
   CategoryScale,
@@ -36,8 +37,7 @@ ChartJS.register(
 );
 
 const Container = styled.div`
-  width: 100%;
-  max-width: 100%;
+  width: 100vw;
   margin: 0;
   padding: 1rem;
   overflow-x: auto;
@@ -718,13 +718,20 @@ function Analytics() {
     ],
     total: 100,
   };
-
+  usePageTitle("لوحة التحليلات العامه");
   return (
     <Container>
-      <Row type="horizontal">
+      <Row
+        type="horizontal"
+        style={{
+          margin: "1rem 10rem",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <Heading
           as="h1"
-          style={{ color: "#ffffff", fontSize: "1.2rem", margin: "1rem 0" }}
+          style={{ color: "#ffffff", fontSize: "2.2rem", margin: "1rem 2rem" }}
         >
           التحليلات
         </Heading>

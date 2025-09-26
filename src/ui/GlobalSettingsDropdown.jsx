@@ -2,11 +2,12 @@ import styled from "styled-components";
 import { HiCog6Tooth, HiArrowRightOnRectangle } from "react-icons/hi2";
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useRef } from "react";
+import { LogOut } from "lucide-react";
 
 const SettingsButton = styled.button`
-  position: fixed;
-  top: 2rem;
-  left: 2rem;
+  position: relative;
+  top: 27px;
+  left: 1rem;
   width: 4rem;
   height: 4rem;
   border-radius: 50%;
@@ -26,7 +27,15 @@ const SettingsButton = styled.button`
     border-color: var(--color-brand-500);
     transform: scale(1.05);
   }
-
+  &:active {
+    transform: scale(0.95);
+    border: none;
+    outline: none;
+  }
+  &:focus {
+    border: none;
+    outline: none;
+  }
   & svg {
     width: 2rem;
     height: 2rem;
@@ -99,7 +108,15 @@ const LogoutIcon = styled.button`
   &:hover {
     background: rgba(255, 255, 255, 0.1);
   }
-
+  &:active {
+    transform: scale(0.95);
+    border: none;
+    outline: none;
+  }
+  &:focus {
+    border: none;
+    outline: none;
+  }
   svg {
     width: 2.4rem;
     height: 2.4rem;
@@ -125,7 +142,15 @@ const MenuItem = styled.button`
   &:hover {
     background: #5a565656;
   }
-
+  &:active {
+    transform: scale(0.95);
+    border: none;
+    outline: none;
+  }
+  &:focus {
+    border: none;
+    outline: none;
+  }
   svg {
     width: 2.4rem;
     height: 2.4rem;
@@ -155,6 +180,7 @@ function GlobalSettingsDropdown() {
     showSettingsDropdown,
     toggleSettingsDropdown,
     closeSettingsDropdown,
+    logout,
   } = useAuth();
   const dropdownRef = useRef(null);
 
@@ -190,7 +216,7 @@ function GlobalSettingsDropdown() {
           <Backdrop />
           <DropdownMenu ref={dropdownRef}>
             <UserSection>
-              <LogoutIcon>
+              <LogoutIcon onClick={logout}>
                 <HiArrowRightOnRectangle />
               </LogoutIcon>
               <UserName>{user?.name || "Super Admin"}</UserName>
@@ -203,7 +229,7 @@ function GlobalSettingsDropdown() {
               <MenuItem>
                 <span>تغيير كلمة المرور</span>
               </MenuItem>
-              <MenuItem>
+              <MenuItem onClick={logout}>
                 <span>تسجيل الخروج</span>
               </MenuItem>
             </MenuItems>

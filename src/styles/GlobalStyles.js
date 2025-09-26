@@ -13,14 +13,13 @@ const GlobalStyles = createGlobalStyle`
   --color-brand-900: #14532d;
 
   /* Primary Gradient Background */
-  --primary-gradient: linear-gradient(to right, #3f3f46, #27272a);
 
   --color-dark:#0f172a;
   /* Dark Theme Colors */
   --color-grey-0: linear-gradient(to right, #3f3f46, #27272a);
   --color-grey-50: linear-gradient(to right, #3f3f46, #27272a);
   --color-grey-100:  linear-gradient(to right, #3f3f46, #27272a);
-  --color-grey-200: #0f172a;
+  --color-grey-200: #27272a;
   --color-grey-300: #0f172a;
   --color-grey-400: #71717a;
   --color-grey-500: #a1a1aa;

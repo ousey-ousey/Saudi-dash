@@ -219,12 +219,11 @@ const InputGroup = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  background: var(--color-grey-100);
+  background: var(--color-dark);
   border-radius: 0.8rem;
   padding: 1rem 1.2rem;
-  border: 2px solid var(--color-grey-300);
   transition: all 0.3s ease;
-
+  border: 1px solid darkgreen;
   &:focus-within {
     border-color: var(--color-brand-600);
     box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.1);
@@ -236,7 +235,7 @@ const InputGroup = styled.div`
 `;
 
 const StyledInput = styled.input`
-  background: var(--color-grey-100) !important;
+  background: var(--color-dark) !important;
   color: #fff;
   font-size: 1.4rem;
   flex: 1;

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Chart from "react-apexcharts";
 import Heading from "../ui/Heading";
 import PropTypes from "prop-types";
+import usePageTitle from "../hooks/usePageTitle";
 import {
   Activity,
   Building,
@@ -20,235 +21,63 @@ import {
   Zap,
 } from "lucide-react";
 
-// --- Styled Components ---
+// --- Styled Components --
 
 const Container = styled.div`
-  width: 100%;
-  max-width: 100%;
-  margin: 3rem 0 0 0;
-  padding: 1rem;
-  overflow-x: auto;
-  box-sizing: border-box;
-  background: var(--color-dark);
-  min-height: 100vh;
-  position: relative;
-  direction: rtl;
-
-  @media (max-width: 1200px) {
-    padding: 0.8rem;
-  }
-
-  @media (max-width: 768px) {
-    padding: 0.5rem;
-  }
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding: 1rem 1.5rem;
-  background: var(--color-dark);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  flex-wrap: wrap;
-  gap: 0.5rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-    padding: 1rem;
-  }
-`;
-
-const HeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  order: 3;
-
-  @media (max-width: 768px) {
-    order: 1;
-    justify-content: center;
-  }
-`;
-
-const HeaderCenter = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  order: 2;
-
-  @media (max-width: 768px) {
-    order: 2;
-    justify-content: center;
-  }
-`;
-
-const HeaderRight = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  order: 1;
-
-  @media (max-width: 768px) {
-    order: 3;
-    justify-content: center;
-  }
-`;
-
-const FilterSelect = styled.select`
-  padding: 0.5rem 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  background: var(--color-dark);
-  color: #ffffff;
-  font-size: 0.8rem;
-  font-weight: 500;
-  min-width: 120px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-align: right;
-  direction: rtl;
-
-  &:focus {
-    outline: none;
-    border-color: var(--color-brand-500);
-    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
-  }
-
-  &:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
-  option {
-    background: var(--color-dark);
-    color: #ffffff;
-    direction: rtl;
-  }
-
-  @media (max-width: 768px) {
-    min-width: 100px;
-    font-size: 0.75rem;
-  }
-`;
-
-const IconButton = styled.button`
-  width: 2rem;
-  height: 2rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-1px);
-  }
-
-  svg {
-    width: 1rem;
-    height: 1rem;
-  }
-`;
-
-const TopSection = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
-  align-items: stretch;
-
-  @media (min-width: 2400px) {
-    grid-template-columns: repeat(6, 1fr);
-  }
-
-  @media (max-width: 1800px) {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const BottomSection = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-  align-items: stretch;
-
-  @media (min-width: 2400px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const Card = styled(motion.div)`
-  background: var(--color-dark);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  gap: 2rem;
+  margin:"1rem 0"
+  grid-auto-flow: row;
+  grid-template-areas:
+  "distripution firstcharts secondcharts thiardcharts timeline timeline"
+    "distripution firstcharts secondcharts thiardcharts achiveandabstract achiveandabstract"
+    "qualitycheck qualitycheck budget budget budget posibilityanddanger"
+    "qualitycheck qualitycheck lineofhalfyearsandstate lineofhalfyearsandstate lineofhalfyearsandstate posibilityanddanger";
+  width: 100vw;
+  height: auto;
   box-sizing: border-box;
-  min-width: 0;
-  min-height: 280px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  backdrop-filter: blur(10px);
+`;
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #10b981, #22c55e, #16a34a);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
+const Distripution = styled.div`
+  grid-area: distripution;
+`;
 
-  &:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
-    border-color: rgba(16, 185, 129, 0.3);
+const Firstcharts = styled.div`
+  grid-area: firstcharts;
+`;
 
-    &::before {
-      opacity: 1;
-    }
-  }
+const Secondcharts = styled.div`
+  grid-area: secondcharts;
+`;
 
-  @media (max-width: 768px) {
-    min-height: 240px;
-    padding: 1.2rem;
-  }
+const Budget = styled.div`
+  grid-area: budget;
+`;
+
+const Lineofhalfyearsandstate = styled.div`
+  grid-area: lineofhalfyearsandstate;
+`;
+
+const Thiardcharts = styled.div`
+  grid-area: thiardcharts;
+`;
+
+const Timeline = styled.div`
+  grid-area: timeline;
+`;
+
+const Achiveandabstract = styled.div`
+  grid-area: achiveandabstract;
+`;
+
+const Posibilityanddanger = styled.div`
+  grid-area: posibilityanddanger;
+`;
+
+const Qualitycheck = styled.div`
+  grid-area: qualitycheck;
 `;
 
 const CardTitle = styled(motion.h3)`
@@ -257,10 +86,10 @@ const CardTitle = styled(motion.h3)`
   color: #ffffff;
   margin-bottom: 1rem;
   display: flex;
-  align-items: center;
+
   gap: 0.5rem;
   direction: rtl;
-  text-align: right;
+  text-align: center;
   background: linear-gradient(135deg, #10b981, #22c55e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -271,93 +100,12 @@ const CardTitle = styled(motion.h3)`
   }
 `;
 
-const ChartContainer = styled(motion.div)`
-  height: 250px;
-  position: relative;
-  margin: 0.5rem 0;
-  background: transparent;
-  border-radius: 8px;
-  overflow: hidden;
-
-  @media (max-width: 1400px) {
-    height: 220px;
-  }
-
-  @media (max-width: 1200px) {
-    height: 200px;
-  }
-
-  @media (max-width: 768px) {
-    height: 180px;
-  }
-`;
-
-const LargeChartContainer = styled(motion.div)`
-  height: 300px;
-  position: relative;
-  margin: 0.5rem 0;
-  background: transparent;
-  border-radius: 8px;
-  overflow: hidden;
-
-  @media (max-width: 1400px) {
-    height: 270px;
-  }
-
-  @media (max-width: 1200px) {
-    height: 250px;
-  }
-
-  @media (max-width: 768px) {
-    height: 220px;
-  }
-`;
-
-const MetricCard = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  padding: 0.8rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 0.5rem;
-`;
-
-const MetricValue = styled.div`
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 0.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
-  direction: ltr;
-
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-const MetricLabel = styled.div`
-  font-size: 0.7rem;
-  color: #d1d5db;
-  font-weight: 500;
-  direction: rtl;
-
-  @media (max-width: 768px) {
-    font-size: 0.65rem;
-  }
-`;
-
 const Legend = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
   margin-top: 0.5rem;
-  font-size: 0.6rem;
+  font-size: 1.4rem;
   direction: rtl;
   justify-content: flex-end;
 
@@ -374,8 +122,8 @@ const LegendItem = styled.div`
 `;
 
 const LegendDot = styled.div`
-  width: 0.4rem;
-  height: 0.4rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
   background: ${(props) => props.color};
 `;
@@ -390,7 +138,7 @@ const TableRow = styled.div`
   align-items: center;
   padding: 0.4rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.7rem;
+  font-size: 1rem;
   direction: rtl;
 
   &:last-child {
@@ -403,7 +151,7 @@ const TableRow = styled.div`
 `;
 
 const TableCell = styled.div`
-  font-size: 0.7rem;
+  font-size: 1rem;
   color: ${(props) => (props.emphasis === "true" ? "#ffffff" : "#d1d5db")};
   font-weight: ${(props) => (props.emphasis === "true" ? "600" : "400")};
   text-align: ${(props) => (props.rtl === "true" ? "right" : "left")};
@@ -414,62 +162,10 @@ const TableCell = styled.div`
   }
 `;
 
-const ExecutiveSummary = styled.div`
-  max-height: 120px;
-  overflow-y: auto;
-  padding-right: 0.3rem;
-  font-size: 0.7rem;
-  line-height: 1.3;
-  color: #d1d5db;
-  direction: rtl;
-  text-align: right;
-
-  &::-webkit-scrollbar {
-    width: 3px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 2px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 0.65rem;
-  }
-`;
-
-const StatusBlock = styled.div`
-  background: ${(props) => props.color};
-  color: #ffffff;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  text-align: center;
-  font-size: 0.8rem;
-  font-weight: 600;
-
-  span {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-`;
-
-const StatusGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0.5rem;
-  margin-top: 1rem;
-`;
-
 const QualityStatCard = styled.div`
   background: ${(props) => props.color}20;
   border-radius: 6px;
-  padding: 0.8rem;
+  padding: 1.5rem;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -479,14 +175,14 @@ const QualityStatCard = styled.div`
 `;
 
 const QualityValue = styled.div`
-  font-size: 2rem;
+  font-size: 3rem;
   font-weight: 700;
   color: ${(props) => props.color};
   line-height: 1;
 `;
 
 const QualityLabel = styled.div`
-  font-size: 0.8rem;
+  font-size: 1.5rem;
   color: #ffffff;
   font-weight: 500;
   margin-top: 0.3rem;
@@ -507,14 +203,14 @@ const SmallDonutCard = ({
     style={{
       border: "1px solid rgba(255, 255, 255, 0.1)",
       borderRadius: "6px",
-      padding: "0.5rem",
+      padding: "1.5rem",
       background: "#0f172a",
       ...style,
     }}
   >
     <div
       style={{
-        fontSize: "0.7rem",
+        fontSize: "1.5rem",
         fontWeight: 600,
         color: "#ffffff",
         marginBottom: "0.3rem",
@@ -528,7 +224,7 @@ const SmallDonutCard = ({
     <div
       style={{
         position: "relative",
-        height: "100px",
+        height: "150px",
         background: "#0f172a !important",
       }}
     >
@@ -548,7 +244,7 @@ const SmallDonutCard = ({
         }}
         series={series}
         type="donut"
-        height={100}
+        height={150}
         style={{ background: "#0f172a !important" }}
       />
       {/* Center Value */}
@@ -574,7 +270,7 @@ const SmallDonutCard = ({
         </div>
       )}
     </div>
-    <Legend style={{ fontSize: "0.5rem", justifyContent: "flex-end" }}>
+    <Legend style={{ fontSize: ".8rem", justifyContent: "flex-end" }}>
       {labels.map((label, index) => (
         <LegendItem key={label}>
           <LegendDot
@@ -600,11 +296,8 @@ SmallDonutCard.propTypes = {
 // --- Dashboard Component ---
 
 function Dashboard() {
-  const [selectedRegion, setSelectedRegion] = useState("");
-  const [selectedProject, setSelectedProject] = useState("");
-  const [selectedStage, setSelectedStage] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedSector, setSelectedSector] = useState("");
+  // Set page title
+  usePageTitle("لوحة بيانات المشاريع");
 
   // Chart options for dark theme
   const chartOptions = {
@@ -658,7 +351,7 @@ function Dashboard() {
       position: "bottom",
       horizontalAlign: "center",
       fontFamily: "inherit",
-      fontSize: "5px",
+      fontSize: "4px",
     },
     tooltip: {
       theme: "dark",
@@ -1044,93 +737,6 @@ function Dashboard() {
     },
   ];
 
-  // Program Completion Timeline
-  const completionTimelineOptions = {
-    ...chartOptions,
-    chart: {
-      ...chartOptions.chart,
-      stacked: false,
-    },
-    stroke: {
-      width: [4, 4, 0, 0],
-      curve: "smooth",
-    },
-    plotOptions: {
-      bar: {
-        columnWidth: "70%",
-      },
-    },
-    xaxis: {
-      categories: [
-        "21-H1",
-        "21-H2",
-        "22-H1",
-        "22-H2",
-        "23-H1",
-        "23-H2",
-        "24-H1",
-        "24-H2",
-        "25-H1",
-        "25-H2",
-        "26-H1",
-        "26-H2",
-      ],
-      labels: {
-        style: {
-          colors: "#ffffff",
-        },
-        rotate: -45,
-      },
-    },
-    yaxis: {
-      labels: {
-        style: {
-          colors: "#ffffff",
-        },
-        formatter: (val) => val + "%",
-      },
-      title: {
-        text: "النسبة المئوية",
-        style: { color: "#ffffff" },
-      },
-      min: 0,
-      max: 100,
-    },
-    series: [
-      {
-        name: "المخطط التراكمي",
-        type: "line",
-        data: [5, 15, 24, 31, 41, 54, 66, 74, 81, 89, 95, 100],
-        color: "#3b82f6",
-      },
-      {
-        name: "الفعلي التراكمي",
-        type: "line",
-        data: [4, 10, 20, 29, 35, 50, 60, 65, 75, 83, 85, 92],
-        color: "#ef4444",
-      },
-      {
-        name: "نسبة الانجاز المخطط",
-        type: "column",
-        data: [5, 10, 9, 7, 13, 12, 8, 13, 7, 8, 6, 5],
-        color: "#fbbf24",
-      },
-      {
-        name: "نسبة الانجاز الفعلي",
-        type: "column",
-        data: [4, 7, 5, 3, 10, 8, 5, 3, 5, 6, 2, 5],
-        color: "#06b6d4",
-      },
-    ],
-    grid: {
-      borderColor: "rgba(255, 255, 255, 0.1)",
-    },
-    legend: {
-      ...chartOptions.legend,
-      position: "bottom",
-    },
-  };
-
   // Program Completion Timeline - Line Chart Only
   const completionTimelineLineOptions = {
     ...chartOptions,
@@ -1169,6 +775,7 @@ function Dashboard() {
       labels: {
         style: {
           colors: "#ffffff",
+          fontSize: "1rem",
         },
         formatter: (val) => val + "%",
       },
@@ -1195,13 +802,13 @@ function Dashboard() {
       {
         name: "نسبة الانجاز المخطط",
         type: "line",
-        data: [5, 10, 9, 7, 13, 12, 8, 13, 7, 8, 6, 5],
+        data: [5, 12, 10, 7, 13, 22, 8, 13, 7, 8, 6, 5],
         color: "#fbbf24",
       },
       {
         name: "نسبة الانجاز الفعلي",
         type: "line",
-        data: [4, 10, 8, 6, 12, 11, 7, 12, 6, 7, 5, 4],
+        data: [4, 10, 8, 6, 10, 11, 7, 7, 6, 2, 5, 4],
         color: "#06b6d4",
       },
     ],
@@ -1211,6 +818,7 @@ function Dashboard() {
     legend: {
       ...chartOptions.legend,
       position: "bottom",
+      fontSize: "9px",
     },
   };
 
@@ -1229,7 +837,7 @@ function Dashboard() {
             total: {
               show: true,
               label: "",
-              fontSize: "12px",
+              fontSize: "10px",
               fontWeight: 400,
               color: "#d1d5db",
             },
@@ -1371,20 +979,32 @@ function Dashboard() {
     chart: {
       ...chartOptions.chart,
       type: "radialBar",
-      animations: { enabled: false },
+      animations: {
+        enabled: true,
+        easing: "easeinout",
+        speed: 2000,
+        animateGradually: {
+          enabled: true,
+          delay: 100,
+        },
+        dynamicAnimation: {
+          enabled: true,
+          speed: 350,
+        },
+      },
     },
     plotOptions: {
       radialBar: {
         hollow: {
           margin: 0,
-          size: "60%",
+          size: "70%",
         },
         dataLabels: {
           showOn: "always",
           name: { show: false },
           value: {
             color: "#ffffff",
-            fontSize: "28px",
+            fontSize: "20px",
             fontWeight: 700,
             show: true,
             offsetY: 8,
@@ -1398,7 +1018,7 @@ function Dashboard() {
       },
     },
     fill: {
-      colors: ["#3b82f6"],
+      colors: ["#26df16"],
     },
     stroke: {
       lineCap: "round",
@@ -1480,794 +1100,572 @@ function Dashboard() {
   ];
 
   return (
-    <Container>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        {/* Header */}
-        {/* <Header>
-          <HeaderLeft>
-            <IconButton>
-              <FileText />
-            </IconButton>
-            <IconButton>
-              <RefreshCw />
-            </IconButton>
-          </HeaderLeft>
-          <HeaderCenter>
-            <FilterSelect
-              value={selectedRegion}
-              onChange={(e) => setSelectedRegion(e.target.value)}
-            >
-              <option value="">المنطقة</option>
-              <option value="جازان">جازان</option>
-              <option value="الرياض">الرياض</option>
-              <option value="مكة المكرمة">مكة المكرمة</option>
-            </FilterSelect>
-            <FilterSelect
-              value={selectedProject}
-              onChange={(e) => setSelectedProject(e.target.value)}
-            >
-              <option value="">المشروع</option>
-              <option value="مشروع1">مشروع 1</option>
-              <option value="مشروع2">مشروع 2</option>
-            </FilterSelect>
-            <FilterSelect
-              value={selectedStage}
-              onChange={(e) => setSelectedStage(e.target.value)}
-            >
-              <option value="">مراحل المشروع</option>
-              <option value="بدء">بدء المشروع</option>
-              <option value="تنفيذ">التنفيذ</option>
-            </FilterSelect>
-            <FilterSelect
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-            >
-              <option value="">حالة المشروع</option>
-              <option value="نشط">نشط</option>
-              <option value="مكتمل">مكتمل</option>
-            </FilterSelect>
-            <FilterSelect
-              value={selectedSector}
-              onChange={(e) => setSelectedSector(e.target.value)}
-            >
-              <option value="">القطاع</option>
-              <option value="الاسماك">الاسماك</option>
-              <option value="البن العربي">البن العربي</option>
-            </FilterSelect>
-          </HeaderCenter>
-          <HeaderRight>
-            <Heading
-              as="h1"
-              style={{ color: "#ffffff", fontSize: "1.2rem", margin: 0 }}
-            >
-              لوحة بيانات المشاريع
-            </Heading>
-            <span
-              style={{
-                fontSize: "0.8rem",
-                color: "#d1d5db",
-                fontWeight: "500",
-              }}
-            >
-              سبتمبر 2025
-            </span>
-            <IconButton>
-              <Maximize2 />
-            </IconButton>
-            <IconButton>
-              <Home />
-            </IconButton>
-          </HeaderRight>
-        </Header> */}
-
-        {/* Top Section (Matching Image 1) */}
-        <TopSection>
-          {/* Geographical Distribution */}
-          <Card
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+    <>
+      <Container style={{}}>
+        <Distripution style={{ height: "fit-content", width: "280px" }}>
+          <CardTitle style={{ alignItems: "center", justifyContent: "center" }}>
+            <BarChart3 size={16} />
+            التوزيع الجغرافي للمشاريع
+          </CardTitle>
+          <Chart
+            options={geographicalDistributionOptions}
+            series={geographicalDistributionSeries}
+            type="bar"
+            height={600}
+          />
+        </Distripution>
+        <Firstcharts style={{ height: "fit-content", width: "230px" }}>
+          <CardTitle style={{ alignItems: "center", justifyContent: "center" }}>
+            <BarChart3 size={16} />
+            توزيع المشاريع بالقطاعات
+          </CardTitle>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+            }}
           >
-            <CardTitle>
-              <BarChart3 size={16} />
-              التوزيع الجغرافي للمشاريع
-            </CardTitle>
-            <ChartContainer style={{ height: "400px" }}>
-              <Chart
-                options={geographicalDistributionOptions}
-                series={geographicalDistributionSeries}
-                type="bar"
-                height={400}
-              />
-            </ChartContainer>
-          </Card>
-
-          {/* Sector Distribution */}
-          <Card
-            style={{ minHeight: "350px" }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <CardTitle>
-              <BarChart3 size={16} />
-              توزيع المشاريع بالقطاعات
-            </CardTitle>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "0.8rem",
-                    color: "#ffffff",
-                    marginBottom: "0.5rem",
-                    textAlign: "center",
-                  }}
-                >
-                  العدد
-                </div>
-                <ChartContainer style={{ height: "200px" }}>
-                  <Chart
-                    options={sectorDistributionCountOptions}
-                    series={sectorDistributionSeriesCount}
-                    type="donut"
-                    height={200}
-                  />
-                </ChartContainer>
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontSize: "0.8rem",
-                    color: "#ffffff",
-                    marginBottom: "0.5rem",
-                    textAlign: "center",
-                  }}
-                >
-                  القيمة (B)
-                </div>
-                <ChartContainer style={{ height: "200px" }}>
-                  <Chart
-                    options={sectorDistributionValueOptions}
-                    series={sectorDistributionSeriesValue}
-                    type="donut"
-                    height={200}
-                  />
-                </ChartContainer>
-              </div>
-            </div>
-            <Legend style={{ justifyContent: "center" }}>
-              {sectorDistributionLabels.map((label, index) => (
-                <LegendItem key={label}>
-                  <LegendDot
-                    color={
-                      chartOptions.colors[index % chartOptions.colors.length]
-                    }
-                  />
-                  {label}
-                </LegendItem>
-              ))}
-            </Legend>
-          </Card>
-
-          {/* Project Stages */}
-          <Card style={{ minHeight: "350px" }}>
-            <CardTitle>
-              <BarChart3 size={16} />
-              توزيع مراحل المشاريع
-            </CardTitle>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "0.8rem",
-                    color: "#ffffff",
-                    marginBottom: "0.5rem",
-                    textAlign: "center",
-                  }}
-                >
-                  العدد
-                </div>
-                <ChartContainer style={{ height: "200px" }}>
-                  <Chart
-                    options={projectStagesCountOptions}
-                    series={projectStagesSeriesCount}
-                    type="donut"
-                    height={200}
-                  />
-                </ChartContainer>
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontSize: "0.8rem",
-                    color: "#ffffff",
-                    marginBottom: "0.5rem",
-                    textAlign: "center",
-                  }}
-                >
-                  القيمة (B)
-                </div>
-                <ChartContainer style={{ height: "200px" }}>
-                  <Chart
-                    options={projectStagesValueOptions}
-                    series={projectStagesSeriesValue}
-                    type="donut"
-                    height={200}
-                  />
-                </ChartContainer>
-              </div>
-            </div>
-            <Legend style={{ justifyContent: "center" }}>
-              {projectStagesLabels.map((label, index) => (
-                <LegendItem key={label}>
-                  <LegendDot
-                    color={
-                      chartOptions.colors[index % chartOptions.colors.length]
-                    }
-                  />
-                  {label}
-                </LegendItem>
-              ))}
-            </Legend>
-          </Card>
-
-          {/* Project Types */}
-          <Card style={{ minHeight: "350px" }}>
-            <CardTitle>
-              <Building size={16} />
-              توزيع أنواع المشاريع
-            </CardTitle>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "0.8rem",
-                    color: "#ffffff",
-                    marginBottom: "0.5rem",
-                    textAlign: "center",
-                  }}
-                >
-                  العدد
-                </div>
-                <ChartContainer style={{ height: "200px" }}>
-                  <Chart
-                    options={projectTypesCountOptions}
-                    series={projectTypesSeriesCount}
-                    type="donut"
-                    height={200}
-                  />
-                </ChartContainer>
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontSize: "0.8rem",
-                    color: "#ffffff",
-                    marginBottom: "0.5rem",
-                    textAlign: "center",
-                  }}
-                >
-                  القيمة (B)
-                </div>
-                <ChartContainer style={{ height: "200px" }}>
-                  <Chart
-                    options={projectTypesValueOptions}
-                    series={projectTypesSeriesValue}
-                    type="donut"
-                    height={200}
-                  />
-                </ChartContainer>
-              </div>
-            </div>
-            <Legend style={{ justifyContent: "center" }}>
-              {projectTypesLabels.map((label, index) => (
-                <LegendItem key={label}>
-                  <LegendDot
-                    color={
-                      chartOptions.colors[index % chartOptions.colors.length]
-                    }
-                  />
-                  {label}
-                </LegendItem>
-              ))}
-            </Legend>
-          </Card>
-
-          {/* Combined Program Overview */}
-          <Card
-            style={{}}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            {/* Timeline Section */}
-            <div style={{ margin: "4rem 1rem 1rem 1rem" }}>
-              <CardTitle
-                style={{ textAlign: "center", marginBottom: "1.5rem" }}
+            <div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#ffffff",
+                  marginBottom: "0.5rem",
+                  textAlign: "center",
+                }}
               >
-                <Clock size={20} />
-                الخط الزمني للبرنامج
-              </CardTitle>
+                العدد
+              </div>
+              <Chart
+                options={sectorDistributionCountOptions}
+                series={sectorDistributionSeriesCount}
+                type="donut"
+                height={300}
+              />
+            </div>
+            <div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#ffffff",
+                  marginBottom: "0.5rem",
+                  textAlign: "center",
+                }}
+              >
+                القيمة (B)
+              </div>
+              <Chart
+                options={sectorDistributionValueOptions}
+                series={sectorDistributionSeriesValue}
+                type="donut"
+                height={300}
+              />
+            </div>
+          </div>
+          <Legend style={{ justifyContent: "center" }}>
+            {sectorDistributionLabels.map((label, index) => (
+              <LegendItem key={label}>
+                <LegendDot
+                  color={
+                    chartOptions.colors[index % chartOptions.colors.length]
+                  }
+                />
+                {label}
+              </LegendItem>
+            ))}
+          </Legend>
+        </Firstcharts>
+        <Secondcharts style={{ height: "fit-content", width: "230px" }}>
+          <CardTitle style={{ alignItems: "center", justifyContent: "center" }}>
+            <BarChart3 size={16} />
+            توزيع مراحل المشاريع
+          </CardTitle>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#ffffff",
+                  marginBottom: "0.5rem",
+                  textAlign: "center",
+                }}
+              >
+                العدد
+              </div>
+              <Chart
+                options={projectStagesCountOptions}
+                series={projectStagesSeriesCount}
+                type="donut"
+                height={300}
+              />
+            </div>
+            <div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#ffffff",
+                  marginBottom: "0.5rem",
+                  textAlign: "center",
+                }}
+              >
+                القيمة (B)
+              </div>
+              <Chart
+                options={projectStagesValueOptions}
+                series={projectStagesSeriesValue}
+                type="donut"
+                height={300}
+              />
+            </div>
+          </div>
+          <Legend style={{ justifyContent: "center" }}>
+            {projectStagesLabels.map((label, index) => (
+              <LegendItem key={label}>
+                <LegendDot
+                  color={
+                    chartOptions.colors[index % chartOptions.colors.length]
+                  }
+                />
+                {label}
+              </LegendItem>
+            ))}
+          </Legend>
+        </Secondcharts>
+        <Thiardcharts style={{ height: "fit-content", width: "230px" }}>
+          <CardTitle style={{ alignItems: "center", justifyContent: "center" }}>
+            <Building size={16} />
+            توزيع أنواع المشاريع
+          </CardTitle>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#ffffff",
+                  marginBottom: "0.5rem",
+                  textAlign: "center",
+                }}
+              >
+                العدد
+              </div>
+              <Chart
+                options={projectTypesCountOptions}
+                series={projectTypesSeriesCount}
+                type="donut"
+                height={300}
+              />
+            </div>
+            <div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#ffffff",
+                  marginBottom: "0.5rem",
+                  textAlign: "center",
+                }}
+              >
+                القيمة (B)
+              </div>
+              <Chart
+                options={projectTypesValueOptions}
+                series={projectTypesSeriesValue}
+                type="donut"
+                height={300}
+              />
+            </div>
+          </div>
+          <Legend style={{ justifyContent: "center" }}>
+            {projectTypesLabels.map((label, index) => (
+              <LegendItem key={label}>
+                <LegendDot
+                  color={
+                    chartOptions.colors[index % chartOptions.colors.length]
+                  }
+                />
+                {label}
+              </LegendItem>
+            ))}
+          </Legend>
+        </Thiardcharts>
+        <Timeline style={{}}>
+          <CardTitle style={{}}>
+            <Clock size={20} />
+            الخط الزمني للبرنامج
+          </CardTitle>
 
-              {/* Timeline Bar */}
+          {/* Timeline Bar */}
+          <div
+            style={{
+              position: "relative",
+              height: "15%",
+              margin: "2rem 1rem 1rem 1rem",
+              background: "linear-gradient(90deg, #1d6327 0%, #581d1d 100%)",
+              borderRadius: "30px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0 1rem",
+              top: "26%",
+              width: "70%",
+            }}
+          >
+            {/* Start Indicator */}
+            <div
+              style={{
+                position: "absolute",
+                left: "-26px",
+                top: "75%",
+                transform: "translateY(-100%)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "47%",
+                  color: "#ffffff",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                البداية
+                <br />
+                2021
+              </div>
+            </div>
+
+            {/* Current Time Indicator */}
+            <div
+              style={{
+                position: "absolute",
+                left: "70%",
+                top: "75%",
+                transform: "translateY(-50%)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  width: "10px",
+                  height: "10px",
+                  background: "#fbbf24",
+                  borderRadius: "50%",
+                  border: "2px solid #ffffff",
+                  marginBottom: "5px",
+                  boxShadow: "0 0 5px rgba(251, 191, 36, 0.5)",
+                }}
+              ></div>
+              <div
+                style={{
+                  fontSize: "47%",
+                  color: "#fbbf24",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                الوقت الحالي
+                <br />
+                2025
+              </div>
+            </div>
+
+            {/* End Indicator */}
+            <div
+              style={{
+                position: "absolute",
+                right: "-26px",
+                top: "75%",
+                transform: "translateY(-100%)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "47%",
+                  color: "#ffffff",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                النهاية
+                <br />
+                2026
+              </div>
+            </div>
+
+            {/* Year Labels */}
+            <div
+              style={{
+                position: "absolute",
+                top: "-25px",
+                left: "-20px",
+                right: "0",
+                display: "flex",
+                flexDirection: "row-reverse",
+                justifyContent: "space-between",
+                padding: "0 1rem",
+              }}
+            >
+              {[2021, 2022, 2023, 2024, 2025, 2026].map((year) => (
+                <span
+                  key={year}
+                  style={{
+                    fontSize: "61%",
+                    margin: "1rem",
+                    fontWeight: year === 2025 ? "bold" : "normal",
+                    color: year === 2025 ? "#fbbf24" : "#94a3b8",
+                  }}
+                >
+                  {year}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Timeline>
+        <Achiveandabstract
+          style={{ display: "flex", flexDirection: "row", gap: "1rem" }}
+        >
+          <div style={{ width: "30%", height: "fit-content" }}>
+            <CardTitle
+              style={{ alignItems: "center", justifyContent: "center" }}
+            >
+              ملخص تنفيذي
+            </CardTitle>
+            <div
+              style={{
+                background: "rgba(255, 255, 255, 0.05)",
+                padding: "1.5rem",
+                borderRadius: "12px",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                height: "100%",
+                margin: "1rem 0 0 0",
+                overflowY: "auto",
+              }}
+            >
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                  color: "#e2e8f0",
+                }}
+              >
+                <li
+                  style={{
+                    marginBottom: "1rem",
+                    paddingLeft: "1.5rem",
+                    position: "relative",
+                    fontSize: "0.9rem",
+                    lineHeight: "1.5",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "0",
+                      top: "0.5rem",
+                      width: "6px",
+                      height: "6px",
+                      background: "#3b82f6",
+                      borderRadius: "50%",
+                    }}
+                  ></div>
+                  تم تسليم 6 أراضي مخصصين لقطاعات الأسماك والورد والماشية
+                </li>
+                <li
+                  style={{
+                    marginBottom: "1rem",
+                    paddingLeft: "1.5rem",
+                    position: "relative",
+                    fontSize: "0.9rem",
+                    lineHeight: "1.5",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "0",
+                      top: "0.5rem",
+                      width: "6px",
+                      height: "6px",
+                      background: "#3b82f6",
+                      borderRadius: "50%",
+                    }}
+                  ></div>
+                  تم تسليم 6 أراضي مخصصين لقطاعات الأسماك والورد والماشية
+                </li>
+                <li
+                  style={{
+                    marginBottom: "1rem",
+                    paddingLeft: "1.5rem",
+                    position: "relative",
+                    fontSize: "0.9rem",
+                    lineHeight: "1.5",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "0",
+                      top: "0.5rem",
+                      width: "6px",
+                      height: "6px",
+                      background: "#3b82f6",
+                      borderRadius: "50%",
+                    }}
+                  ></div>
+                  تم تسليم 6 أراضي مخصصين لقطاعات الأسماك والورد والماشية
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div style={{ width: "70%", height: "fit-content" }}>
+            <CardTitle style={{ textAlign: "center" }}>
+              نسبة الانجاز الفعلية للبرنامج
+            </CardTitle>
+            <div
+              style={{
+                width: "100%",
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
               <div
                 style={{
                   position: "relative",
-                  height: "60px",
-                  margin: "2rem 1rem 1rem 1rem",
-                  background:
-                    "linear-gradient(90deg, #1d6327 0%, #581d1d 100%)",
-                  borderRadius: "30px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "0 1rem",
+                  height: "100px",
+                  left: "25%",
                 }}
               >
-                {/* Start Indicator */}
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "-26px",
-                    top: "75%",
-                    transform: "translateY(-100%)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "0.8rem",
-                      color: "#ffffff",
-                      fontWeight: "bold",
-                      textAlign: "center",
-                    }}
-                  >
-                    البداية
-                    <br />
-                    2021
-                  </div>
-                </div>
-
-                {/* Current Time Indicator */}
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "70%",
-                    top: "75%",
-                    transform: "translateY(-50%)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "10px",
-                      height: "10px",
-                      background: "#fbbf24",
-                      borderRadius: "50%",
-                      border: "2px solid #ffffff",
-                      marginBottom: "5px",
-                      boxShadow: "0 0 5px rgba(251, 191, 36, 0.5)",
-                    }}
-                  ></div>
-                  <div
-                    style={{
-                      fontSize: "0.7rem",
-                      color: "#fbbf24",
-                      fontWeight: "bold",
-                      textAlign: "center",
-                    }}
-                  >
-                    الوقت الحالي
-                    <br />
-                    2026
-                  </div>
-                </div>
-
-                {/* End Indicator */}
-                <div
-                  style={{
-                    position: "absolute",
-                    right: "-26px",
-                    top: "75%",
-                    transform: "translateY(-100%)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "0.8rem",
-                      color: "#ffffff",
-                      fontWeight: "bold",
-                      textAlign: "center",
-                    }}
-                  >
-                    النهاية
-                    <br />
-                    2026
-                  </div>
-                </div>
-
-                {/* Year Labels */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "-25px",
-                    left: "0",
-                    right: "0",
-                    display: "flex",
-                    flexDirection: "row-reverse",
-                    justifyContent: "space-between",
-                    padding: "0 1rem",
-                  }}
-                >
-                  {[2021, 2022, 2023, 2024, 2025, 2026].map((year) => (
-                    <span
-                      key={year}
-                      style={{
-                        fontSize: "0.7rem",
-                        margin: "1rem",
-                        fontWeight: year === 2025 ? "bold" : "normal",
-                        color: year === 2025 ? "#fbbf24" : "#94a3b8",
-                      }}
-                    >
-                      {year}
-                    </span>
-                  ))}
-                </div>
+                <Chart
+                  options={actualCompletionOptions}
+                  series={actualCompletionSeries}
+                  type="radialBar"
+                  height={100}
+                />
               </div>
-            </div>
 
-            {/* Main Content Grid */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column-reverse",
-                gap: "5rem",
-                alignItems: "start",
-              }}
-            >
-              {/* low Side - Gauge Chart */}
-              <div style={{ textAlign: "center", width: "100%" }}>
-                <h3
-                  style={{
-                    color: "#ffffff",
-                    marginBottom: "1rem",
-                    fontSize: "1.1rem",
-                    fontWeight: "600",
-                  }}
-                >
-                  نسبة الانجاز الفعلية للبرنامج
-                </h3>
+              {/* Metrics Table */}
+              <div
+                style={{
+                  gap: "1rem",
+                  marginTop: "1rem",
+                  dispaly: "flex",
+                  flexDirection: "row",
+                }}
+              >
                 <div
                   style={{
+                    padding: "0.75rem",
+                    borderRadius: "8px",
                     position: "relative",
-                    height: "200px",
-                  }}
-                >
-                  <Chart
-                    options={actualCompletionOptions}
-                    series={actualCompletionSeries}
-                    type="radialBar"
-                    height={200}
-                  />
-                </div>
-
-                {/* Metrics Table */}
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "1rem",
-                    marginTop: "1rem",
                   }}
                 >
                   <div
                     style={{
-                      background: "rgba(239, 68, 68, 0.1)",
-                      padding: "0.75rem",
-                      borderRadius: "8px",
-                      border: "1px solid rgba(239, 68, 68, 0.2)",
+                      fontSize: "0.8rem",
+                      color: "#ef4444",
+                      marginBottom: "0.25rem",
                     }}
                   >
-                    <div
-                      style={{
-                        fontSize: "0.8rem",
-                        color: "#ef4444",
-                        marginBottom: "0.25rem",
-                      }}
-                    >
-                      نسبة الحياد
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "1.2rem",
-                        color: "#ef4444",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      -4%
-                    </div>
+                    نسبة الحيادالناتج
                   </div>
                   <div
                     style={{
-                      background: "rgba(34, 197, 94, 0.1)",
-                      padding: "0.75rem",
-                      borderRadius: "8px",
-                      border: "1px solid rgba(34, 197, 94, 0.2)",
+                      fontSize: "1rem",
+                      color: "#ef4444",
+                      fontWeight: "bold",
                     }}
                   >
-                    <div
-                      style={{
-                        fontSize: "0.8rem",
-                        color: "#22c55e",
-                        marginBottom: "0.25rem",
-                      }}
-                    >
-                      نسبة الانجاز المشاريع المخطط لها
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "1.2rem",
-                        color: "#22c55e",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      32%
-                    </div>
+                    -4%
                   </div>
                 </div>
-              </div>
-              {/* upper Section - Project Status */}
-              <div style={{ width: "100%" }}>
-                <h3
-                  style={{
-                    color: "#ffffff",
-                    marginBottom: "1rem",
-                    fontSize: "1.1rem",
-                    fontWeight: "600",
-                  }}
-                >
-                  حالة المشاريع
-                </h3>
                 <div
                   style={{
-                    background: "rgba(255, 255, 255, 0.05)",
-                    padding: "1.5rem",
-                    borderRadius: "12px",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    height: "280px",
-                    width: "100%",
+                    padding: "0.75rem",
+                    borderRadius: "8px",
                   }}
                 >
                   <div
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: "1rem",
-                      marginBottom: "1.5rem",
+                      fontSize: "0.8rem",
+                      color: "#22c55e",
+                      marginBottom: "0.25rem",
                     }}
                   >
-                    <div
-                      style={{
-                        background: "rgba(59, 130, 246, 0.1)",
-                        padding: "1rem",
-                        borderRadius: "8px",
-                        border: "1px solid rgba(59, 130, 246, 0.2)",
-                        textAlign: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "1.5rem",
-                          color: "#3b82f6",
-                          fontWeight: "bold",
-                          marginBottom: "0.25rem",
-                        }}
-                      >
-                        88
-                      </div>
-                      <div style={{ fontSize: "0.8rem", color: "#3b82f6" }}>
-                        منتظم
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        background: "rgba(34, 197, 94, 0.1)",
-                        padding: "1rem",
-                        borderRadius: "8px",
-                        border: "1px solid rgba(34, 197, 94, 0.2)",
-                        textAlign: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "1.5rem",
-                          color: "#22c55e",
-                          fontWeight: "bold",
-                          marginBottom: "0.25rem",
-                        }}
-                      >
-                        12
-                      </div>
-                      <div style={{ fontSize: "0.8rem", color: "#22c55e" }}>
-                        مكتمل
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        background: "rgba(245, 158, 11, 0.1)",
-                        padding: "1rem",
-                        borderRadius: "8px",
-                        border: "1px solid rgba(245, 158, 11, 0.2)",
-                        textAlign: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "1.5rem",
-                          color: "#f59e0b",
-                          fontWeight: "bold",
-                          marginBottom: "0.25rem",
-                        }}
-                      >
-                        13
-                      </div>
-                      <div style={{ fontSize: "0.8rem", color: "#f59e0b" }}>
-                        متأخر
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        background: "rgba(239, 68, 68, 0.1)",
-                        padding: "1rem",
-                        borderRadius: "8px",
-                        border: "1px solid rgba(239, 68, 68, 0.2)",
-                        textAlign: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "1.5rem",
-                          color: "#ef4444",
-                          fontWeight: "bold",
-                          marginBottom: "0.25rem",
-                        }}
-                      >
-                        5
-                      </div>
-                      <div style={{ fontSize: "0.8rem", color: "#ef4444" }}>
-                        متوقف
-                      </div>
-                    </div>
+                    نسبة الانجاز المخطط
                   </div>
-
-                  {/* Additional Metrics */}
                   <div
                     style={{
-                      borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-                      paddingTop: "1rem",
+                      fontSize: "1rem",
+                      color: "#22c55e",
+                      fontWeight: "bold",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "0.75rem",
-                      }}
-                    >
-                      <span style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
-                        إجمالي المشاريع
-                      </span>
-                      <span
-                        style={{
-                          color: "#ffffff",
-                          fontSize: "0.9rem",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        118
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "0.75rem",
-                      }}
-                    >
-                      <span style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
-                        نسبة الإنجاز الإجمالي
-                      </span>
-                      <span
-                        style={{
-                          color: "#22c55e",
-                          fontSize: "0.9rem",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        84.7%
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <span style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
-                        المشاريع النشطة
-                      </span>
-                      <span
-                        style={{
-                          color: "#3b82f6",
-                          fontSize: "0.9rem",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        101
-                      </span>
-                    </div>
+                    32%
                   </div>
                 </div>
               </div>
             </div>
-          </Card>
-          {/* Quality */}
-          <Card style={{ minHeight: "300px" }}>
-            <CardTitle>
-              <Zap size={16} />
-              احصائيات الجودة
-            </CardTitle>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "2rem",
-                marginBottom: "1rem",
-              }}
-            >
-              <QualityStatCard color="#22c55e">
-                <QualityValue color="#22c55e">350</QualityValue>
-                <QualityLabel>اجمالي زيارات ميدانية</QualityLabel>
-              </QualityStatCard>
-              <QualityStatCard color="#8b5cf6">
-                <QualityValue color="#8b5cf6">13505</QualityValue>
-                <QualityLabel>اجمالي الاعتمادات و الاستلامات</QualityLabel>
-              </QualityStatCard>
-            </div>
+          </div>
+        </Achiveandabstract>
+
+        <Qualitycheck style={{}}>
+          <CardTitle style={{ alignItems: "center", justifyContent: "center" }}>
+            <Zap size={16} />
+            احصائيات الجودة
+          </CardTitle>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              marginBottom: "1rem",
+            }}
+          >
+            <QualityStatCard color="#22c55e">
+              <QualityValue color="#22c55e">350</QualityValue>
+              <QualityLabel>اجمالي زيارات ميدانية</QualityLabel>
+            </QualityStatCard>
+            <QualityStatCard color="#8b5cf6">
+              <QualityValue color="#8b5cf6">13505</QualityValue>
+              <QualityLabel>اجمالي الاعتمادات و الاستلامات</QualityLabel>
+            </QualityStatCard>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "1.5rem",
+            }}
+          >
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: "1.5rem",
+                width: "50%",
+                height: "100%",
               }}
             >
               <SmallDonutCard
@@ -2286,445 +1684,101 @@ function Dashboard() {
                 chartOptions={chartOptions}
                 centerValue="42"
               />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+                width: "50%",
+                height: "100%",
+              }}
+            >
               <SmallDonutCard
                 title="اوامر التغيير"
                 options={technicalApprovalsOptions}
                 series={technicalApprovalsOptions.series}
                 labels={changeOrdersLabels}
-                chartOptions={changeOrdersOptions}
+                chartOptions={technicalApprovalsOptions}
                 centerValue="16"
               />
               <SmallDonutCard
                 title="عدم المطابقة"
                 options={technicalApprovalsOptions}
-                series={nonConformanceOptions.series}
+                series={technicalApprovalsOptions.series}
                 labels={nonConformanceLabels}
-                chartOptions={nonConformanceOptions}
+                chartOptions={technicalApprovalsOptions}
                 centerValue="17"
               />
             </div>
-          </Card>
-          {/* Budget */}
-          <Card style={{ minHeight: "200px" }}>
-            <CardTitle>
-              <Activity size={16} />
-              توزيع ميزانية البرنامج
-            </CardTitle>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                margin: "1rem 0",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    color: "#ffffff",
-                    fontSize: "1.2rem",
-                    fontWeight: 700,
-                  }}
-                >
-                  1.53 bn
-                </div>
-                <div style={{ color: "#d1d5db", fontSize: "0.7rem" }}>
-                  اجمالي الميزانية
-                </div>
+          </div>
+        </Qualitycheck>
+        <Budget
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            top: "20%",
+          }}
+        >
+          <CardTitle style={{ alignItems: "center", justifyContent: "center" }}>
+            <Activity size={16} />
+            توزيع ميزانية البرنامج
+          </CardTitle>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              margin: "1rem 0",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  color: "#ffffff",
+                  fontSize: "1.2rem",
+                  fontWeight: 700,
+                }}
+              >
+                1.53 bn
               </div>
-              <div>
-                <div
-                  style={{
-                    color: "#86efac",
-                    fontSize: "1.2rem",
-                    fontWeight: 700,
-                  }}
-                >
-                  922.63 M
-                </div>
-                <div style={{ color: "#d1d5db", fontSize: "0.7rem" }}>
-                  اجمالي التعاقدات
-                </div>
+              <div style={{ color: "#d1d5db", fontSize: "0.7rem" }}>
+                اجمالي الميزانية
               </div>
             </div>
-            <ChartContainer style={{ height: "60px", margin: "1rem 0" }}>
-              <Chart
-                options={budgetChartOptions}
-                series={budgetChartSeries}
-                type="bar"
-                height={60}
-              />
-            </ChartContainer>
-            <Legend style={{ justifyContent: "space-around" }}>
-              {budgetChartSeries.map((item, index) => (
-                <LegendItem key={item.name}>
-                  <LegendDot color={item.color} />
-                  {item.name}
-                </LegendItem>
-              ))}
-            </Legend>
-            {/* Milestones */}
-            <Card
-              style={{
-                minHeight: "40%",
-                margin: "2rem 0",
-                border: "none",
-                boxShadow: "none",
-              }}
-            >
-              <CardTitle>
-                <CheckCircle size={16} />
-                أعلى مهام الإنجاز المطلوبة
-              </CardTitle>
-              <Table>
-                <TableRow style={{ fontWeight: "600", color: "#ffffff" }}>
-                  <TableCell basis="20%" emphasis="true" rtl="true">
-                    الانجاز
-                  </TableCell>
-                  <TableCell basis="80%" emphasis="true" rtl="true">
-                    مسمى المشروع
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell
-                    basis="20%"
-                    emphasis="true"
-                    rtl="true"
-                    style={{ color: "#86efac" }}
-                  >
-                    99%
-                  </TableCell>
-                  <TableCell basis="80%" rtl="true">
-                    إعادة محطة تربية الكائنات المائية بـ روابح جازان
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell
-                    basis="20%"
-                    emphasis="true"
-                    rtl="true"
-                    style={{ color: "#86efac" }}
-                  >
-                    78%
-                  </TableCell>
-                  <TableCell basis="80%" rtl="true">
-                    تنفيذ وتطوير مزارع تربية مواشي في عدد من المناطق
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell
-                    basis="20%"
-                    emphasis="true"
-                    rtl="true"
-                    style={{ color: "#86efac" }}
-                  >
-                    78%
-                  </TableCell>
-                  <TableCell basis="80%" rtl="true">
-                    تنفيذ محطات فرز التمور في رياض الخبراء بالقصيم
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell
-                    basis="20%"
-                    emphasis="true"
-                    rtl="true"
-                    style={{ color: "#86efac" }}
-                  >
-                    75%
-                  </TableCell>
-                  <TableCell basis="80%" rtl="true">
-                    إعادة محطات تربية الكائنات المائية في روابح جازان
-                  </TableCell>
-                </TableRow>
-              </Table>
-
-              {/*  Executive Summary*/}
-              <div>
-                <h3
-                  style={{
-                    color: "#ffffff",
-                    margin: "3rem 0",
-                    fontSize: "1.1rem",
-                    fontWeight: "600",
-                  }}
-                >
-                  ملخص تنفيذي
-                </h3>
-                <div
-                  style={{
-                    background: "rgba(255, 255, 255, 0.05)",
-                    padding: "1.5rem",
-                    borderRadius: "12px",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
-                    height: "auto",
-                    margin: "1rem 0 0 0",
-                    overflowY: "auto",
-                  }}
-                >
-                  <ul
-                    style={{
-                      listStyle: "none",
-                      padding: 0,
-                      margin: 0,
-                      color: "#e2e8f0",
-                    }}
-                  >
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#3b82f6",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      تم تسليم 6 أراضي مخصصين لقطاعات الأسماك والورد والماشية
-                    </li>
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#3b82f6",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      تم تسليم 6 أراضي مخصصين لقطاعات الأسماك والورد والماشية
-                    </li>
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#3b82f6",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      تم تسليم 6 أراضي مخصصين لقطاعات الأسماك والورد والماشية
-                    </li>
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#22c55e",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      تم الإنتهاء من الدراسات الفنية ودراسة الجدوى لعدد 4 مشاريع
-                      خدمات تسويقية
-                    </li>{" "}
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#22c55e",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      تم الإنتهاء من الدراسات الفنية ودراسة الجدوى لعدد 4 مشاريع
-                      خدمات تسويقية
-                    </li>{" "}
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#22c55e",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      تم الإنتهاء من الدراسات الفنية ودراسة الجدوى لعدد 4 مشاريع
-                      خدمات تسويقية
-                    </li>{" "}
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#22c55e",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      تم الإنتهاء من الدراسات الفنية ودراسة الجدوى لعدد 4 مشاريع
-                      خدمات تسويقية
-                    </li>{" "}
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#22c55e",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      تم الإنتهاء من الدراسات الفنية ودراسة الجدوى لعدد 4 مشاريع
-                      خدمات تسويقية
-                    </li>
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#f59e0b",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      مراجعة وتدقيق أكثر من 620 طلب إعتماد فني
-                    </li>
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#8b5cf6",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      تطوير البنية التحتية لقطاع الثروة السمكية في المناطق
-                      المستهدفة
-                    </li>
-                    <li
-                      style={{
-                        marginBottom: "1rem",
-                        paddingLeft: "1.5rem",
-                        position: "relative",
-                        fontSize: "0.9rem",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "0",
-                          top: "0.5rem",
-                          width: "6px",
-                          height: "6px",
-                          background: "#06b6d4",
-                          borderRadius: "50%",
-                        }}
-                      ></div>
-                      إطلاق برامج تدريبية متخصصة للمزارعين والمستثمرين
-                    </li>
-                  </ul>
-                </div>
+            <div>
+              <div
+                style={{
+                  color: "#86efac",
+                  fontSize: "1.2rem",
+                  fontWeight: 700,
+                }}
+              >
+                922.63 M
               </div>
-            </Card>
-          </Card>
-          {/* Risk */}
-          <Card style={{ minHeight: "40%", margin: "1rem 0 0 0" }}>
+              <div style={{ color: "#d1d5db", fontSize: "0.7rem" }}>
+                اجمالي التعاقدات
+              </div>
+            </div>
+          </div>
+          <Chart
+            options={budgetChartOptions}
+            series={budgetChartSeries}
+            type="bar"
+            height={60}
+          />
+          <Legend style={{ justifyContent: "space-around" }}>
+            {budgetChartSeries.map((item, index) => (
+              <LegendItem key={item.name}>
+                <LegendDot color={item.color} />
+                {item.name}
+              </LegendItem>
+            ))}
+          </Legend>
+        </Budget>
+        <Posibilityanddanger style={{}}>
+          <div>
             <CardTitle>
               <AlertTriangle size={16} />
               إدارة المخاطر
@@ -2737,7 +1791,9 @@ function Dashboard() {
                 height: "100%",
               }}
             >
-              <Table style={{ maxHeight: "100%", margin: "2rem 0" }}>
+              <Table
+                style={{ maxHeight: "100%", margin: "2rem 0", width: "169px" }}
+              >
                 <TableRow
                   style={{
                     fontWeight: "600",
@@ -2785,37 +1841,276 @@ function Dashboard() {
                   </TableRow>
                 ))}
               </Table>
-              <ChartContainer style={{ height: "100%", margin: "2rem 0" }}>
-                <Chart
-                  options={riskMatrixOptions}
-                  series={riskMatrixSeries}
-                  type="scatter"
-                  height={250}
-                />
-              </ChartContainer>
+              <CardTitle style={{ textAlign: "center", margin: "1rem 0" }}>
+                <CheckCircle size={14} />
+                أعلى مهام الإنجاز المطلوبة
+              </CardTitle>
+              <div style={{ width: "150px", margin: "1rem 0" }}>
+                <Table>
+                  <TableRow style={{ fontWeight: "500", color: "#ffffff" }}>
+                    <TableCell basis="20%" emphasis="true" rtl="true">
+                      الانجاز
+                    </TableCell>
+                    <TableCell basis="80%" emphasis="true" rtl="true">
+                      مسمى المشروع
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      basis="20%"
+                      emphasis="true"
+                      rtl="true"
+                      style={{ color: "#86efac" }}
+                    >
+                      99%
+                    </TableCell>
+                    <TableCell basis="80%" rtl="true">
+                      إعادة محطة تربية الكائنات المائية بـ روابح جازان
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      basis="20%"
+                      emphasis="true"
+                      rtl="true"
+                      style={{ color: "#86efac" }}
+                    >
+                      78%
+                    </TableCell>
+                    <TableCell basis="80%" rtl="true">
+                      تنفيذ محطات فرز التمور في رياض الخبراء بالقصيم
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      basis="20%"
+                      emphasis="true"
+                      rtl="true"
+                      style={{ color: "#86efac" }}
+                    >
+                      75%
+                    </TableCell>
+                    <TableCell basis="80%" rtl="true">
+                      إعادة محطات تربية الكائنات المائية في روابح جازان
+                    </TableCell>
+                  </TableRow>
+                </Table>
+              </div>
+              <Chart
+                options={riskMatrixOptions}
+                series={riskMatrixSeries}
+                type="scatter"
+                height={250}
+                width={180}
+              />
             </div>
+          </div>
+        </Posibilityanddanger>
+        <Lineofhalfyearsandstate
+          style={{ display: "flex", flexDirection: "row", gap: "1rem" }}
+        >
+          <div
+            style={{ width: "70%", display: "flex", flexDirection: "column" }}
+          >
+            <CardTitle
+              style={{ alignItems: "center", justifyContent: "center" }}
+            >
+              <Clock size={16} />
+              الخط الزمني لنسب إنجاز البرنامج
+            </CardTitle>
+            <Chart
+              options={completionTimelineLineOptions}
+              series={completionTimelineLineOptions.series}
+              type="line"
+              height="100%"
+            />
+          </div>
+          <div style={{ width: "30%", overflowY: "auto" }}>
             <div>
-              <Card style={{ minHeight: "400px" }}>
-                <CardTitle>
-                  <Clock size={16} />
-                  الخط الزمني لنسب إنجاز البرنامج
-                </CardTitle>
-                <LargeChartContainer style={{ height: "300px" }}>
-                  <Chart
-                    options={completionTimelineLineOptions}
-                    series={completionTimelineLineOptions.series}
-                    type="line"
-                    height="100%"
-                  />
-                </LargeChartContainer>
-              </Card>
+              <CardTitle
+                style={{ alignItems: "center", justifyContent: "center" }}
+              >
+                حالة المشاريع
+              </CardTitle>
+              <div
+                style={{
+                  background: "rgba(255, 255, 255, 0.05)",
+                  padding: "1rem",
+                  borderRadius: "12px",
+                  height: "280px",
+                  width: "100%",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.5rem",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "rgba(59, 130, 246, 0.1)",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(59, 130, 246, 0.2)",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "1rem",
+                        color: "#3b82f6",
+                        fontWeight: "bold",
+                        marginBottom: "0.25rem",
+                      }}
+                    >
+                      88
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "#3b82f6" }}>
+                      منتظم
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      background: "rgba(34, 197, 94, 0.1)",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(34, 197, 94, 0.2)",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "1rem",
+                        color: "#22c55e",
+                        fontWeight: "bold",
+                        marginBottom: "0.25rem",
+                      }}
+                    >
+                      12
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "#22c55e" }}>
+                      مكتمل
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      background: "rgba(245, 158, 11, 0.1)",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(245, 158, 11, 0.2)",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "1rem",
+                        color: "#f59e0b",
+                        fontWeight: "bold",
+                        marginBottom: "0.25rem",
+                      }}
+                    >
+                      13
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "#f59e0b" }}>
+                      متأخر
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      background: "rgba(239, 68, 68, 0.1)",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(239, 68, 68, 0.2)",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "1rem",
+                        color: "#ef4444",
+                        fontWeight: "bold",
+                        marginBottom: "0.25rem",
+                      }}
+                    >
+                      5
+                    </div>
+                    <div style={{ fontSize: "0.8rem", color: "#ef4444" }}>
+                      متوقف
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+                    paddingTop: "1rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "0.75rem",
+                    }}
+                  >
+                    <span style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
+                      إجمالي المشاريع
+                    </span>
+                    <span
+                      style={{
+                        color: "#ffffff",
+                        fontSize: "0.7rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      118
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "0.75rem",
+                    }}
+                  >
+                    <span style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
+                      نسبة الإنجاز الإجمالي
+                    </span>
+                    <span
+                      style={{
+                        color: "#22c55e",
+                        fontSize: "0.9rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      84.7%
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span style={{ color: "#94a3b8", fontSize: "0.9rem" }}>
+                      المشاريع النشطة
+                    </span>
+                    <span
+                      style={{
+                        color: "#3b82f6",
+                        fontSize: "0.9rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      101
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </Card>
-        </TopSection>
-        {/* Bottom Section (Matching Image 2) */}
-        <BottomSection></BottomSection>
-      </motion.div>
-    </Container>
+          </div>
+        </Lineofhalfyearsandstate>
+      </Container>
+    </>
   );
 }
 

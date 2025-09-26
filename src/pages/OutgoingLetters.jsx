@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Heading from "../ui/Heading";
 import Row from "../ui/Row";
+import usePageTitle from "../hooks/usePageTitle";
 
 const Container = styled.div`
   max-width: 120rem;
@@ -11,6 +12,7 @@ const Container = styled.div`
 `;
 
 function OutgoingLetters() {
+  usePageTitle("الخطابات الصادرة");
   return (
     <Container>
       <Row type="horizontal">

@@ -1,8 +1,9 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import GlobalSettingsDropdown from "./GlobalSettingsDropdown";
+import PageHeader from "./PageHeader";
 import styled from "styled-components";
 import { SidebarProvider, useSidebar } from "../contexts/SidebarContext";
+import { PageTitleProvider } from "../contexts/PageTitleContext";
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -10,14 +11,15 @@ const StyledAppLayout = styled.div`
     props.isCollapsed ? "8rem 1fr" : "26rem 1fr"};
   grid-template-rows: 1fr;
   min-height: 100vh;
+  width: 100%;
   transition: grid-template-columns 0.1s ease;
 `;
 
 const Main = styled.main`
   background: var(--color-dark);
   padding: 2rem 1rem 2rem;
-  overflow: visible;
-  width: 100%;
+  overflow: hidden;
+  width: 100vw;
   box-sizing: border-box;
 
   @media (max-width: 1200px) {
@@ -39,10 +41,10 @@ function AppLayoutContent() {
   return (
     <StyledAppLayout isCollapsed={isCollapsed}>
       <Sidebar style={{ zIndex: 100 }} />
-      <Main style={{ zIndex: 1, width: "100%" }}>
+      <Main style={{}}>
+        <PageHeader />
         <Outlet />
       </Main>
-      <GlobalSettingsDropdown />
     </StyledAppLayout>
   );
 }
@@ -50,7 +52,9 @@ function AppLayoutContent() {
 function AppLayout() {
   return (
     <SidebarProvider>
-      <AppLayoutContent />
+      <PageTitleProvider>
+        <AppLayoutContent />
+      </PageTitleProvider>
     </SidebarProvider>
   );
 }

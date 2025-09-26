@@ -14,12 +14,11 @@ const StyledHeader = styled.header`
   width: 100%;
   background: linear-gradient(
     135deg,
-    var(--color-brand-500),
-    var(--color-brand-600)
+    var(--color-dark),
+    var(--color-brand-900)
   );
   border-radius: 0.8rem;
   margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const UserInfo = styled.div`

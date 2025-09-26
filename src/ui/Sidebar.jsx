@@ -1,8 +1,6 @@
 import styled from "styled-components";
-import { HiOutlineBars3, HiOutlineXMark } from "react-icons/hi2";
 import Logo from "./Logo";
 import MainNav from "./MainNav";
-import Header from "./Header";
 import { useSidebar } from "../contexts/SidebarContext";
 
 const StyledSidebar = styled.aside`
@@ -51,55 +49,11 @@ const StyledSidebar = styled.aside`
   }
 `;
 
-const ToggleButton = styled.button`
-  position: absolute;
-  top: 2rem;
-  right: -1.5rem;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    var(--color-brand-500),
-    var(--color-brand-600)
-  );
-  border: 2px solid var(--color-grey-50);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      var(--color-brand-600),
-      var(--color-brand-700)
-    );
-    transform: scale(1.1);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  & svg {
-    width: 1.8rem;
-    height: 1.8rem;
-  }
-`;
-
 function Sidebar() {
-  const { isCollapsed, toggleSidebar } = useSidebar();
+  const { isCollapsed } = useSidebar();
 
   return (
     <StyledSidebar isCollapsed={isCollapsed}>
-      <ToggleButton onClick={toggleSidebar}>
-        {isCollapsed ? <HiOutlineBars3 /> : <HiOutlineXMark />}
-      </ToggleButton>
-
       {/* {!isCollapsed && <Header />} */}
       {!isCollapsed && <Logo />}
       <MainNav isCollapsed={isCollapsed} />
