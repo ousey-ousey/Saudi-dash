@@ -721,14 +721,7 @@ function Analytics() {
   usePageTitle("لوحة التحليلات العامه");
   return (
     <Container>
-      <Row
-        type="horizontal"
-        style={{
-          margin: "1rem 10rem",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+      <Row type="horizontal">
         <Heading
           as="h1"
           style={{ color: "#ffffff", fontSize: "2.2rem", margin: "1rem 2rem" }}
